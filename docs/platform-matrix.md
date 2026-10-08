@@ -51,3 +51,13 @@ Codeberg is a community-driven nonprofit software-development platform built on 
 For this project, the main potential benefits are resilience/independence from one hosting provider, a second public location for the source, and alignment with a free/libre/privacy-friendly community. The main reasons not to add it immediately are maintenance overhead and Codeberg's expectation that public works carry a suitable free/libre license. citeturn442924search1turn442924search0
 
 Current recommendation: **candidate only**. GitHub remains the primary project home.
+
+## Public code licensing
+
+The repository currently uses a custom `LICENSE.txt` rather than a standard open-source license.
+
+This is now a deliberate decision point before any Codeberg mirror is created. GitHub notes that a public repository without an open-source license does not grant the broad reuse rights associated with open source. Codeberg recommends standard free/libre licensing and warns against unnecessary custom-license proliferation. citeturn421314search1turn705930search0
+
+A new GitHub issue tracks the decision: **#10 — Decide public code licensing**.
+
+No license change has been made.
