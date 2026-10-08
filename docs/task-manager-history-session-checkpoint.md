@@ -308,3 +308,16 @@ The screenshot establishes the Windows Explorer **Date created** values displaye
 **Earliest currently observed Windows creation timestamp: October 6, 2026 at 10:45 AM.**
 
 Evidence label: **Verified from user-provided Windows Explorer screenshot** for the displayed file creation times; **not yet established as the beginning of the project itself**.
+
+ 
+## Current Authoritative Status — October 8, 2026
+ 
+This section supersedes earlier provisional statements above where they conflict with later recovery.
+ 
+- V8 source has been recovered.
+- **V8 is the latest directly recovered application source baseline.**
+- The V8 drag/drop correction is verified from direct V7→V8 source comparison.
+- The Windows 11 “not allowed” incident is supported by surviving historical notes.
+- Final native Explorer drag/drop success remains unknown.
+- The chronology has been reviewed and approved.
+- Public technical-history and case-study drafts now exist under `projects/task-manager/`.
