@@ -485,3 +485,15 @@ Earlier Pages failure emails were caused by the old workflow attempting to enabl
 
 ### Session continuation rule
 Start the next session by reading this handoff first. Treat the repository as public, keep research separate from project facts, verify current rules when researching external platforms or support mechanisms, and update this handoff after meaningful durable changes.
+
+## 26. Backlog continuation checkpoint — 2026-10-08
+
+### Current backlog status
+- Issue #1 (Publish the project site): Pages deployment is confirmed successful and automatic deployment is restored. The issue remains open only because the live Pages URL has not yet been independently verified/recorded in the repository.
+- Issue #2 (Document the existing task manager): remains the next substantive build/documentation task. Repository templates are ready, but the actual task-management application/source/screenshots are not present in the public repository or accessible project files found in the current search. Do not invent features, architecture, or screenshots.
+- Issue #3 (Create platform profile kit): remains pending.
+- Issue #4 (Prepare first support milestone): remains pending and requires fresh research before publication.
+- Issue #5 (Security and privacy audit): already closed; ongoing security checks remain operational requirements rather than a new backlog item.
+
+### Next action
+Obtain/inspect the actual task-management application or its source/screenshots, then complete the first full case study from evidence.
