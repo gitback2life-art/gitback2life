@@ -51,3 +51,5 @@
 | 2026-10-08 | New build UX fix | Reworked Opportunity Tracker file feedback after testing showed transient notices were insufficient | Accepted JSON files are now listed persistently with filename, record count, size, timestamp, and Accepted state; last-action feedback is persistent too | Re-test with a real JSON file and page refresh to confirm the visible acceptance record |
 
 | 2026-10-08 | New build UX | Changed Opportunity Tracker save flow to a dedicated **Opportunity Saved** completion screen with navigation options | Saving now has a clear end state and immediate next actions | Re-test save, navigation, and refresh behavior in the deployed prototype |
+
+| 2026-10-08 | Public story | Published the first narrative gitback2life story as a dedicated public page and linked it from the homepage | The project now has a readable public story in addition to the repository history, build log, and case study | Reuse the story as the basis for one carefully chosen external publishing experiment |
