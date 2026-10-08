@@ -33,3 +33,5 @@
 | 2026-10-08 | Publishing | Verified the live GitHub Pages URL from the successful deployment logs and closed Issue #1 | Primary public site is confirmed live at https://gitback2life-art.github.io/gitback2life/ | Move to the first support-milestone research |
 
 | 2026-10-08 | Support milestone | Re-verified current OpenAI gift-card/gifting-credit mechanisms and current r/Assistance request rules; updated support draft | Official support routes are current, but r/Assistance requires eligibility before posting; no public request posted | Build genuine public record and revisit support when a suitable eligible route exists |
+
+| 2026-10-08 | Task-manager case study | Closed Issue #2 after completing the evidence-based V2→V8 documentation baseline and explicitly moving screenshots/live runtime verification into optional future enhancements | First case-study milestone is complete without reopening the broad Windows QA effort | Continue the public rebuild/build loop with the next useful project step |
