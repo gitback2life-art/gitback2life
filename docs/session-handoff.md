@@ -516,3 +516,34 @@ When the task-manager case study is resumed:
 
 ### Current status
 Issue #2 remains open. The next session intended to document the task manager can receive the surviving source material, inspect it, and build the public case study from evidence. Missing historical material should be acknowledged where it affects certainty.
+
+
+## 28. Master chronology created — 2026-10-08
+
+The historical reconstruction phase now has its first consolidated chronology:
+
+`docs/task-manager-historical-chronology.md`
+
+### Completed
+- Consolidated the currently recovered V2→V8 implementation progression into one evidence-labeled chronology.
+- Kept Windows creation timestamps, modification timestamps, ZIP timestamps, document metadata, and source/runtime evidence separate.
+- Preserved the conclusion that **2026-10-06 10:45 AM** is the earliest currently observed Windows creation timestamp, without treating it as the proven project start.
+- Recorded the V7 navigation defect and correction as an evidence-backed development incident.
+- Recorded the V8 Windows 11 drag/drop incident and the V7→V8 source correction as an evidence-backed development incident.
+- Explicitly avoided claiming that persistence problems were caused by AI where the surviving evidence does not establish that causal chain.
+- Preserved the runtime-verification boundary: source implementation and automated checks do not prove successful real Windows/MSHTML behavior.
+
+### Current interpretation
+The chronology is an **internal reconstruction artifact**, not final public case-study copy.
+
+The next historical task is to identify additional evidence-backed AI/problem incidents in surviving chat/build material, if such evidence is available, and then review the chronology before deriving the public case study.
+
+### Files changed
+- `docs/task-manager-historical-chronology.md`
+
+### Next actions
+1. Review the chronology for contradictions or overstatements.
+2. Examine surviving chat/build material only for specific unresolved AI/problem questions.
+3. Upgrade or downgrade individual evidence labels only when new evidence warrants it.
+4. After historical review, derive the technical history and public case study.
+
