@@ -12,7 +12,7 @@ The application was originally developed on the author's main/personal ChatGPT a
 
 **Status:** Evidence recovery in progress.
 
-The current evidence packet contains historical documentation and build notes, but does **not** contain the actual standalone HTA source file or the referenced spreadsheet/screenshots. Therefore this document is a historical baseline, not a source-level implementation audit.
+Earlier evidence packets lacked the actual standalone HTA source, but the October 8, 2026 package recovery now provides actual HTA source through V7. The referenced spreadsheet is also present in the uploaded packages. Screenshots and later source/runtime evidence remain incomplete. Therefore this document is now a source-informed historical audit through V7, but not a definitive real-Windows runtime audit.
 
 ## Evidence Hierarchy
 
@@ -67,7 +67,7 @@ Surviving V2 documentation identifies local state persistence at:
 
 The documented persisted state includes task/category/filter/view-related state and window size/position behavior. Ctrl+S/manual Save was also documented.
 
-The exact final state schema remains **Unknown** until the actual application/source or state file is recovered.
+The exact final persisted state schema is now partially recoverable from the V2–V7 source, but the final runtime state file/schema remains **Unknown**.
 
 ## Development History Recovered So Far
 
@@ -180,11 +180,11 @@ Features repeatedly described in the later surviving materials should be treated
 
 The following are currently unavailable or not established:
 
-- Final/final-version HTA source
-- Exact JavaScript architecture
-- Exact final UI rendering
-- Exact final JSON/state schema
-- Referenced spreadsheet
+- V8/final-version HTA source
+- Exact final JavaScript architecture beyond the recovered V2–V7 source
+- Exact final UI rendering in the target Windows/MSHTML runtime
+- Exact final runtime JSON/state schema
+- Referenced spreadsheet contents in the historical narrative
 - Referenced screenshots
 - Complete V2–V8 source/version sequence
 - Exact dates for every development stage
@@ -246,11 +246,11 @@ Useful future case-study themes include:
 
 ## Current Bottom Line
 
-The surviving evidence supports a fairly strong historical picture of a standalone Windows task/business command center with local persistence, task/category navigation, Task Detail workspaces, notes, links, attachments, context-menu management, and Windows-specific behavior.
+The recovered evidence now supports a source-level historical picture of a standalone Windows task/business command center through V7, including local persistence, task/category navigation, Task Detail workspaces, notes, links, attachments, context-menu management, and Windows-specific behavior.
 
-It does **not** currently support a definitive source-level audit because the actual application source is missing from the current evidence packet.
+It still does **not** support a definitive real-Windows runtime audit, and V8/final-version source remains unrecovered in the current package set.
 
-This handoff is therefore a **continuation document for evidence recovery**, not a claim that every documented feature has been independently verified.
+This handoff remains a **continuation document for evidence recovery**, with explicit separation between source-verified implementation and runtime behavior that still requires Windows verification.
 
 
 ## New Source-Recovery Checkpoint — October 8, 2026
