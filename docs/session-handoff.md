@@ -760,3 +760,26 @@ Issue #1 (Publish the project site) is now closed as completed.
 GitHub remains the primary public repository and GitHub Pages remains the primary public website.
 
 The current website deployment continues to publish the restricted public-site artifact rather than the full repository.
+
+
+## 38. First support milestone research — 2026-10-08
+
+Current support research is complete enough to avoid premature posting.
+
+### Official OpenAI mechanisms
+- OpenAI currently documents U.S. ChatGPT gift cards purchased through participating authorized retailers; eligible gift-card balances can be used on ChatGPT web for eligible subscriptions, renewals, upgrades, and certain credit purchases. citeturn106039search0
+- OpenAI also currently documents a separate Gifting Credits feature rolling out gradually. Eligible Plus/Pro personal customers can purchase gifts, while eligible personal Free/Go/Plus/Pro accounts can redeem them. Claim links must be kept private. citeturn106039search1turn106039search2
+
+### Community route
+The current r/Assistance page lists short-term assistance as its purpose and currently requires at least 400 comment karma plus regular recent Reddit activity for requests. It also says not to post personal payment information publicly. citeturn467951view0
+
+### Decision
+Do not publish the support request yet.
+
+The project should build its public record first and only use a community route once the account is actually eligible and the current rules still permit the request.
+
+### Draft updated
+`docs/support-request.md` now contains a current, publish-ready framework referencing official OpenAI support mechanisms without exposing gift-card PINs, claim links, payment information, or other private data.
+
+Detailed research:
+`research/2026-10-08-support-milestone.md`
