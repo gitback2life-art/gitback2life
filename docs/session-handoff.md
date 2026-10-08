@@ -881,3 +881,17 @@ A browser test exposed a usability gap: importing a `.json` file changed the dat
 
 ### Durable lesson
 Important state-changing actions should provide immediate visible confirmation, especially file import/export operations.
+
+## 46. Opportunity Tracker save/import flow hardened — 2026-10-08
+
+Browser testing found a more serious interaction issue than missing feedback: the Save action could appear to fall through to the browser's normal form submission, producing an apparent page refresh with no confirmation.
+
+### Correction
+- Added an explicit `saveOpportunity(event)` handler with `preventDefault()` and an explicit `return false` result.
+- Added visible save-success and validation feedback.
+- Save feedback is stored in `sessionStorage` so the message can survive an unexpected reload.
+- Import/export feedback is likewise handled through the status system.
+- Added a GitHub Pages deployment step that syntax-checks the Opportunity Tracker JavaScript before publishing.
+
+### Durable lesson
+For user-facing forms, successful state change must be both prevented from falling through to default browser navigation and visibly confirmed. Deployment should fail early on syntax errors in the embedded application code.
