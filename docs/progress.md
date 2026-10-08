@@ -41,3 +41,5 @@
 | 2026-10-08 | New build | Started the first practical independence-oriented software build: a dependency-free, privacy-first Opportunity Tracker with local storage and JSON backup | Working prototype added and integrated into the public Pages deployment | Use the prototype, learn from real use, then decide whether it deserves expansion |
 
 | 2026-10-08 | New build fix | Browser testing exposed that the Opportunity Tracker rejected shorthand URLs such as `www.google.com`; fixed input handling and normalization | Common web addresses can now be entered without adding the scheme manually | Continue testing the prototype through actual use and fix concrete friction points |
+
+| 2026-10-08 | New build fix | Extended Opportunity Tracker URL handling to accept bare domains such as `google.com` as well as `www.google.com` | Source links now match normal lazy human input and are normalized consistently | Continue testing through natural user behavior rather than requiring formal URL syntax |
