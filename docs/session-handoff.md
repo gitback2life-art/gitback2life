@@ -426,3 +426,24 @@ The operator wants to be able to start different research sessions by copy/pasti
 ---
 
 Last updated: 2026-10-08
+
+## 23. GitHub Pages failure investigation — 2026-10-08
+
+### Finding
+GitHub Actions failure notifications were reviewed. The repository had a Pages workflow that attempted to use `actions/configure-pages` with `enablement: true`. The action documentation states that the enablement option requires a token other than the default `GITHUB_TOKEN`; therefore the previous workflow could fail while trying to enable Pages automatically. citeturn375487search0turn375487search5
+
+### Completed
+- Changed `.github/workflows/pages.yml` to use the standard manual Pages setup instead of attempting to enable Pages from the workflow.
+- Temporarily changed the workflow trigger to `workflow_dispatch` so pushes do not create additional failure notifications while Pages is being configured.
+- Updated the workflow to current GitHub Actions releases used for this project: checkout v7, configure-pages v6, upload-pages-artifact v5, and deploy-pages v5.
+- Preserved the limited `site-dist` artifact containing only `index.html` and `assets/`.
+- Added the deployment page URL to the GitHub Pages environment.
+- Updated `docs/platform-matrix.md` to record the one-time manual Pages source setup.
+
+### Required operator action
+In the GitHub repository: **Settings → Pages → Build and deployment → Source → GitHub Actions**. GitHub documents GitHub Actions as a supported Pages publishing source for public repositories on GitHub Free. citeturn375487search8
+
+After that setting is enabled, run the **Deploy gitback2life site** workflow manually from the Actions tab. Once the first deployment succeeds, the workflow can be changed back to deploy automatically on pushes to `main`.
+
+### Historical notification note
+The emails shown in the screenshot correspond to earlier failed workflow runs on previous commits. They do not by themselves prove that the newest workflow is failing.
