@@ -673,3 +673,29 @@ GitHub + GitHub Pages remain the primary public home.
 Detailed research is recorded in:
 `research/2026-10-08-codeberg-fit.md`
 
+
+
+## 34. Public-code licensing decision gate — 2026-10-08
+
+The repository was checked before considering Codeberg and an earlier assumption was corrected.
+
+### Current license
+The repository already contains `LICENSE.txt`. It is a custom project-use license granting viewing, study, and adaptation for personal and educational use, while not granting broad commercial/open-source reuse.
+
+### Decision gate
+No license change has been made.
+
+A new GitHub issue **#10 — Decide public code licensing** tracks the decision.
+
+The current research suggests a possible future structure:
+- software source: a standard open-source software license such as MIT;
+- documentation: a separate documentation license if desired;
+- gitback2life name/logo/branding: reserved separately.
+
+This is a recommendation for evaluation, not an adopted project decision. GitHub and Codeberg both emphasize the importance of clear, standard licensing for reusable open-source software. citeturn421314search1turn705930search0
+
+### Codeberg status
+Codeberg remains **candidate / not adopted**. Do not create the mirror until the licensing decision is made.
+
+Detailed research:
+`research/2026-10-08-codeberg-fit.md`
