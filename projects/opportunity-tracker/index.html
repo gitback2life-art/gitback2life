@@ -46,6 +46,20 @@ label{display:block;font-size:.86rem;font-weight:700;margin-bottom:6px}
 .activity{margin-bottom:16px}
 .activity-main{margin:0;font-weight:800}
 .activity-meta{margin:4px 0 0;color:var(--muted);font-size:.9rem}
+.activity.save-success{
+  border:2px solid #28c76f;
+  background:linear-gradient(135deg,rgba(40,199,111,.20),rgba(40,199,111,.07));
+  box-shadow:0 10px 28px rgba(40,199,111,.14);
+  padding:20px 22px;
+}
+.activity.save-success .activity-main{
+  font-size:1.28rem;
+  line-height:1.25;
+}
+.activity.save-success .activity-meta{
+  margin-top:7px;
+  font-size:.95rem;
+}
 .file-list{display:grid;gap:8px;margin-top:12px}
 .section-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:18px}
 .file-actions{display:flex;flex-wrap:wrap;gap:8px;flex-shrink:0}
@@ -250,14 +264,17 @@ function render(){
   }).join("");
 }
 function renderActivity(){
-  const main=el("activityMain"), meta=el("activityMeta");
-  if(!main || !meta) return;
+  const box=el("activity"), main=el("activityMain"), meta=el("activityMeta");
+  if(!box || !main || !meta) return;
+  box.classList.remove("save-success");
   try{
     const raw=localStorage.getItem(ACTIVITY_KEY);
     if(raw){
       const data=JSON.parse(raw);
-      main.textContent=data.message||"Ready.";
+      const message=data.message||"Ready.";
+      main.textContent=message;
       meta.textContent=data.at?"Last action: "+new Date(data.at).toLocaleString():"";
+      if(data.type==="ok" && /opportunity saved/i.test(message)) box.classList.add("save-success");
     }else{
       main.textContent="Ready. Nothing has been imported yet.";
       meta.textContent="Imported files and saved opportunities stay in this browser until you export them.";
