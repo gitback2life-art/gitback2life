@@ -55,3 +55,5 @@
 | 2026-10-08 | Public story | Published the first narrative gitback2life story as a dedicated public page and linked it from the homepage | The project now has a readable public story in addition to the repository history, build log, and case study | Reuse the story as the basis for one carefully chosen external publishing experiment |
 
 | 2026-10-08 | External publishing | Published the first gitback2life story on Hashnode and shared its public URL | The story now has an external publishing home as well as the GitHub Pages site | Share the article with a few relevant people/communities thoughtfully, then learn from any real response |
+
+| 2026-10-08 | Article distribution research | Checked current Hashnode conduct guidance and recent community-rule discussions; live Reddit rules pages were unavailable | Recommended a small direct-share and Hashnode-engagement experiment; no community posting venue is verified or adopted | Operator decision on the small distribution experiment; verify live rules before any community post |
