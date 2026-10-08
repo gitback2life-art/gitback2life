@@ -98,7 +98,7 @@ footer{margin-top:22px;color:var(--muted);font-size:.86rem}
         <div><label>Risk<select id="risk"><option>Unknown</option><option>Low</option><option>Medium</option><option>High</option><option>Avoid</option></select></label></div>
         <div><label>Deadline<input id="deadline" type="date"></label></div>
       </div>
-      <label>Source URL<input id="url" type="url" placeholder="https://…"></label>
+      <label>Source URL<input id="url" type="text" inputmode="url" placeholder="https://… or www.google.com"></label>
       <label>Evidence / notes<textarea id="notes" placeholder="What does the source actually say? What requirements or warning signs did you verify?"></textarea></label>
       <button class="primary" type="submit">Save opportunity</button>
     </form>
@@ -174,9 +174,22 @@ function render(){
   }).join("");
 }
 function resetForm(){ el("form").reset(); }
+function normalizeUrl(value){
+  const raw=String(value||"").trim();
+  if(!raw) return "";
+  if(/^[a-z][a-z0-9+.-]*:\/\//i.test(raw)) return raw;
+  if(/^www\./i.test(raw)) return "https://"+raw;
+  if(/^[^\s/]+\.[^\s/]+/.test(raw)) return "https://"+raw;
+  return raw;
+}
 el("form").addEventListener("submit",e=>{
   e.preventDefault();
   const now=new Date().toISOString();
+  const url=normalizeUrl(el("url").value);
+  if(url && !/^https?:\/\//i.test(url)){
+    alert("Please enter a web address such as www.google.com or https://example.com.");
+    return;
+  }
   items.unshift({
     id:crypto.randomUUID(),
     title:el("title").value.trim(),
@@ -184,7 +197,7 @@ el("form").addEventListener("submit",e=>{
     status:el("status").value,
     risk:el("risk").value,
     deadline:el("deadline").value,
-    url:el("url").value.trim(),
+    url,
     notes:el("notes").value.trim(),
     updatedAt:now
   });
