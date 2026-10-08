@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<defs>
+<linearGradient id="s" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#050b19"/><stop offset="1" stop-color="#101b39"/></linearGradient>
+<linearGradient id="r" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#00d9ff"/><stop offset="1" stop-color="#8f5cff"/></linearGradient>
+<radialGradient id="sun"><stop offset="0" stop-color="#fff7c2"/><stop offset=".55" stop-color="#ffb21c"/><stop offset="1" stop-color="#ff7a00"/></radialGradient>
+<filter id="g"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<circle cx="256" cy="256" r="248" fill="#030712" stroke="#00d9ff" stroke-width="10"/>
+<circle cx="256" cy="256" r="228" fill="url(#s)"/>
+<circle cx="332" cy="170" r="48" fill="url(#sun)" filter="url(#g)"/>
+<path d="M58 334 176 214l54 61 58-84 122 143Z" fill="#172743" stroke="#35557c" stroke-width="4"/>
+<path d="M170 430c6-48 22-76 42-106 21-31 38-51 61-81l37 20c-30 52-50 83-64 113-11 23-17 39-20 54Z" fill="url(#r)" filter="url(#g)"/>
+<path d="M70 180 124 130M70 180l54 50M442 180l-54-50M442 180l-54 50" stroke="#00d9ff" stroke-width="14" stroke-linecap="round" filter="url(#g)"/>
+<text x="256" y="96" fill="#f3f8ff" font-family="Arial,sans-serif" font-size="40" font-weight="900" text-anchor="middle">gitback2life</text>
+<text x="256" y="468" fill="#00d9ff" font-family="Arial,sans-serif" font-size="18" font-weight="800" text-anchor="middle" letter-spacing="3">REBUILD - LEARN - BUILD</text>
+</svg>
