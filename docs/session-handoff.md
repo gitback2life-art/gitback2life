@@ -643,3 +643,33 @@ GitHub + GitHub Pages remain the primary public home.
 
 The prepared profile kit and first technical post remain reusable. A secondary platform should be chosen only when its current identity/privacy requirements clearly fit.
 
+
+
+## 33. Codeberg evaluation documented — 2026-10-08
+
+The operator asked what Codeberg is and why the project might use it.
+
+### Finding
+Codeberg is a community-driven nonprofit software-development platform operated by Codeberg e.V. and built around Forgejo. It provides public repositories and related project tools, plus Codeberg Pages. citeturn442924search2turn442924search3turn224766search2
+
+### Potential role for gitback2life
+The useful role would be **secondary public code home / independence backup**, not another social account and not a replacement for GitHub.
+
+Potential benefits:
+- reduced dependence on one code-hosting provider;
+- another public home for project source;
+- alignment with a nonprofit, free/libre, privacy-oriented software community. citeturn442924search2
+
+### Important constraint
+Codeberg states that it expects public works to carry a suitable free/libre license and is not intended as a general-purpose home for proprietary/commercial projects. citeturn442924search1turn442924search0
+
+The current gitback2life repository has no root LICENSE file, so no Codeberg mirror should be created until the project deliberately decides how its public code is licensed.
+
+### Decision
+**Codeberg remains a candidate, not adopted.**
+
+GitHub + GitHub Pages remain the primary public home.
+
+Detailed research is recorded in:
+`research/2026-10-08-codeberg-fit.md`
+
