@@ -82,6 +82,15 @@ This was another reminder that a feature can be technically correct and still fe
 
 Retroactive reconstruction can recover notable project moments, but it cannot guarantee that every earlier goofy question, joke, or small interaction is available. From this point forward, meaningful story moments should be captured as the work happens.
 
+## 2026-10-08 — Test complete; legality comes before chasing paid work
+
+The basic Opportunity Tracker import/save test is complete. The next step is not to invent a test job; it is to establish a legitimate opportunity pipeline.
+
+A practical constraint was identified: before pursuing paid work, the project's state business-registration/licensing requirements need to be checked for the specific type of work.
+
+This matters because an opportunity is only useful if it is actually legal and feasible to pursue.
+
+
 ### Story principle
 
 Keep the mistakes.
