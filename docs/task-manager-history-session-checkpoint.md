@@ -158,3 +158,48 @@ The historical record is substantially stronger than it was before this upload.
 We now have a traceable V2 → V3 → V4 → V5 → V6 → V7 source progression, with corresponding build notes for V4–V7. The investigation can now move from **“what did the documentation say existed?”** toward **“what did the surviving source actually implement, and what still required real Windows verification?”**
 
 This checkpoint intentionally preserves that distinction.
+
+
+## V8 Source Recovered — October 8, 2026
+
+The previously missing V8 source has now been supplied and directly compared with V7.
+
+### V8 source evidence
+
+File:
+`sole_proprietor_command_center_standalone_v8.hta`
+
+V8 is a 945-line HTA source file. Compared with V7, the substantive source change identified in the task-detail drag/drop setup is:
+
+- V7: `dragover`, `dragleave`, and `drop`
+- V8: adds `dragenter`
+- V8 also explicitly sets `event.dataTransfer.dropEffect = 'copy'` in both `dragenter` and `dragover`
+
+This directly matches the surviving historical note describing a Windows 11 drag/drop problem where the cursor showed “not allowed” and the attempted correction involved `dragenter` handling.
+
+### Evidence-status upgrade
+
+The V8 drag/drop correction is now:
+
+**Verified from source + supported by historical development notes.**
+
+The source establishes that the change was actually implemented. It still does **not** establish that native Explorer drag/drop succeeded in the target Windows/MSHTML runtime, because no real-runtime test result was recovered in this source comparison.
+
+### V8 relationship to V7
+
+V8 retains the major V7 implementation elements observed in the source:
+
+- `applyView()`
+- `openTaskDetail()`
+- `normalizeDate()`
+- persistence through temporary state plus backup state
+- task-detail notes/links/attachments
+- native drop handling and manual path fallback
+
+The direct V7→V8 diff identified the drag/drop handler change above; no broader source rewrite was identified in that comparison.
+
+### Updated baseline
+
+V8 is now the latest directly recovered source baseline.
+
+Future investigation should compare the V8 source against the documented final requirements and determine which remaining behaviors can be verified statically versus which require real Windows/MSHTML execution.
