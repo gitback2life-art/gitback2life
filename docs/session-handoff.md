@@ -827,3 +827,23 @@ The highest-value next step is no longer more setup. Prefer a small, useful, $0-
 
 ### Guardrail
 Do not reopen completed historical reconstruction, broad Windows QA, platform proliferation, or support posting unless new evidence or a concrete dependency makes it useful.
+
+## 42. First practical independence build started — 2026-10-08
+
+The project has moved from foundation/documentation work into a new software-build cycle.
+
+### Build
+Created `projects/opportunity-tracker/`:
+- `README.md` documents the purpose, privacy model, and $0-upfront-cost design.
+- `index.html` is a dependency-free local browser prototype for tracking opportunities, deadlines, sources, evidence/notes, risk, status, and JSON backup.
+
+### Public integration
+- GitHub Pages workflow now publishes the prototype at `projects/opportunity-tracker/index.html`.
+- The public site links to the prototype from the Build and Build Log sections.
+- Root `README.md` now lists the project.
+
+### Design principles
+The tool does not verify opportunities, submit applications, contact third parties, or process payments. It is an organizer and learning artifact. User data remains local unless deliberately exported.
+
+### Durable next-phase rule
+Prefer small working artifacts that directly support rebuilding, learning, building, or independence. Evaluate the prototype from actual use before expanding it.
