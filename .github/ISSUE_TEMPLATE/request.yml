@@ -1,0 +1,60 @@
+name: 🛠️ Request a Build
+description: Ask gitback2life to try a small build, experiment, explanation, or practical challenge.
+title: "[REQUEST] "
+labels:
+  - request
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Request something to build or explore
+
+        A good request gives the project a real-world target to work toward. Requests are not promises, but useful ones may become future experiments, builds, or case studies.
+
+        **Privacy note:** this is a public GitHub issue. Do not include your real name, address, phone number, medical records, passwords, financial information, or other private details.
+
+  - type: textarea
+    id: request
+    attributes:
+      label: What should I build or explore?
+      description: Describe the outcome you would like to see.
+      placeholder: "Could you build/explore..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: usefulness
+    attributes:
+      label: Who would this help, and how?
+      description: Tell me what problem this could solve or what someone could learn from it.
+      placeholder: "This would be useful because..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context or examples
+      description: Optional links, examples, or constraints. Please keep private information out.
+      placeholder: "Examples, references, or important constraints..."
+
+  - type: dropdown
+    id: scope
+    attributes:
+      label: How big is the request?
+      options:
+        - Tiny experiment
+        - Small useful tool
+        - Learning exercise
+        - Larger project idea
+        - Not sure
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy check
+      options:
+        - label: I understand this issue is public and I have not included private or identifying information.
+          required: true
