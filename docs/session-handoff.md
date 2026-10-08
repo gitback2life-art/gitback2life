@@ -925,3 +925,35 @@ After **Save opportunity** succeeds:
 
 ### Durable UX rule
 For major state-changing actions, prefer a clear completion screen with obvious next actions over a transient confirmation that leaves the user wondering what happened.
+
+
+## 49. Opportunity Tracker implementation reconciliation — 2026-10-08
+
+### Problem found
+The handoff recorded checkpoints 47–48 as complete, but the actual Opportunity Tracker source was not executing correctly.
+
+### Root causes
+- `projects/opportunity-tracker/index.html` contained a malformed `esc()` function, causing the page's JavaScript to fail before the import and save handlers were registered.
+- The Pages workflow's JavaScript validator also contained an invalid regular-expression literal, so deployment could not get past its own validation step.
+
+### Correction
+- Fixed the Opportunity Tracker JavaScript syntax.
+- Kept the persistent **Imported files** list with check mark, filename, record count, file size, timestamp, and **Accepted** state.
+- Kept the persistent last-action feedback area.
+- Hardened **Save opportunity** so the default form submission is prevented, the record is persisted before completion, and storage failure is not reported as success.
+- Kept the dedicated **Opportunity Saved** screen with **View opportunities**, **Add another**, and **Project home** actions.
+- Hardened JSON import handling and persistence.
+- Fixed the Pages validator so it extracts the script block without the broken regular expression.
+
+### Verification status
+The corrected source was fetched from the repository after the edits and contains the required import-acceptance UI, persistent file metadata storage, save completion screen, navigation handlers, and explicit form-submit prevention.
+
+The first deployment attempts after the UI changes failed in the validator before site deployment. The latest source and validator have now been corrected; the resulting Pages deployment is the remaining verification gate.
+
+### Runtime boundary
+This environment does not provide the real browser click-through of the deployed Pages site. Do not claim a full manual browser test has occurred unless one is actually performed.
+
+
+---
+
+Last updated: 2026-10-08
