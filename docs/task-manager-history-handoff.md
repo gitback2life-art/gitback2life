@@ -10,9 +10,9 @@ The application was originally developed on the author's main/personal ChatGPT a
 
 ## Current Investigation Status
 
-**Status:** Evidence recovery in progress.
+**Status:** Evidence recovery substantially complete for the currently supplied V2–V8 source/history package. The investigation has moved from primary evidence collection into chronology/reconstruction.
 
-Earlier evidence packets lacked the actual standalone HTA source, but the October 8, 2026 package recovery now provides actual HTA source through V7. The referenced spreadsheet is also present in the uploaded packages. Screenshots and later source/runtime evidence remain incomplete. Therefore this document is now a source-informed historical audit through V7, but not a definitive real-Windows runtime audit.
+The October 8, 2026 recovery now provides actual HTA source through V8, plus the referenced spreadsheet files, handoff packages, build notes, and timestamp evidence. Screenshots and real-runtime evidence remain incomplete. Therefore this document is now a source-informed historical audit through V8, but not a definitive real-Windows runtime audit.
 
 ## Evidence Hierarchy
 
@@ -180,14 +180,12 @@ Features repeatedly described in the later surviving materials should be treated
 
 The following are currently unavailable or not established:
 
-- V8/final-version HTA source
 - Exact final JavaScript architecture beyond the recovered V2–V7 source
 - Exact final UI rendering in the target Windows/MSHTML runtime
 - Exact final runtime JSON/state schema
-- Referenced spreadsheet contents in the historical narrative
 - Referenced screenshots
-- Complete V2–V8 source/version sequence
-- Exact dates for every development stage
+- Any versions or source artifacts outside the recovered V2–V8 sequence
+- Exact dates for every development stage before the currently recovered timestamp evidence
 - Whether every documented context-menu behavior worked correctly in real Windows
 - Whether the final drag/drop fix worked in the target Windows environment
 - Which handoff requirements were abandoned or changed before the final build
@@ -233,16 +231,15 @@ Useful future case-study themes include:
 
 ## Next Investigation Steps
 
-1. Recover the actual HTA/source file if available.
-2. Recover the referenced spreadsheet if available.
-3. Recover screenshots if available.
-4. Search surviving chat archives for development decisions and version transitions.
-5. Compare source behavior against this document.
-6. Upgrade individual claims from “Supported by surviving historical evidence” to “Verified” only when direct evidence warrants it.
-7. Record contradictions rather than silently resolving them.
-8. Maintain a separate list of missing/deleted historical evidence.
-9. Perform a privacy review before any historical artifact is published.
-10. Update this handoff as the evidence base improves.
+1. Build the Master Historical Evidence Chronology from the recovered artifacts and timestamps.
+2. Search surviving chat archives only where they can answer a specific unresolved historical question or explain a documented development decision.
+3. Compare V8 source behavior against the documented requirements and identify remaining discrepancies.
+4. Upgrade individual claims from “Supported by surviving historical evidence” to “Verified” only when direct evidence warrants it.
+5. Record contradictions rather than silently resolving them.
+6. Maintain a separate list of missing/deleted historical evidence.
+7. Identify AI-assisted incidents that can be supported by surviving evidence and document them as attempt → problem → investigation → correction → verification → lesson.
+8. Perform a privacy review before any historical artifact is published.
+9. Update this handoff as the evidence base improves.
 
 ## Current Bottom Line
 
@@ -329,3 +326,93 @@ The remaining boundary is runtime verification: source presence proves the chang
 V8 retains the major V7 mechanisms examined so far, including `applyView()`, `openTaskDetail()`, `normalizeDate()`, safer state persistence, task-detail resources, and manual attachment-path fallback.
 
 **Updated baseline:** V8 is now the latest directly recovered source baseline.
+
+## Continuation Handoff — October 8, 2026
+
+A new continuation handoff supplied by the user confirms that the evidence-collection work should now be treated as substantially complete for the material already recovered. The next phase is historical reconstruction, not another broad inventory.
+
+The supplied continuation instructions explicitly establish:
+
+- Do not ask the user to re-provide the same files.
+- Do not restart the inventory unless a specific unresolved question requires an artifact that has not been examined.
+- Build a **Master Historical Evidence Chronology**.
+- Preserve the evidence labels **VERIFIED**, **SUPPORTED**, **RECONSTRUCTED / LIKELY**, **UNKNOWN**, and **MISSING**.
+- Do not silently turn historical statements, plans, or AI suggestions into implementation facts.
+- Keep the eventual public story focused on **ATTEMPT → PROBLEM → INVESTIGATION → CORRECTION → RESULT → LESSON**.
+- Include AI's contribution to problems where the individual incident is actually supported by surviving evidence, rather than reducing the story to “AI broke the app.”
+- Preserve the lesson that AI-generated code still requires inspection, testing, and verification in the actual environment.
+- Do not make major public case-study changes until the historical evidence review is complete and the user has reviewed the findings.
+
+The continuation handoff also confirms that the current authoritative checkpoint remains:
+
+docs/task-manager-history-session-checkpoint.md
+
+and that the recovered source history currently runs:
+
+**V2 → V3 → V4 → V5 → V6 → V7 → V8**
+
+with **V8 as the latest directly recovered application source baseline**.
+
+### Timestamp evidence now established
+
+The user supplied a Windows Explorer screenshot showing the **Date created** values for the final group of historical files. This is currently the strongest evidence for the creation timeline of that group.
+
+Observed Windows creation times:
+
+| Date/time | Artifact |
+|---|---|
+| **2026-10-06 10:45 AM** | `sole_proprietor_business_tracker.xlsx` |
+| **2026-10-06 11:24 AM** | `sole_proprietor_business_tracker_hybrid.xlsx` |
+| **2026-10-06 1:42 PM** | `Solo_Business_Command_Center_Handoff_Package_UPDATED.zip` |
+| **2026-10-06 1:59 PM** | `Solo_Business_Command_Center_Handoff_Package_UPDATED_V3.zip` |
+| **2026-10-06 2:51 PM** | `Solo_Business_Command_Center_Handoff_Package_UPDATED_V4.zip` |
+| **2026-10-06 3:01 PM** | `Solo_Business_Command_Center_Handoff_Package_UPDATED_V5.zip` |
+| **2026-10-06 3:07 PM** | `Solo_Business_Command_Center_SESSION_HANDOFF.md` |
+
+Evidence status: **Verified from the user-provided Windows Explorer screenshot** for the displayed creation times.
+
+The earliest currently observed creation timestamp is therefore:
+
+**October 6, 2026 at 10:45 AM — `sole_proprietor_business_tracker.xlsx`.**
+
+This is **not** established as the beginning of the entire project. It is the earliest currently observed Windows creation timestamp in the recovered evidence group.
+
+The previously observed ZIP-internal timestamp of **October 6, 2026 at 5:24:16 PM** is therefore no longer the earliest known timestamp for the recovered materials; it is a later archive-entry timestamp. ZIP timestamps, Windows creation timestamps, document metadata, source evidence, handoff claims, and runtime verification must remain separate evidence categories.
+
+The anomalous DOCX internal metadata showing **2013-12-23 23:15:00Z** remains observed metadata but should not be treated as the project-development date absent corroboration.
+
+### Current evidence boundary
+
+The recovered source establishes implementation details through V8. It does not automatically establish successful target-environment behavior.
+
+Still unresolved at the runtime level include, unless separately demonstrated:
+
+- native Windows Explorer drag/drop success
+- actual right-click context-menu behavior
+- visual rendering
+- Windows FileSystemObject/WScript.Shell behavior
+- dark-mode appearance
+- multi-monitor/window restoration behavior
+
+The V8 source change itself is stronger than before: V7→V8 directly shows the addition of `dragenter` and `dataTransfer.dropEffect = 'copy'`, matching the historical Windows 11 “not allowed” cursor report. Evidence status remains **Verified from source + supported by historical development notes**, while final real-Windows success remains **Unknown**.
+
+### AI-related historical investigation
+
+The next chronology should explicitly look for incidents where AI-assisted development contributed to a problem, but only where the surviving evidence supports the chain:
+
+**request → AI-produced/suggested change → failure or defect → discovery → correction → verification → lesson**
+
+The public narrative should acknowledge AI as both an accelerator and a source of mistakes where warranted. It should not assign blame beyond what the evidence supports.
+
+### Immediate next deliverable
+
+The next substantive artifact should be a **Master Historical Evidence Chronology** built from the evidence already recovered.
+
+It should use:
+
+| Date/time | Artifact | What happened | Evidence | Confidence | Consequence |
+|---|---|---|---|---|---|
+
+The chronology should begin with the earliest currently observed artifact timestamp (**2026-10-06 10:45 AM**) while explicitly labeling that timestamp as an artifact-creation observation, not a proven project start.
+
+No further broad file-collection request should be made unless the chronology exposes a specific unresolved question for which a missing artifact would materially change the conclusion.
