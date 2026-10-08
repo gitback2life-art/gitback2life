@@ -33,6 +33,8 @@ jobs:
           mkdir -p site-dist
           cp index.html site-dist/
           cp -R assets site-dist/assets
+          mkdir -p site-dist/projects/opportunity-tracker
+          cp projects/opportunity-tracker/index.html site-dist/projects/opportunity-tracker/index.html
 
       - name: Upload site
         uses: actions/upload-pages-artifact@v5
