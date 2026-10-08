@@ -29,3 +29,5 @@
 | 2026-10-08 | Licensing / platform strategy | Verified the repository already has a custom personal/educational-use license and documented the open-source licensing question before considering Codeberg | Codeberg remains a candidate only; no license change has been made | Decide whether public software should use a standard open-source license |
 
 | 2026-10-08 | Open-source policy | Operator approved full free/open-source licensing for the current gitback2life repository | Software is MIT, documentation is CC BY 4.0, branding is reserved separately; future commercial apps will be licensed separately when they arise | Consider Codeberg later only if a second code home is actually useful |
+
+| 2026-10-08 | Publishing | Verified the live GitHub Pages URL from the successful deployment logs and closed Issue #1 | Primary public site is confirmed live at https://gitback2life-art.github.io/gitback2life/ | Move to the first support-milestone research |
