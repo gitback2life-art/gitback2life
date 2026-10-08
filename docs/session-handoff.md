@@ -447,3 +447,16 @@ After that setting is enabled, run the **Deploy gitback2life site** workflow man
 
 ### Historical notification note
 The emails shown in the screenshot correspond to earlier failed workflow runs on previous commits. They do not by themselves prove that the newest workflow is failing.
+
+## 24. GitHub Pages deployment restored — 2026-10-08
+
+The operator manually ran the Pages workflow after setting the repository Pages source to **GitHub Actions**. The run completed successfully with a green check.
+
+### Completed
+- Confirmed the GitHub Pages deployment works.
+- Restored automatic deployment on pushes to `main`.
+- Kept `workflow_dispatch` available for manual deployments.
+- Preserved the restricted `site-dist` artifact so the Pages site publishes only the intended website files.
+
+### Current state
+GitHub Pages is operational. Future commits to `main` will automatically trigger the Pages deployment workflow.
