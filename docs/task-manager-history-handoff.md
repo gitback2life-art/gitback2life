@@ -251,3 +251,60 @@ The surviving evidence supports a fairly strong historical picture of a standalo
 It does **not** currently support a definitive source-level audit because the actual application source is missing from the current evidence packet.
 
 This handoff is therefore a **continuation document for evidence recovery**, not a claim that every documented feature has been independently verified.
+
+
+## New Source-Recovery Checkpoint — October 8, 2026
+
+The evidence base has materially improved.
+
+Newly supplied packages contain actual HTA source through **V7**:
+
+- V2: `sole_proprietor_command_center_standalone_v2.hta`
+- V3: `sole_proprietor_command_center_standalone_v3.hta`
+- V4: `sole_proprietor_command_center_standalone_v4.hta`
+- V5: `sole_proprietor_command_center_standalone_v5.hta`
+- V6: `sole_proprietor_command_center_standalone_v6.hta`
+- V7: `sole_proprietor_command_center_standalone_v7.hta`
+
+This means the earlier statement that the current evidence packet lacked the actual HTA source is now superseded.
+
+### Source-supported progression
+
+- **V2:** direct source confirms local `state.json` persistence, category/task state handling, category management, task rows/status controls, and window geometry persistence.
+- **V3:** direct source confirms dedicated Task Detail, task-specific notes, links, attachments, path handling, drag/drop handler, manual path fallback, theme state, and task-detail navigation.
+- **V4:** direct source confirms distinct category/task context-menu handling, empty-list Add Task behavior, task-row left-click to Task Detail, and task edit/delete behavior.
+- **V5:** direct source confirms the Task Detail resource bar with Links first and attachments following it, plus link/attachment menu behavior.
+- **V6:** direct source/build notes confirm safer state-file writes, backup/corruption recovery, notes autosave, multi-file path parsing, window restore bounds, attachment safety checks, link-scheme handling, and other reliability fixes.
+- **V7:** direct source/build notes confirm centralized `applyView()`, explicit task/category navigation corrections, due-date normalization/validation, expanded Edit Task fields, and notes scheduling/flush behavior.
+
+### Runtime-verification boundary
+
+Source presence is not equivalent to successful real Windows/MSHTML execution.
+
+The V6/V7 evidence explicitly leaves real Windows verification outstanding for areas including:
+
+- actual rendering
+- right-click menus
+- real row clicks
+- Explorer drag/drop
+- dark-mode appearance
+- real FileSystemObject/WScript.Shell behavior
+- some window/multi-monitor behavior
+
+### V8 boundary
+
+Earlier surviving notes describe a V8 Windows/MSHTML drag/drop fix involving `dragenter` handling after a Windows 11 “not allowed” cursor observation.
+
+The V8 source/package was **not** included in the newly supplied package set for this checkpoint. Therefore V8 remains secondary historical evidence until its source is recovered.
+
+### Current baseline for future investigation
+
+For historical source analysis, **V7 is now the latest directly recovered source baseline**.
+
+The investigation should next compare V7 source against the documented requirements, recover V8 if available, and recover original chat/build history where possible.
+
+A detailed checkpoint was recorded separately at:
+
+`docs/task-manager-history-session-checkpoint.md`
+
+This checkpoint should be read before continuing the historical investigation.
