@@ -426,3 +426,30 @@ The operator wants to be able to start different research sessions by copy/pasti
 ---
 
 Last updated: 2026-10-08
+
+## 21. Session record — 2026-10-08
+
+This session completed a broader public-repository hardening pass.
+
+### Completed
+- Confirmed the main repository remains intentionally public.
+- Strengthened `docs/privacy.md` with an explicit public-repository boundary.
+- Expanded `.gitignore` for private/local working material.
+- Sanitized the public story and support-request draft.
+- Hardened `docs/research-session-starter.md` so private research is not automatically placed in the public repository.
+- Added public-safety checks to the operating checklist and independence log.
+- Sanitized the README's front-facing project description so unnecessary sensitive personal context is not part of the public project summary.
+- Changed the GitHub Pages workflow to build a limited public-site artifact containing the website and assets rather than uploading the entire repository. This prevents future private/research files from being accidentally published by Pages.
+- Changed website links to repository documentation into explicit GitHub links so the limited Pages artifact remains functional.
+- Added Dependabot configuration for weekly GitHub Actions dependency updates.
+- Strengthened `SECURITY.md` with public-repository and historical-secret guidance.
+- Updated the platform matrix to distinguish current support research from permanent project policy and to avoid describing Pages as blocked when the deployment workflow is configured.
+- Re-verified the current files after the changes.
+
+### Historical privacy note
+An older public commit still contains the former support-request wording with a specific personal-health duration. The current file no longer contains that detail. History was not rewritten during this pass because rewriting the public commit history would change the project's historical record and requires deliberate handling.
+
+### Current remaining security work
+- Verify GitHub repository-level security settings that are not exposed through the available connection, including Secret Scanning/Push Protection and any appropriate code scanning.
+- Decide separately whether historical Git history should be rewritten/sanitized. Do not treat the current-file cleanup as removal from historical commits.
+
