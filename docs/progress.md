@@ -21,3 +21,5 @@
 
 
 | 2026-10-08 | Historical reconstruction | Completed targeted repository review for additional AI/problem incidents and tightened V8 evidence labels in the master chronology | No additional incident established; V7/V8 evidence boundaries are now explicit and public case-study drafting remains gated on operator review | Operator review of historical reconstruction |
+
+| 2026-10-08 | Task-manager case study | Published the evidence-based technical history and case-study draft; reconciled older historical handoffs with the approved V8 baseline | Public documentation now has a coherent V2→V8 technical story and explicit runtime limits; issue #2 remains open for screenshots/demo/source presentation | Capture/verify runtime evidence and finish public source presentation |
