@@ -118,3 +118,20 @@ A future decision should be based primarily on:
 - Codeberg repository guide: https://docs.codeberg.org/getting-started/first-repository/
 - Codeberg Pages: https://docs.codeberg.org/codeberg-pages/
 - Codeberg repository permissions/privacy: https://docs.codeberg.org/collaborating/repo-permissions/
+
+
+## Licensing question
+
+The current repository license should be treated as a project-use permission rather than an open-source grant.
+
+For gitback2life, the real decision is whether to make the **software source** openly reusable.
+
+A likely structure, if the operator chooses an open-source path, would be:
+
+- software source: a standard OSI-approved permissive license such as MIT;
+- documentation: a separate documentation license such as CC BY 4.0;
+- project name, logo, and branding: explicitly reserved unless separately licensed.
+
+The MIT license is a standard permissive software license. CC BY 4.0 permits sharing and adaptation, including commercially, with attribution; Codeberg specifically recommends Creative Commons licenses for documentation rather than code. citeturn421314search0turn705930search1turn705930search0
+
+**No license change is being made yet.**
