@@ -308,3 +308,24 @@ A detailed checkpoint was recorded separately at:
 `docs/task-manager-history-session-checkpoint.md`
 
 This checkpoint should be read before continuing the historical investigation.
+
+
+## V8 Source Recovery — October 8, 2026
+
+The V8 HTA source has now been recovered and directly compared with V7.
+
+`sole_proprietor_command_center_standalone_v8.hta` is present. The V7→V8 source diff identifies the documented drag/drop correction:
+
+- V7 task drop-zone setup used `dragover`, `dragleave`, and `drop`.
+- V8 adds `dragenter`.
+- V8 explicitly sets `dataTransfer.dropEffect = 'copy'` during `dragenter` and `dragover`.
+
+This directly corroborates the surviving V8 development note about the Windows 11 “not allowed” drag cursor and the attempted MSHTML event-handling correction.
+
+**Evidence status:** The V8 correction is now **Verified from source + supported by historical development notes**.
+
+The remaining boundary is runtime verification: source presence proves the change was implemented, but does not prove native Explorer drag/drop worked successfully on the target Windows/MSHTML environment.
+
+V8 retains the major V7 mechanisms examined so far, including `applyView()`, `openTaskDetail()`, `normalizeDate()`, safer state persistence, task-detail resources, and manual attachment-path fallback.
+
+**Updated baseline:** V8 is now the latest directly recovered source baseline.
