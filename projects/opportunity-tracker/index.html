@@ -112,7 +112,7 @@ footer{margin-top:22px;color:var(--muted);font-size:.86rem}
   <div class="section-heading">
     <div>
       <h2 style="margin:0">Imported files</h2>
-      <p class="lead" style="margin:6px 0 0">Files accepted by this tool are listed here so you can see exactly what was imported. The original file is not uploaded to a server.</p>
+      <p class="lead" style="margin:6px 0 0">Files accepted by this tool are listed here so you can see exactly what was imported. The original file is not uploaded to a server. Expected JSON looks like <code>[{"title":"Example opportunity"}]</code>.</p>
     </div>
     <div class="file-actions">
       <button type="button" id="importBtn">Import JSON</button>
@@ -400,7 +400,12 @@ el("importInput").addEventListener("change",async e=>{
   showImportStatus("Importing "+file.name+"…",true,false);
   const previousItems=items.slice();
   try{
-    const parsed=JSON.parse(await file.text());
+    let parsed;
+    try{
+      parsed=JSON.parse(await file.text());
+    }catch(parseError){
+      throw new Error("the file is not valid JSON");
+    }
     const source=Array.isArray(parsed)?parsed:(parsed&&Array.isArray(parsed.opportunities)?parsed.opportunities:[parsed]);
     const cleaned=source.filter(x=>x && typeof x==="object" && (x.title||x.name||x.opportunity)).map(x=>({
       id:x.id||((crypto.randomUUID?crypto.randomUUID():String(Date.now()))+"-"+Math.random()),
@@ -413,7 +418,7 @@ el("importInput").addEventListener("change",async e=>{
       notes:String(x.notes||x.description||""),
       updatedAt:x.updatedAt||new Date().toISOString()
     }));
-    if(!cleaned.length) throw new Error("No opportunity records found");
+    if(!cleaned.length) throw new Error("the JSON is valid, but no opportunity records were found; each record needs a title, name, or opportunity field");
     if(cleaned.some(x=>x.url && !(x.url.toLowerCase().indexOf("http://")===0 || x.url.toLowerCase().indexOf("https://")===0))) throw new Error("One or more URLs are invalid");
     items=cleaned;
     if(!save()){
@@ -439,7 +444,7 @@ el("importInput").addEventListener("change",async e=>{
     renderImportedFiles();
     showImportStatus("✓ Accepted "+file.name+" — "+cleaned.length+" opportunit"+(cleaned.length===1?"y":"ies")+" imported.");
   }catch(err){
-    showImportStatus("Import failed. Choose a valid JSON file containing one or more opportunity records.",false);
+    showImportStatus("Import failed — "+(err?.message||"the file could not be imported")+".",false);
   }
   e.target.value="";
 });
