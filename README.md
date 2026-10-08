@@ -55,6 +55,8 @@ The project's identity is a cyber-tech comeback story:
 - .github/ISSUE_TEMPLATE/request.yml — public build-request form
 - .github/workflows/pages.yml — public-site deployment workflow
 - projects/task-manager/README.md — existing task-management project documentation
+- projects/task-manager/case-study.md — evidence-based public case study
+- projects/task-manager/technical-history.md — source-oriented V2→V8 technical history
 
 ## Important
 
