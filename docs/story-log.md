@@ -117,3 +117,10 @@ After realizing the Opportunity Tracker had briefly pulled attention away from t
 
 A useful reminder that keeping the project pointed at its real purpose sometimes matters more than adding another feature.
 
+
+## 2026-10-08 — 700+ miles away, still following along
+
+The first public story is already being read by Mom, more than 700 miles away. She is also enjoying the project conversations and watching the work take shape.
+
+That is a reminder that “public” does not have to mean anonymous strangers only. A public project can also let the people who care about you follow the journey from far away.
+
