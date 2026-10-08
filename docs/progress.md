@@ -43,3 +43,5 @@
 | 2026-10-08 | New build fix | Browser testing exposed that the Opportunity Tracker rejected shorthand URLs such as `www.google.com`; fixed input handling and normalization | Common web addresses can now be entered without adding the scheme manually | Continue testing the prototype through actual use and fix concrete friction points |
 
 | 2026-10-08 | New build fix | Extended Opportunity Tracker URL handling to accept bare domains such as `google.com` as well as `www.google.com` | Source links now match normal lazy human input and are normalized consistently | Continue testing through natural user behavior rather than requiring formal URL syntax |
+
+| 2026-10-08 | New build fix | Added visible import/export feedback to the Opportunity Tracker after browser testing showed that JSON import gave no confirmation | File operations now provide immediate status and record counts | Keep testing natural user flows and address concrete usability friction |
