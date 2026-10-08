@@ -48,6 +48,40 @@ That became another concrete product lesson:
 
 The tracker was updated to give successful saves a stronger visual confirmation.
 
+## Retroactive entries reconstructed from the project history — 2026-10-08
+
+Some earlier moments were important enough to preserve even though the story log did not exist yet. These are reconstructed from the surviving conversation/project context, not presented as a verbatim transcript.
+
+### “We thought the feature was finished. It wasn't.”
+
+The handoff said the Opportunity Tracker's import and save checkpoints were complete. A direct inspection of the actual source showed the page's JavaScript was not executing because of a malformed esc() function.
+
+The deployment validator had its own broken regular expression, so the safety check could fail for the wrong reason too.
+
+This became a very real example of the project's recurring pattern:
+
+**claim → inspect the actual thing → find the mismatch → fix it → verify again**
+
+### The wrong app got our attention first
+
+During the debugging process, an older standalone HTA Task Manager file was initially examined before the Opportunity Tracker was confirmed as the actual target for the import/save work.
+
+Useful lesson:
+
+> Before fixing the problem, make sure you're fixing the right thing.
+
+### “Why do the Import/Export buttons look like that?”
+
+After the functional fixes, the Import JSON and Export JSON controls were visually stranded in the upper-right corner.
+
+They were moved into the **Imported files** section so the controls sit next to the thing they actually manage.
+
+This was another reminder that a feature can be technically correct and still feel wrong when the interface does not communicate its purpose.
+
+### Story-log limitation
+
+Retroactive reconstruction can recover notable project moments, but it cannot guarantee that every earlier goofy question, joke, or small interaction is available. From this point forward, meaningful story moments should be captured as the work happens.
+
 ### Story principle
 
 Keep the mistakes.
