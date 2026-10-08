@@ -43,6 +43,20 @@ label{display:block;font-size:.86rem;font-weight:700;margin-bottom:6px}
 .status-error{border-color:#b44;background:var(--surface2)}
 .status-info{border-color:var(--line)}
 .status-text{margin:0;font-weight:700}
+.activity{margin-bottom:16px}
+.activity-main{margin:0;font-weight:800}
+.activity-meta{margin:4px 0 0;color:var(--muted);font-size:.9rem}
+.file-list{display:grid;gap:8px;margin-top:12px}
+.file-row{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+.file-name{font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.file-meta{color:var(--muted);font-size:.84rem;margin-top:3px}
+.saved-screen{display:none}
+.saved-screen.active{display:block}
+.saved-card{text-align:center;padding:34px 24px;margin-top:24px}
+.saved-icon{font-size:48px;line-height:1;margin-bottom:10px}
+.nav-actions{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin-top:18px}
+.nav-actions a,.nav-actions button{font:inherit}
+
 footer{margin-top:22px;color:var(--muted);font-size:.86rem}
 @media(max-width:850px){.grid{grid-template-columns:1fr}.toolbar{grid-template-columns:1fr 1fr}}
 @media(max-width:560px){.row,.toolbar{grid-template-columns:1fr}}
@@ -163,7 +177,16 @@ function load(){
     return Array.isArray(data)?data:[];
   }catch(e){ return []; }
 }
-function save(){ localStorage.setItem(KEY,JSON.stringify(items)); render(); renderImportedFiles(); }
+function save(){
+  try{
+    localStorage.setItem(KEY,JSON.stringify(items));
+    render();
+    renderImportedFiles();
+    return true;
+  }catch(e){
+    return false;
+  }
+}
 function loadImportedFiles(){
   try{
     const raw=localStorage.getItem(FILE_KEY);
@@ -172,7 +195,9 @@ function loadImportedFiles(){
   }catch(e){ return []; }
 }
 function esc(value){
-  return String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",""":"&quot;","'":"&#39;"}[ch]));
+  return String(value??"").replace(/[&<>"']/g,ch=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"
+  }[ch]));
 }
 function matches(x){
   const q=el("search").value.trim().toLowerCase();
@@ -302,12 +327,12 @@ function saveOpportunity(e){
     return false;
   }
   const url=normalizeUrl(el("url").value);
-  if(url && !/^https?:\/\//i.test(url)){
+  if(url && !/^https?:\\/\\//i.test(url)){
     setStatus("saveStatus","Please enter a web address such as google.com or https://example.com.","error","gitback2life-save-status");
     el("url").focus();
     return false;
   }
-  items.unshift({
+  const record={
     id:(crypto.randomUUID?crypto.randomUUID():String(Date.now())),
     title,
     type:el("type").value.trim(),
@@ -317,12 +342,17 @@ function saveOpportunity(e){
     url,
     notes:el("notes").value.trim(),
     updatedAt:now
-  });
-  const savedItem=items[0];
-  save();
+  };
+  const previous=items.slice();
+  items.unshift(record);
+  if(!save()){
+    items=previous;
+    setStatus("saveStatus","The opportunity could not be saved to browser storage. Nothing was marked as saved.","error","gitback2life-save-status");
+    return false;
+  }
   resetForm();
   setStatus("saveStatus","✓ Opportunity saved successfully.","ok","gitback2life-save-status");
-  showSavedScreen(savedItem);
+  showSavedScreen(record);
   return false;
 }
 el("form").addEventListener("submit",saveOpportunity);
@@ -359,29 +389,48 @@ function showImportStatus(message, ok=true, persist=true){
 el("importInput").addEventListener("change",async e=>{
   const file=e.target.files?.[0]; if(!file) return;
   showImportStatus("Importing "+file.name+"…",true,false);
+  const previousItems=items.slice();
   try{
     const parsed=JSON.parse(await file.text());
-    if(!Array.isArray(parsed)) throw new Error("Expected an array");
-    const cleaned=parsed.filter(x=>x&&x.title).map(x=>({
-      id:x.id||crypto.randomUUID(), title:String(x.title).slice(0,120),
-      type:String(x.type||""), status:String(x.status||"Researching"),
-      risk:String(x.risk||"Unknown"), deadline:String(x.deadline||""),
-      url:String(x.url||""), notes:String(x.notes||""),
+    const source=Array.isArray(parsed)?parsed:(parsed&&Array.isArray(parsed.opportunities)?parsed.opportunities:[parsed]);
+    const cleaned=source.filter(x=>x && typeof x==="object" && (x.title||x.name||x.opportunity)).map(x=>({
+      id:x.id||((crypto.randomUUID?crypto.randomUUID():String(Date.now()))+"-"+Math.random()),
+      title:String(x.title||x.name||x.opportunity).slice(0,120),
+      type:String(x.type||""),
+      status:["Researching","Ready","Applied","Waiting","Closed"].includes(String(x.status))?String(x.status):"Researching",
+      risk:["Unknown","Low","Medium","High","Avoid"].includes(String(x.risk))?String(x.risk):"Unknown",
+      deadline:String(x.deadline||""),
+      url:normalizeUrl(String(x.url||x.link||"")),
+      notes:String(x.notes||x.description||""),
       updatedAt:x.updatedAt||new Date().toISOString()
     }));
-    items=cleaned; save();
-    importedFiles.unshift({
+    if(!cleaned.length) throw new Error("No opportunity records found");
+    if(cleaned.some(x=>x.url && !/^https?:\\/\\//i.test(x.url))) throw new Error("One or more URLs are invalid");
+    items=cleaned;
+    if(!save()){
+      items=previousItems;
+      throw new Error("Browser storage could not save the imported opportunities");
+    }
+    const acceptedFile={
       id:(crypto.randomUUID?crypto.randomUUID():String(Date.now())),
       name:file.name,
       size:file.size||0,
       records:cleaned.length,
       importedAt:new Date().toISOString()
-    });
-    localStorage.setItem(FILE_KEY,JSON.stringify(importedFiles));
+    };
+    importedFiles.unshift(acceptedFile);
+    try{
+      localStorage.setItem(FILE_KEY,JSON.stringify(importedFiles));
+    }catch(storageError){
+      importedFiles.shift();
+      items=previousItems;
+      save();
+      throw new Error("Browser storage could not save the import record");
+    }
     renderImportedFiles();
     showImportStatus("✓ Accepted "+file.name+" — "+cleaned.length+" opportunit"+(cleaned.length===1?"y":"ies")+" imported.");
   }catch(err){
-    showImportStatus("Import failed. The file must be a JSON export from this tool.",false);
+    showImportStatus("Import failed. Choose a valid JSON file containing one or more opportunity records.",false);
   }
   e.target.value="";
 });
