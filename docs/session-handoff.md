@@ -990,6 +990,10 @@ The story can later be republished or adapted for one carefully chosen external 
 The story file is committed and the Pages workflow includes it in the public site artifact. The follow-up GitHub Pages deployment completed successfully on 2026-10-08, including checkout, Pages configuration, Opportunity Tracker JavaScript validation, public artifact preparation, artifact upload, and Pages deployment. The story is therefore part of the deployed public site at the expected story URL: `https://gitback2life-art.github.io/gitback2life/story.html`.
 
 
+## 52. First external article published — 2026-10-08
+
+The first gitback2life story is now published on Hashnode. Its exact public URL is recorded in `docs/story-log.md`. GitHub Pages remains the home-base site; Hashnode is the first external writing outlet. Keep distribution focused rather than creating many accounts at once.
+
 ---
 
 Last updated: 2026-10-08
