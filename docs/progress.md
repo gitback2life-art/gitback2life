@@ -47,3 +47,5 @@
 | 2026-10-08 | New build fix | Added visible import/export feedback to the Opportunity Tracker after browser testing showed that JSON import gave no confirmation | File operations now provide immediate status and record counts | Keep testing natural user flows and address concrete usability friction |
 
 | 2026-10-08 | New build fix | Hardened Opportunity Tracker save/import behavior after testing exposed apparent page refreshes with no completion notice | Save now explicitly prevents default submission, shows success/validation feedback, persists status across reloads, and deployment syntax-checks the embedded JavaScript | Re-test save and JSON import after the updated Pages deployment |
+
+| 2026-10-08 | New build UX fix | Reworked Opportunity Tracker file feedback after testing showed transient notices were insufficient | Accepted JSON files are now listed persistently with filename, record count, size, timestamp, and Accepted state; last-action feedback is persistent too | Re-test with a real JSON file and page refresh to confirm the visible acceptance record |
