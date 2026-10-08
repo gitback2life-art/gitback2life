@@ -5,7 +5,7 @@ Last reviewed: 2026-10-08
 | Platform | Intended use | Cost | Current status | Notes |
 |---|---|---:|---|---|
 | GitHub | Source code + public project history | Free tier | Ready | Public repository: gitback2life-art/gitback2life |
-| GitHub Pages | Primary static project site | Available with eligible public GitHub Free repositories | Configured in repository | Deployment workflow is present. Verify the live Pages URL/status in repository settings before treating it as published. |
+| GitHub Pages | Primary static project site | Available with eligible public GitHub Free repositories | Needs one-time manual Pages source setup | Workflow is prepared for GitHub Actions; repository Settings → Pages → Build and deployment → Source must be set to GitHub Actions before the first manual deployment. |
 | Cloudflare Pages | Alternative static hosting | Free plan | Backup | Candidate for a later second deployment path. |
 | Hashnode | Developer writing / build journal | Free account | Candidate | Re-check current terms, publishing rules, and account requirements immediately before use. |
 | Codeberg | Libre-code mirror / secondary project home | Free account | Candidate | Re-check current documentation and licensing requirements immediately before use. |
