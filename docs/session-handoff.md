@@ -570,3 +570,37 @@ The chronology is now internally reviewed against the evidence currently availab
 
 ### Next gate
 The next substantive step is **operator review of the historical reconstruction**. After that review, the project can derive the technical history and eventual public task-manager case study. Do not treat the current chronology as final public copy yet.
+
+
+## 30. Case-study phase started — 2026-10-08
+
+The operator reviewed the historical reconstruction and approved it.
+
+### Completed
+- Historical chronology reviewed and accepted.
+- No further broad runtime/archaeology work is required for the case-study goal.
+- Created `projects/task-manager/technical-history.md` as the source-oriented technical record.
+- Created `projects/task-manager/case-study.md` as the public-facing historical case study.
+- Updated `projects/task-manager/README.md` to summarize the recovered V2→V8 history and link the documentation.
+- Linked the task-manager case study from the public repository README.
+- Linked the case study from the public website's task-manager section.
+
+### Scope decision
+Do **not** turn the old application into a full QA/resurrection project merely to improve the case study.
+
+Runtime testing is now an optional enhancement, not a required next phase. The case study should remain honest about the runtime behaviors that are still unknown.
+
+### Current public-documentation boundary
+The task-manager history is now ready to be presented as an evidence-based story. Screenshots, a verified live/demo experience, and a complete public source presentation remain optional enhancements and are the reason Issue #2 remains open.
+
+### Narrative rule
+Keep the core story centered on:
+
+**ATTEMPT → PROBLEM → INVESTIGATION → CORRECTION → RESULT → LESSON**
+
+The central lesson remains:
+
+> **AI can accelerate building, but it cannot replace verification.**
+
+### Next phase
+Move to the broader gitback2life roadmap rather than continuing technical archaeology. The task-manager case study can be refined later when genuinely useful runtime evidence or additional historical material becomes available.
