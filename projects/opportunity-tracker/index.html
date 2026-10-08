@@ -327,7 +327,7 @@ function saveOpportunity(e){
     return false;
   }
   const url=normalizeUrl(el("url").value);
-  if(url && !/^https?:\\/\\//i.test(url)){
+  if(url && !(url.toLowerCase().indexOf("http://")===0 || url.toLowerCase().indexOf("https://")===0)){
     setStatus("saveStatus","Please enter a web address such as google.com or https://example.com.","error","gitback2life-save-status");
     el("url").focus();
     return false;
@@ -405,7 +405,7 @@ el("importInput").addEventListener("change",async e=>{
       updatedAt:x.updatedAt||new Date().toISOString()
     }));
     if(!cleaned.length) throw new Error("No opportunity records found");
-    if(cleaned.some(x=>x.url && !/^https?:\\/\\//i.test(x.url))) throw new Error("One or more URLs are invalid");
+    if(cleaned.some(x=>x.url && !(x.url.toLowerCase().indexOf("http://")===0 || x.url.toLowerCase().indexOf("https://")===0))) throw new Error("One or more URLs are invalid");
     items=cleaned;
     if(!save()){
       items=previousItems;
