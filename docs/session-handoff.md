@@ -604,3 +604,24 @@ The central lesson remains:
 
 ### Next phase
 Move to the broader gitback2life roadmap rather than continuing technical archaeology. The task-manager case study can be refined later when genuinely useful runtime evidence or additional historical material becomes available.
+
+
+## 31. First external-platform preparation — 2026-10-08
+
+The next phase has moved from historical case-study work toward a deliberately small public-platform test.
+
+### Completed
+- Created `docs/platform-profile-kit.md` with reusable pseudonymous profile copy based on the approved brand guide and social bios.
+- Researched Hashnode's current official terms, Code of Conduct, and privacy policy.
+- Determined that Hashnode is a strong first developer-writing candidate because it is explicitly developer-focused and supports free blogging; current rules place responsibility for reviewing AI-assisted content on the author. citeturn861629search0turn861629search1
+- Recorded the Hashnode research separately in `research/2026-10-08-hashnode-fit.md`.
+- Drafted a first developer-platform post in `projects/task-manager/hashnode-first-post.md`.
+
+### Scope decision
+Do not create multiple external accounts or start a broad social campaign yet.
+
+Test one platform with one useful technical post first. Measure whether it provides a clear benefit before expanding.
+
+### Current next gate
+Creating the first external platform account is now a user-controlled action. No external account has been created or modified by this session.
+
