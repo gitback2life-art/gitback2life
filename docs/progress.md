@@ -35,3 +35,5 @@
 | 2026-10-08 | Support milestone | Re-verified current OpenAI gift-card/gifting-credit mechanisms and current r/Assistance request rules; updated support draft | Official support routes are current, but r/Assistance requires eligibility before posting; no public request posted | Build genuine public record and revisit support when a suitable eligible route exists |
 
 | 2026-10-08 | Task-manager case study | Closed Issue #2 after completing the evidence-based V2→V8 documentation baseline and explicitly moving screenshots/live runtime verification into optional future enhancements | First case-study milestone is complete without reopening the broad Windows QA effort | Continue the public rebuild/build loop with the next useful project step |
+
+| 2026-10-08 | Public site | Added an evidence-based Build Log section and replaced the unsupported 18% progress bar with concrete milestone cards | Public status is clearer and avoids false precision | Use the public build log for future dated milestones and continue into useful new builds |
