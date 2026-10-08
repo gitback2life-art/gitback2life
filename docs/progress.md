@@ -15,3 +15,6 @@
 | Date | Area | What happened | Result | Next step |
 |---|---|---|---|---|
 | | Rebuild / Learn / Build / Independence | | | |
+
+
+| 2026-10-08 | Historical reconstruction | Created `docs/task-manager-historical-chronology.md` from the recovered V2→V8 source, handoffs, build notes, and timestamp evidence | First consolidated evidence-labeled chronology exists; runtime boundaries remain explicit | Review chronology and investigate only specific unresolved AI/problem incidents |
