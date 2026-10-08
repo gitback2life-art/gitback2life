@@ -6,7 +6,7 @@
 
 ![gitback2life](assets/gitback2life-mark.svg)
 
-gitback2life is a pseudonymous personal rebuilding project documenting the process of moving from a long period of disability toward greater independence using AI, learning, software development, and practical problem-solving.
+gitback2life is a pseudonymous personal rebuilding project documenting the process of moving from a long interruption toward greater independence using AI, learning, software development, and practical problem-solving.
 
 ## The visual idea
 
@@ -42,27 +42,30 @@ The project's identity is a cyber-tech comeback story:
 - docs/project-outline.md — master project plan
 - docs/brand-guide.md — visual and voice standards
 - docs/social-bios.md — platform-ready bios
-- docs/privacy.md — privacy checklist
+- docs/privacy.md — privacy and public-repository rules
 - docs/scam-checklist.md — opportunity/support scam screening
 - docs/platform-matrix.md — researched platform notes
 - docs/progress.md — ongoing progress log
-- docs/support-request.md — draft support request
+- docs/support-request.md — public support-request draft
 - docs/website-roadmap.md — site evolution plan
 - docs/session-handoff.md — canonical session context and research-separation guide
+- docs/research-session-starter.md — reusable research-session workflow
 - docs/ideas-and-requests.md — public suggestion and build-request process
 - .github/ISSUE_TEMPLATE/idea.yml — public idea form
 - .github/ISSUE_TEMPLATE/request.yml — public build-request form
+- .github/workflows/pages.yml — public-site deployment workflow
 - projects/task-manager/README.md — existing task-management project documentation
 
 ## Important
 
-This repository is intended to remain truthful and pseudonymous. Do not commit secrets, personal contact information, API keys, passwords, payment information, government documents, or private medical records.
+This repository is intentionally public. Treat anything committed here as potentially visible to anyone and preserved in Git history.
+
+Do not commit secrets, personal contact information, private account information, API keys, passwords, payment information, government documents, private medical records, private research, or other sensitive material.
 
 Platform policies and OpenAI support methods can change. Re-check official rules before publishing a request or initiating a transaction.
 
-
 ## Help shape what gets built
 
-The public website now includes structured GitHub issue forms for **ideas** and **build requests**. Useful community suggestions can become future experiments, software builds, learning exercises, or case studies.
+The public website includes structured GitHub issue forms for **ideas** and **build requests**. Useful community suggestions can become future experiments, software builds, learning exercises, or case studies.
 
 Public submissions should never include private or identifying information.
