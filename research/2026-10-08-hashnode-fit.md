@@ -1,45 +1,51 @@
-# Hashnode Platform Fit — 2026-10-08
+# Developer-Platform Fit Review — 2026-10-08
 
 ## Purpose
 
-Evaluate one developer-writing platform before creating any external account.
+Evaluate a single developer-writing platform without creating external accounts prematurely or weakening the project's pseudonymous privacy rules.
 
-## Finding
+## Hashnode
 
-Hashnode is a strong first candidate because its current official materials describe it as a blogging platform for developers and engineering teams and advertise free blogging. Its current Code of Conduct specifically addresses AI-assisted publishing, stating that authors are responsible for AI-assisted content. Its current Terms also require users to review and approve AI-generated suggestions before publishing. citeturn861629search0turn861629search1
+Hashnode is a strong content fit: its official site describes it as a blogging platform for developers and offers free blogging. Its current Code of Conduct and Terms explicitly address AI-assisted content and require authors to review AI-generated suggestions before publishing. citeturn846840search6turn846840search5turn846840search1
 
-## Fit for gitback2life
+However, Hashnode's current signup documentation asks users to complete a profile with a **Full name**, and its privacy policy states that account information includes a name, email address, username, and profile photo. citeturn846840search3turn846840search0
 
-Hashnode fits the project's next phase because the strongest material already available is technical process documentation:
+**Conclusion:** good technical-content fit, but not currently cleared for the project's strict pseudonymous-account model.
 
-- AI-assisted software development
-- debugging and lessons learned
-- Windows/HTA engineering
-- source-based historical reconstruction
-- real project progress
+## DEV Community
 
-The platform therefore offers a clearer purpose than creating several social accounts at once.
+DEV is also an excellent content/community fit. Its current help documentation says anyone can sign up regardless of development experience, with email or supported OAuth options, and its community is explicitly centered on software development. citeturn203741search0turn203741search14
 
-## Privacy considerations
+However, DEV's current privacy policy states that it collects a user's **name and email address** when creating a DEV Community account. citeturn203741search4
 
-Hashnode's current privacy policy says account creation collects a name, email address, username, and profile photo, with optional profile fields including location and social links. That means the project should use the dedicated pseudonymous project identity and avoid optional identifying fields rather than filling them automatically. citeturn861629search5
+**Conclusion:** strong technical-community fit, but the current privacy documentation does not clear it for the project's strict pseudonymous-account model.
 
-## Account decision
+## Codeberg
 
-**Recommended next external-platform test: Hashnode.**
+Codeberg is less useful as a writing/community platform but is more naturally aligned with the project's public-code goals.
 
-This is a recommendation, not yet an operator-approved account-creation decision.
+Its current registration documentation says account creation requires a **username and email address**, followed by email confirmation. citeturn188692search1
 
-No account should be created until the operator is ready to make the project identity external.
+Codeberg also supports public repositories and explicitly documents profile-visibility controls. citeturn188692search0turn188692search8
 
-## First content
+**Conclusion:** Codeberg is a better privacy-compatible candidate for a future secondary code home than Hashnode or DEV are for a public writing account.
 
-The first post should not be a support request. It should be a useful technical story demonstrating the project's actual work and the lesson that AI assistance still requires verification.
+## Decision
 
-A natural first topic is the task-manager case study, especially the V7 navigation bug and V8 Windows 11 drag/drop investigation.
+Do **not** create a Hashnode or DEV account yet.
 
-## Sources
+The project should not weaken its established privacy model merely to gain another platform.
 
-- Hashnode Code of Conduct: https://hashnode.com/code-of-conduct
-- Hashnode Terms of Use: https://hashnode.com/terms
-- Hashnode Privacy Policy: https://hashnode.com/privacy-policy
+The current best path is:
+
+**GitHub + GitHub Pages as the primary public home → add another platform only when the platform's current rules and privacy requirements clearly fit the project.**
+
+Codeberg can be evaluated later as a secondary code home. Hashnode or DEV can be reconsidered only if their account identity requirements are compatible with the project's privacy model.
+
+## First article
+
+The prepared technical post remains useful and can be published later on a suitable developer-writing platform:
+
+`projects/task-manager/hashnode-first-post.md`
+
+No external account creation is required to keep developing the project.
