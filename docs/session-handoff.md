@@ -497,3 +497,22 @@ Start the next session by reading this handoff first. Treat the repository as pu
 
 ### Next action
 Obtain/inspect the actual task-management application or its source/screenshots, then complete the first full case study from evidence.
+
+## 27. Task-manager source-material checkpoint — 2026-10-08
+
+### New context
+The existing task-management application was built on the operator's main account, not originally inside the gitback2life repository. The operator has the raw application files plus surviving project handoffs and chat archives from that work.
+
+Some middle sections of the original task-manager project handoffs and some app-version material were deleted before it was known that they might be useful for future documentation. Those missing sections must be treated as unavailable rather than reconstructed from assumption.
+
+### Documentation rule
+When the task-manager case study is resumed:
+- use the surviving raw application files as the primary evidence for actual implementation and features;
+- use surviving handoffs to reconstruct project history, decisions, problems, and lessons where supported;
+- use chat archives only when needed to resolve gaps or explain development history;
+- clearly distinguish verified facts from reconstructed/uncertain history;
+- never invent missing features, architecture, screenshots, versions, dates, or results;
+- keep the main-account identity and unrelated private conversation content out of the public gitback2life repository.
+
+### Current status
+Issue #2 remains open. The next session intended to document the task manager can receive the surviving source material, inspect it, and build the public case study from evidence. Missing historical material should be acknowledged where it affects certainty.
