@@ -547,3 +547,26 @@ The next historical task is to identify additional evidence-backed AI/problem in
 3. Upgrade or downgrade individual evidence labels only when new evidence warrants it.
 4. After historical review, derive the technical history and public case study.
 
+
+## 29. Historical chronology review checkpoint — 2026-10-08
+
+The first targeted historical review is complete.
+
+### Review performed
+- Searched the current public repository for additional evidence-backed AI/problem incidents involving V7 navigation, V8 drag/drop, Windows 11 drag/drop, build notes, and related terminology.
+- No additional surviving incident material was found beyond the already recovered V7 and V8 evidence.
+- Reviewed the chronology's dating model and evidence boundaries.
+
+### Evidence decisions
+- The V7 navigation incident remains **VERIFIED** from the surviving V7 source/build evidence.
+- The V8 drag/drop **source correction** remains **VERIFIED** from direct V7→V8 source comparison.
+- The V8 Windows 11 **incident report** is treated as **SUPPORTED** from surviving historical notes.
+- The reported automated-check result remains **SUPPORTED** because it comes from historical notes rather than a fresh execution in this reconstruction.
+- Final native Explorer drag/drop success remains **UNKNOWN**.
+- V6 persistence/reliability changes remain documented implementation evidence; no unsupported claim that AI caused those problems has been added.
+
+### Current historical status
+The chronology is now internally reviewed against the evidence currently available in the repository. No further broad repository search is warranted unless new evidence appears.
+
+### Next gate
+The next substantive step is **operator review of the historical reconstruction**. After that review, the project can derive the technical history and eventual public task-manager case study. Do not treat the current chronology as final public copy yet.
