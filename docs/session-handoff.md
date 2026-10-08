@@ -376,7 +376,31 @@ Anything that should be checked before publishing.
 > gitback2life is a truthful, pseudonymous public rebuilding project using AI, learning, and software development to move toward independence; help continue the work without inventing facts, exposing private identity, or allowing temporary research to become project policy without an explicit decision.
 
 
-## 21. Session record — 2026-10-08
+## 21. Public repository safety update — 2026-10-08
+
+This session established and applied a stronger public/private boundary for the repository.
+
+### Completed
+- Confirmed the main repository remains intentionally public.
+- Strengthened `docs/privacy.md` with explicit public-repository rules and a rule that anything committed should be assumed visible and preserved in public history.
+- Expanded `.gitignore` to exclude private/local working directories and local/private data patterns.
+- Sanitized `docs/story.md` so the public story preserves the truthful rebuilding narrative without unnecessary sensitive personal-history detail.
+- Sanitized `docs/support-request.md` so it remains a public draft without committing private payment, account, redemption, or contact information.
+- Hardened `docs/research-session-starter.md` so research sessions explicitly distinguish public from private research and must apply public-repository privacy rules before making changes.
+- Confirmed the repository currently contains no obvious matches for the searched sensitive terms in the current searchable files.
+
+### Operating rule
+The GitHub repository is the public project. Detailed private research, personal records, account information, unpublished operational notes, credentials, and other sensitive material belong in a private workspace or private repository.
+
+Research is not automatically public. Only deliberately selected, sanitized research should be added to this public repository.
+
+### Remaining security work
+- Review Git history separately for any previously exposed sensitive information; removing a file from the current tree does not erase historical commits.
+- Verify GitHub security features such as secret scanning/push protection, Dependabot, and appropriate code scanning in repository settings when those controls are available.
+
+---
+
+## 22. Session record — 2026-10-08
 
 This session clarified how future sessions should maintain project context and research separately.
 
