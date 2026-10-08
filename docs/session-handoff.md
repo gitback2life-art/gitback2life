@@ -715,3 +715,35 @@ When the operator begins creating a separate app/program intended for sale or ot
 
 ### Codeberg implication
 The licensing gate for considering a Codeberg secondary code home is now cleared for the current repository. Codeberg remains optional; GitHub stays the primary public home until the operator decides a second code home is worth the maintenance.
+
+
+## 36. Open-source and Codeberg status — 2026-10-08
+
+### Approved licensing policy
+The operator explicitly approved a **full free/open-source model for the current gitback2life repository**.
+
+- **Software/code:** MIT License in `LICENSE.txt`
+- **Documentation:** CC BY 4.0 in `DOCS-LICENSE.md`, unless a file states otherwise
+- **Project branding:** gitback2life name, logo, and visual identity remain reserved under `BRANDING.md`
+
+This policy applies to the current gitback2life repository. A future app/program intended for sale or proprietary use will receive its own licensing decision when that project actually exists.
+
+### Codeberg status
+The licensing prerequisite for a possible Codeberg repository is now satisfied.
+
+Codeberg remains **optional and not yet adopted**. Its potential role is a secondary public code home / independence backup, not a replacement for GitHub and not another social-media account.
+
+Do not create a Codeberg mirror merely because the licensing requirement is satisfied. Revisit the option only when the resilience, discovery, or community benefit is worth the additional maintenance.
+
+### Current primary home
+- GitHub: primary public repository and project history
+- GitHub Pages: primary public website
+- Codeberg: candidate secondary code home, not adopted
+
+### Documentation created
+- `research/2026-10-08-codeberg-fit.md` — Codeberg evaluation
+- `docs/platform-profile-kit.md` — reusable public profile copy
+- `projects/task-manager/hashnode-first-post.md` — reusable technical post draft
+
+### Current direction
+Do not reopen the licensing question unless the project creates a separate commercial/proprietary application. Do not create multiple external accounts without a specific purpose and current policy/privacy review.
