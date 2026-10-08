@@ -39,6 +39,10 @@ textarea{min-height:100px;resize:vertical}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 label{display:block;font-size:.86rem;font-weight:700;margin-bottom:6px}
 .empty{color:var(--muted);padding:28px;text-align:center;border:1px dashed var(--line);border-radius:14px}
+.status-ok{border-color:var(--line)}
+.status-error{border-color:#b44;background:var(--surface2)}
+.status-info{border-color:var(--line)}
+.status-text{margin:0;font-weight:700}
 footer{margin-top:22px;color:var(--muted);font-size:.86rem}
 @media(max-width:850px){.grid{grid-template-columns:1fr}.toolbar{grid-template-columns:1fr 1fr}}
 @media(max-width:560px){.row,.toolbar{grid-template-columns:1fr}}
@@ -100,8 +104,9 @@ footer{margin-top:22px;color:var(--muted);font-size:.86rem}
       </div>
       <label>Source URL<input id="url" type="text" inputmode="url" placeholder="google.com, www.google.com, or https://example.com"></label>
       <label>Evidence / notes<textarea id="notes" placeholder="What does the source actually say? What requirements or warning signs did you verify?"></textarea></label>
-      <button class="primary" type="submit">Save opportunity</button>
+      <button class="primary" type="submit" id="saveBtn">Save opportunity</button>
     </form>
+    <div id="saveStatus" class="card status-info" style="display:none;margin-top:12px;padding:12px" role="status" aria-live="polite"><p class="status-text"></p></div>
     <p class="warn">Safety rule: never store passwords, payment-card data, government identifiers, or other sensitive personal information here.</p>
   </section>
 
@@ -175,6 +180,26 @@ function render(){
   }).join("");
 }
 function resetForm(){ el("form").reset(); }
+function setStatus(id,message,type="info",persistKey=""){
+  const box=el(id);
+  if(!box) return;
+  box.style.display="block";
+  box.className="card status-"+type;
+  const p=box.querySelector(".status-text");
+  if(p) p.textContent=message; else box.textContent=message;
+  if(persistKey) sessionStorage.setItem(persistKey,JSON.stringify({message,type}));
+}
+function restoreStatus(){
+  [["saveStatus","gitback2life-save-status"],["importStatus","gitback2life-import-status"]].forEach(([id,key])=>{
+    try{
+      const saved=sessionStorage.getItem(key);
+      if(!saved) return;
+      const data=JSON.parse(saved);
+      setStatus(id,data.message,data.type);
+      sessionStorage.removeItem(key);
+    }catch(err){}
+  });
+}
 function normalizeUrl(value){
   const raw=String(value||"").trim();
   if(!raw) return "";
@@ -183,17 +208,24 @@ function normalizeUrl(value){
   if(/^[^\s/]+\.[^\s/]+$/i.test(raw)) return "https://"+raw;
   return raw;
 }
-el("form").addEventListener("submit",e=>{
-  e.preventDefault();
+function saveOpportunity(e){
+  if(e && typeof e.preventDefault==="function") e.preventDefault();
   const now=new Date().toISOString();
+  const title=el("title").value.trim();
+  if(!title){
+    setStatus("saveStatus","Please enter a title before saving.","error","gitback2life-save-status");
+    el("title").focus();
+    return false;
+  }
   const url=normalizeUrl(el("url").value);
   if(url && !/^https?:\/\//i.test(url)){
-    alert("Please enter a web address such as www.google.com or https://example.com.");
-    return;
+    setStatus("saveStatus","Please enter a web address such as google.com or https://example.com.","error","gitback2life-save-status");
+    el("url").focus();
+    return false;
   }
   items.unshift({
-    id:crypto.randomUUID(),
-    title:el("title").value.trim(),
+    id:(crypto.randomUUID?crypto.randomUUID():String(Date.now())),
+    title,
     type:el("type").value.trim(),
     status:el("status").value,
     risk:el("risk").value,
@@ -202,8 +234,13 @@ el("form").addEventListener("submit",e=>{
     notes:el("notes").value.trim(),
     updatedAt:now
   });
-  save(); resetForm();
-});
+  save();
+  resetForm();
+  setStatus("saveStatus","✓ Opportunity saved successfully.","ok","gitback2life-save-status");
+  el("title").focus();
+  return false;
+}
+el("form").addEventListener("submit",saveOpportunity);
 el("list").addEventListener("click",e=>{
   const edit=e.target.closest("[data-edit]");
   const del=e.target.closest("[data-delete]");
@@ -231,15 +268,12 @@ el("exportBtn").addEventListener("click",()=>{
   URL.revokeObjectURL(a.href);
   showImportStatus("✓ Exported "+items.length+" opportunit"+(items.length===1?"y":"ies")+" to "+fileName+".");
 });
-function showImportStatus(message, ok=true){
-  const box=el("importStatus");
-  box.style.display="block";
-  box.textContent=message;
-  box.setAttribute("data-ok",ok?"true":"false");
+function showImportStatus(message, ok=true, persist=true){
+  setStatus("importStatus",message,ok?"ok":"error",persist?"gitback2life-import-status":"");
 }
 el("importInput").addEventListener("change",async e=>{
   const file=e.target.files?.[0]; if(!file) return;
-  showImportStatus("Importing "+file.name+"…");
+  showImportStatus("Importing "+file.name+"…",true,false);
   try{
     const parsed=JSON.parse(await file.text());
     if(!Array.isArray(parsed)) throw new Error("Expected an array");
@@ -257,6 +291,7 @@ el("importInput").addEventListener("change",async e=>{
   }
   e.target.value="";
 });
+restoreStatus();
 render();
 </script>
 </body>
