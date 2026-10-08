@@ -106,6 +106,7 @@ footer{margin-top:22px;color:var(--muted);font-size:.86rem}
   </section>
 
   <section>
+    <div id="importStatus" class="card" style="margin-bottom:12px;display:none" role="status" aria-live="polite"></div>
     <div id="list" class="list"></div>
   </section>
 </div>
@@ -221,15 +222,24 @@ el("clearFilters").addEventListener("click",()=>{
   el("search").value=""; el("statusFilter").value=""; el("riskFilter").value=""; el("sort").value="deadline"; render();
 });
 el("exportBtn").addEventListener("click",()=>{
+  const fileName="gitback2life-opportunities.json";
   const blob=new Blob([JSON.stringify(items,null,2)],{type:"application/json"});
   const a=document.createElement("a");
   a.href=URL.createObjectURL(blob);
-  a.download="gitback2life-opportunities.json";
+  a.download=fileName;
   a.click();
   URL.revokeObjectURL(a.href);
+  showImportStatus("✓ Exported "+items.length+" opportunit"+(items.length===1?"y":"ies")+" to "+fileName+".");
 });
+function showImportStatus(message, ok=true){
+  const box=el("importStatus");
+  box.style.display="block";
+  box.textContent=message;
+  box.setAttribute("data-ok",ok?"true":"false");
+}
 el("importInput").addEventListener("change",async e=>{
   const file=e.target.files?.[0]; if(!file) return;
+  showImportStatus("Importing "+file.name+"…");
   try{
     const parsed=JSON.parse(await file.text());
     if(!Array.isArray(parsed)) throw new Error("Expected an array");
@@ -241,7 +251,10 @@ el("importInput").addEventListener("change",async e=>{
       updatedAt:x.updatedAt||new Date().toISOString()
     }));
     items=cleaned; save();
-  }catch(err){ alert("Import failed. Please use a JSON export from this tool."); }
+    showImportStatus("✓ Imported "+cleaned.length+" opportunit"+(cleaned.length===1?"y":"ies")+" from "+file.name+".");
+  }catch(err){
+    showImportStatus("Import failed. The file must be a JSON export from this tool.",false);
+  }
   e.target.value="";
 });
 render();
