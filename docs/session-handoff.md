@@ -810,3 +810,20 @@ The public site now presents concrete milestones instead of an arbitrary overall
 
 ### Durable context
 Do not invent a project-wide completion percentage unless a defensible measurement model is created first. Prefer dated milestones and evidence links.
+
+## 41. Session checkpoint — 2026-10-08
+
+### Completed since the previous checkpoint
+- Closed the first task-manager case-study milestone after completing the evidence-based V2→V8 reconstruction.
+- Reclassified Windows/MSHTML runtime verification, screenshots, hosted demo work, and expanded source presentation as optional enhancements rather than blockers.
+- Updated the website to replace an unsupported overall progress percentage with concrete evidence-based milestones and a public Build Log.
+- Removed the retired progress-bar styling so source and visible behavior agree.
+
+### Current project state
+The public foundation is established: identity, privacy boundary, open-source policy, documentation baseline, GitHub Pages site, first software case study, and support research are all recorded.
+
+### Next-phase principle
+The highest-value next step is no longer more setup. Prefer a small, useful, $0-upfront-cost build or learning experiment that can produce a real artifact and create a path toward legitimate opportunity.
+
+### Guardrail
+Do not reopen completed historical reconstruction, broad Windows QA, platform proliferation, or support posting unless new evidence or a concrete dependency makes it useful.
