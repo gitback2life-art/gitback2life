@@ -987,7 +987,7 @@ The project now has three layers:
 The story can later be republished or adapted for one carefully chosen external writing platform. Do not create multiple accounts merely for distribution.
 
 ### Runtime / deployment status
-The story file is committed and the Pages workflow has been updated to include it in the public site artifact. The latest deployment triggered by the homepage link change was queued at the time of this update; verify the final workflow result before claiming the live story URL has been deployed.
+The story file is committed and the Pages workflow includes it in the public site artifact. The follow-up GitHub Pages deployment completed successfully on 2026-10-08, including checkout, Pages configuration, Opportunity Tracker JavaScript validation, public artifact preparation, artifact upload, and Pages deployment. The story is therefore part of the deployed public site at the expected story URL: `https://gitback2life-art.github.io/gitback2life/story.html`.
 
 
 ---
