@@ -5,7 +5,7 @@ Last reviewed: 2026-10-08
 | Platform | Intended use | Cost | Current status | Notes |
 |---|---|---:|---|---|
 | GitHub | Source code + public project history | Free tier | Ready | Public repository: gitback2life-art/gitback2life |
-| GitHub Pages | Primary static project site | Available with eligible public GitHub Free repositories | Needs one-time manual Pages source setup | Workflow is prepared for GitHub Actions; repository Settings → Pages → Build and deployment → Source must be set to GitHub Actions before the first manual deployment. |
+| GitHub Pages | Primary static project site | Available with eligible public GitHub Free repositories | Live | Automatic GitHub Actions deployment is working. Live site: https://gitback2life-art.github.io/gitback2life/ |
 | Cloudflare Pages | Alternative static hosting | Free plan | Backup | Candidate for a later second deployment path. |
 | Hashnode | Developer writing / build journal | Free account | Candidate | Re-check current terms, publishing rules, and account requirements immediately before use. |
 | Codeberg | Secondary public code home / independence backup | Free account | Candidate — not adopted | Community-driven nonprofit software forge built on Forgejo. Strong values/privacy fit. The current repository is now MIT-licensed for software and CC BY 4.0 for documentation, so the licensing prerequisite for a possible mirror is satisfied. A mirror is still optional and should be added only if its resilience/discovery value justifies the maintenance. |
@@ -61,3 +61,11 @@ This is now a deliberate decision point before any Codeberg mirror is created. G
 A new GitHub issue tracks the decision: **#10 — Decide public code licensing**.
 
 No license change has been made.
+
+## GitHub Pages live-site verification
+
+On 2026-10-08, the latest successful **Deploy gitback2life site** workflow completed and its deployment logs explicitly reported the Pages environment URL:
+
+https://gitback2life-art.github.io/gitback2life/
+
+This is now the recorded live site URL.
