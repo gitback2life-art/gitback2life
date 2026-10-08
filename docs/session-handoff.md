@@ -451,6 +451,16 @@ Keep recording meaningful events, failures, corrections, and genuine reactions i
 
 ---
 
+## 53. First article distribution research — 2026-10-08
+
+The next distribution step was researched after the first Hashnode article was published.
+
+- Official Hashnode guidance permits relevant sharing but prohibits spam, bulk posting, engagement farming, and using the platform primarily for self-promotion.
+- Direct Reddit rules pages could not be fetched during this check. Third-party/current community discussions indicate that promotion rules vary and broad programming communities often restrict it; no subreddit is treated as verified or approved.
+- Recommendation awaiting operator decision: run a small, human-scale experiment by sharing the article individually with a few genuinely interested readers and participating normally on Hashnode. Do not mass-post, create accounts solely for promotion, or submit a bare article link to a community without checking its live rules.
+- Research note: `research/2026-10-08-article-distribution.md`.
+- No external sharing or community post was performed by this research.
+
 Last updated: 2026-10-08
 
 ## 23. GitHub Pages failure investigation — 2026-10-08
