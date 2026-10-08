@@ -25,3 +25,5 @@
 | 2026-10-08 | Task-manager case study | Published the evidence-based technical history and case-study draft; reconciled older historical handoffs with the approved V8 baseline | Public documentation now has a coherent V2→V8 technical story and explicit runtime limits; issue #2 remains open for screenshots/demo/source presentation | Capture/verify runtime evidence and finish public source presentation |
 
 | 2026-10-08 | Platform preparation | Prepared reusable public profile kit, researched Hashnode as the first developer-writing candidate, and drafted the first technical post | One focused external-platform test is ready without creating multiple accounts or broadening scope | User-controlled decision: create the first Hashnode project account when ready |
+
+| 2026-10-08 | Licensing / platform strategy | Verified the repository already has a custom personal/educational-use license and documented the open-source licensing question before considering Codeberg | Codeberg remains a candidate only; no license change has been made | Decide whether public software should use a standard open-source license |
