@@ -747,3 +747,16 @@ Do not create a Codeberg mirror merely because the licensing requirement is sati
 
 ### Current direction
 Do not reopen the licensing question unless the project creates a separate commercial/proprietary application. Do not create multiple external accounts without a specific purpose and current policy/privacy review.
+
+
+## 37. GitHub Pages live URL verified — 2026-10-08
+
+The latest successful `Deploy gitback2life site` workflow's deployment logs explicitly reported the live Pages environment URL:
+
+**https://gitback2life-art.github.io/gitback2life/**
+
+Issue #1 (Publish the project site) is now closed as completed.
+
+GitHub remains the primary public repository and GitHub Pages remains the primary public website.
+
+The current website deployment continues to publish the restricted public-site artifact rather than the full repository.
