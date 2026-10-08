@@ -262,3 +262,49 @@ The investigation now has:
 The earliest currently useful project-related timestamp is therefore **October 6, 2026 at 17:24:16**, with the earliest directly timestamped V2 source at **17:41:28**.
 
 This timestamp section should be treated as a checkpoint, not as a final project chronology. Further packages, original chat exports, source backups, test harnesses, or filesystem-preserving archives could establish earlier or more precise dates.
+
+
+## User-provided Windows Explorer Creation-Time Evidence — October 8, 2026
+
+A screenshot of the final file group was supplied showing the Windows Explorer **Date created** column. The user explicitly states these are the actual creation dates/times for this group of files.
+
+Observed values in the screenshot:
+
+| File | Windows Explorer Date created |
+|---|---|
+| `Solo_Business_Command_Center_SESSION_HANDOFF.md` | **10/6/2026 3:07 PM** |
+| `Solo_Business_Command_Center_Handoff_Package_UPDATED_V5.zip` | **10/6/2026 3:01 PM** |
+| `Solo_Business_Command_Center_Handoff_Package_UPDATED_V4.zip` | **10/6/2026 2:51 PM** |
+| `Solo_Business_Command_Center_Handoff_Package_UPDATED_V3.zip` | **10/6/2026 1:59 PM** |
+| `Solo_Business_Command_Center_Handoff_Package_UPDATED.zip` | **10/6/2026 1:42 PM** |
+| `sole_proprietor_business_tracker_hybrid.xlsx` | **10/6/2026 11:24 AM** |
+| `sole_proprietor_business_tracker.xlsx` | **10/6/2026 10:45 AM** |
+
+### Evidence-status correction
+
+This screenshot is stronger evidence for the **creation timeline of these Windows files** than the previously discussed ZIP-internal entry timestamps.
+
+The earliest currently documented creation time in this evidence group is:
+
+**October 6, 2026 at 10:45 AM — `sole_proprietor_business_tracker.xlsx`.**
+
+The hybrid tracker follows at **11:24 AM**.
+
+The first handoff package follows at **1:42 PM**, then V3 at **1:59 PM**, V4 at **2:51 PM**, V5 at **3:01 PM**, and the session handoff markdown at **3:07 PM**.
+
+This provides a substantially clearer historical sequence for the surviving final-group artifacts.
+
+### Important boundary
+
+The screenshot establishes the Windows Explorer **Date created** values displayed for these files. It does **not by itself establish when the underlying project or application development began**. In particular:
+
+- the spreadsheet at 10:45 AM is the earliest creation timestamp currently shown;
+- it may represent the beginning of the business/task modeling work, but that is an inference and should not be stated as fact without corroborating evidence;
+- the earlier ZIP-internal timestamp of 17:24:16 should no longer be described as the earliest known timestamp for the project materials;
+- the 2013 DOCX metadata remains an anomalous internal metadata value and should not be treated as the project date.
+
+### Updated timestamp conclusion
+
+**Earliest currently observed Windows creation timestamp: October 6, 2026 at 10:45 AM.**
+
+Evidence label: **Verified from user-provided Windows Explorer screenshot** for the displayed file creation times; **not yet established as the beginning of the project itself**.
