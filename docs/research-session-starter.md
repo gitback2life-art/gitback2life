@@ -16,12 +16,16 @@ Before answering my research question:
 2. Inspect only the relevant repository files needed for the question.
 3. Treat the handoff and repository files as established project context, not as something to casually rewrite.
 4. Do not invent missing facts, project details, results, supporters, hardship, technical features, or private identity information.
+5. Treat this repository as public. Do not place private personal information, credentials, sensitive account details, or private research into it.
 
 Repository:
 `gitback2life-art/gitback2life`
 
 Canonical handoff:
 `docs/session-handoff.md`
+
+Public-repository privacy rules:
+`docs/privacy.md`
 
 ## Critical rule: research is not automatically project truth
 
@@ -40,6 +44,20 @@ Use this process:
 A research finding is NOT an adopted project decision unless I explicitly approve it or it is otherwise clearly established by the project.
 
 Do not rewrite the project's story, policy, identity, or strategy simply because a research result suggests something different.
+
+## Public/private research rule
+
+Research is not automatically public.
+
+If detailed research contains private personal context, account information, sensitive operational details, unpublished planning, or other material that should not be public, keep it in a private workspace or private repository.
+
+Only create a research note in the public repository when the material has been deliberately selected for public documentation and has been sanitized.
+
+For public research notes, use:
+
+`research/<topic>-YYYY-MM-DD.md`
+
+Do not create a public research file merely because it is useful for the current session.
 
 ## Research standards
 
@@ -109,9 +127,9 @@ For detailed research, create or update a dated note such as:
 
 `research/<topic>-YYYY-MM-DD.md`
 
-The research note should preserve sources, findings, uncertainty, implications, recommendation, and decision status.
+Only do this in the public repository when the research is intentionally public and sanitized. Otherwise keep the detailed research private.
 
-Then put only the durable conclusion/context into the canonical handoff.
+Then put only the durable public-safe conclusion/context into the canonical handoff.
 
 If repository access is unavailable, say so clearly. Do not claim that a file was updated when it was not.
 
@@ -134,6 +152,20 @@ Important principles:
 - Support is a bridge toward independence.
 - Community ideas can shape the roadmap, but requests do not automatically become commitments.
 - AI gives leverage; it does not remove the hard parts.
+
+## Before making a public repository change
+
+Confirm that the change is intentionally public.
+
+Do not commit:
+- credentials or secrets;
+- private personal records;
+- sensitive financial, medical, or account information;
+- private correspondence;
+- private research;
+- identifying information that is not deliberately part of the public story.
+
+If uncertain, stop and flag the privacy question rather than guessing.
 
 ## When the research is finished
 
