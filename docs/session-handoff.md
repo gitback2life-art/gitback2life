@@ -909,3 +909,19 @@ Testing showed that transient success messages were not enough for file import.
 
 ### Terminology
 The tool is local: JSON files are **accepted/imported into the browser**, not uploaded to a project server. The UI now makes that distinction explicit while still giving the user clear acceptance evidence.
+
+## 48. Opportunity Tracker post-save navigation — 2026-10-08
+
+The requested save interaction is now a dedicated completion state rather than an inline notice.
+
+### Behavior
+After **Save opportunity** succeeds:
+- the entry is saved first;
+- the normal editor screen is replaced by a full **Opportunity Saved** screen;
+- the saved opportunity title is shown;
+- **View opportunities** returns to the tracker;
+- **Add another** returns to a fresh entry form;
+- **Project home** navigates to the gitback2life project home.
+
+### Durable UX rule
+For major state-changing actions, prefer a clear completion screen with obvious next actions over a transient confirmation that leaves the user wondering what happened.
