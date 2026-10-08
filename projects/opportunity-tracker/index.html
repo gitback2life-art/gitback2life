@@ -47,6 +47,9 @@ label{display:block;font-size:.86rem;font-weight:700;margin-bottom:6px}
 .activity-main{margin:0;font-weight:800}
 .activity-meta{margin:4px 0 0;color:var(--muted);font-size:.9rem}
 .file-list{display:grid;gap:8px;margin-top:12px}
+.section-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:18px}
+.file-actions{display:flex;flex-wrap:wrap;gap:8px;flex-shrink:0}
+@media(max-width:700px){.section-heading{flex-direction:column}.file-actions{width:100%}.file-actions button{flex:1}}
 .file-row{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
 .file-name{font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .file-meta{color:var(--muted);font-size:.84rem;margin-top:3px}
@@ -71,11 +74,7 @@ footer{margin-top:22px;color:var(--muted);font-size:.86rem}
     <h1>Opportunity Tracker</h1>
     <p class="lead">Keep useful leads organized, track deadlines, and write down the evidence and warning signs that matter. Everything stays in this browser until you export it.</p>
   </div>
-  <div class="actions">
-    <button id="exportBtn">Export JSON</button>
-    <label for="importInput" style="display:inline-flex;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:10px;cursor:pointer">Import JSON</label>
-    <input id="importInput" type="file" accept=".json,application/json" hidden>
-  </div>
+
 </header>
 
 <div class="toolbar">
@@ -110,8 +109,17 @@ footer{margin-top:22px;color:var(--muted);font-size:.86rem}
 </div>
 
 <div class="card activity">
-  <h2 style="margin-top:0">Imported files</h2>
-  <p class="lead">Files accepted by this tool are listed here so you can see exactly what was imported. The original file is not uploaded to a server.</p>
+  <div class="section-heading">
+    <div>
+      <h2 style="margin:0">Imported files</h2>
+      <p class="lead" style="margin:6px 0 0">Files accepted by this tool are listed here so you can see exactly what was imported. The original file is not uploaded to a server.</p>
+    </div>
+    <div class="file-actions">
+      <button type="button" id="importBtn">Import JSON</button>
+      <button type="button" id="exportBtn">Export JSON</button>
+    </div>
+  </div>
+  <input id="importInput" type="file" accept=".json,application/json" hidden>
   <div id="fileList" class="file-list"></div>
 </div>
 
@@ -386,6 +394,7 @@ el("exportBtn").addEventListener("click",()=>{
 function showImportStatus(message, ok=true, persist=true){
   setStatus("importStatus",message,ok?"ok":"error",persist?"gitback2life-import-status":"");
 }
+el("importBtn").addEventListener("click",()=>el("importInput").click());
 el("importInput").addEventListener("change",async e=>{
   const file=e.target.files?.[0]; if(!file) return;
   showImportStatus("Importing "+file.name+"…",true,false);
