@@ -783,3 +783,18 @@ The project should build its public record first and only use a community route 
 
 Detailed research:
 `research/2026-10-08-support-milestone.md`
+
+## 39. Task-manager case-study milestone closed — 2026-10-08
+
+The first evidence-based task-manager case-study milestone is now considered complete.
+
+### Completed
+- Historical reconstruction and public technical documentation for the recovered V2→V8 sequence are in the repository.
+- The strongest AI-assisted debugging incidents are documented with explicit evidence boundaries.
+- GitHub Issue #2 has been closed as completed.
+
+### Scope boundary
+Real Windows/MSHTML runtime verification, screenshots, a hosted demo, and expanded source presentation are optional future enhancements. They are not blockers for the initial case-study milestone and should not trigger a broad QA effort unless new evidence makes that useful.
+
+### Durable context
+The public project should continue from the documented evidence rather than reopening the same historical reconstruction or runtime-testing loop.
