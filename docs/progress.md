@@ -18,3 +18,6 @@
 
 
 | 2026-10-08 | Historical reconstruction | Created `docs/task-manager-historical-chronology.md` from the recovered V2→V8 source, handoffs, build notes, and timestamp evidence | First consolidated evidence-labeled chronology exists; runtime boundaries remain explicit | Review chronology and investigate only specific unresolved AI/problem incidents |
+
+
+| 2026-10-08 | Historical reconstruction | Completed targeted repository review for additional AI/problem incidents and tightened V8 evidence labels in the master chronology | No additional incident established; V7/V8 evidence boundaries are now explicit and public case-study drafting remains gated on operator review | Operator review of historical reconstruction |
