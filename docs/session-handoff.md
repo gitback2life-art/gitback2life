@@ -868,3 +868,16 @@ The Opportunity Tracker URL field now explicitly accepts the lazy shorthand a no
 - `https://google.com`
 
 Bare domain-style input is normalized to `https://...` before storage. The field remains forgiving while save-time validation prevents non-web schemes from being treated as ordinary source links.
+
+## 45. Opportunity Tracker import feedback — 2026-10-08
+
+A browser test exposed a usability gap: importing a `.json` file changed the data but gave no visible confirmation.
+
+### Correction
+- Added an in-page status area with accessible `role="status"` / live updates.
+- Import now shows the filename and number of records successfully loaded.
+- Invalid JSON imports now show a clear in-page failure message instead of relying only on an alert.
+- Export also reports the filename and record count.
+
+### Durable lesson
+Important state-changing actions should provide immediate visible confirmation, especially file import/export operations.
