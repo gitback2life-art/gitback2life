@@ -971,6 +971,25 @@ The first deployment attempts after the UI changes failed in the validator befor
 This environment does not provide the real browser click-through of the deployed Pages site. Do not claim a full manual browser test has occurred unless one is actually performed.
 
 
+## 51. First public story published — 2026-10-08
+
+The first narrative gitback2life story is now a dedicated public page at `story.html` and is linked from the public homepage.
+
+### Purpose
+This is the first readable public narrative for people who discover the project without starting in the repository. It explains the rebuilding mission, the role of AI, the first software project, the real mistakes and corrections, the Opportunity Tracker lesson, and why the imperfect parts belong in the story.
+
+### Publishing strategy
+The project now has three layers:
+- **Home:** GitHub Pages website
+- **Story:** public narrative page
+- **Evidence:** repository documentation, progress log, case studies, and story log
+
+The story can later be republished or adapted for one carefully chosen external writing platform. Do not create multiple accounts merely for distribution.
+
+### Runtime / deployment status
+The story file is committed and the Pages workflow has been updated to include it in the public site artifact. The latest deployment triggered by the homepage link change was queued at the time of this update; verify the final workflow result before claiming the live story URL has been deployed.
+
+
 ---
 
 Last updated: 2026-10-08
