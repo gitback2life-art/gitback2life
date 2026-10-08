@@ -60,6 +60,9 @@
     .roadmap { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:24px; }
     .roadmap span { padding:12px; text-align:center; border:1px solid var(--line); border-radius:14px; background:var(--surface); font-weight:800; font-size:.85rem; }
     .notice { font-size:.9rem; color:var(--muted); margin-top:12px; }
+    .hero-links { display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; }
+    .hero-links a { display:inline-block; padding:12px 16px; border-radius:12px; text-decoration:none; font-weight:900; border:1px solid var(--line); background:var(--surface); }
+    .hero-links a.primary { border:0; background:linear-gradient(90deg,var(--accent),#7657ff); color:#fff; box-shadow:0 8px 28px rgba(0,217,255,.22); }
     footer { padding:34px 0 60px; color:var(--muted); font-size:.9rem; }
     @media (max-width: 800px) { .hero, .project { grid-template-columns:1fr; } .grid { grid-template-columns:1fr; } .navlinks { display:none; } }
   </style>
@@ -70,7 +73,7 @@
     <nav>
       <a class="brand" href="#top">gitback2life</a>
       <div class="navlinks">
-        <a href="#story">Story</a><a href="#journey">Journey</a><a href="#build">Build</a><a href="#build-log">Build Log</a><a href="#ideas">Ideas</a><a href="#progress">Progress</a><a href="#support">Support</a>
+        <a href="story.html">Start Here</a><a href="#story">Story</a><a href="#journey">Journey</a><a href="#build">Build</a><a href="#build-log">Build Log</a><a href="#ideas">Ideas</a><a href="#progress">Progress</a><a href="#support">Support</a>
       </div>
     </nav>
 
@@ -79,6 +82,10 @@
         <div class="eyebrow">A rebuilding project · AI + Code + Persistence</div>
         <h1>Rebuild.<br>Learn.<br>Build.</h1>
         <p class="lead">gitback2life is a real-world rebuild powered by curiosity, AI, code, and persistence. The mission is simple: turn a long interruption into a new beginning—one skill, one project, and one step toward independence at a time.</p>
+        <div class="hero-links">
+          <a class="primary" href="story.html">Start with the story →</a>
+          <a href="#build-log">See the work →</a>
+        </div>
       </div>
       <aside class="goal">
         <div class="scene" aria-label="Sunrise over a mountain road, representing the gitback2life journey">
