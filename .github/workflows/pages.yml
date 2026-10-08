@@ -28,10 +28,17 @@ jobs:
         with:
           enablement: true
 
+      - name: Prepare public site artifact
+        run: |
+          rm -rf site-dist
+          mkdir -p site-dist
+          cp index.html site-dist/
+          cp -R assets site-dist/assets
+
       - name: Upload site
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: site-dist
 
       - name: Deploy to Pages
         id: deployment
