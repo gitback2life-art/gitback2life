@@ -49,3 +49,5 @@
 | 2026-10-08 | New build fix | Hardened Opportunity Tracker save/import behavior after testing exposed apparent page refreshes with no completion notice | Save now explicitly prevents default submission, shows success/validation feedback, persists status across reloads, and deployment syntax-checks the embedded JavaScript | Re-test save and JSON import after the updated Pages deployment |
 
 | 2026-10-08 | New build UX fix | Reworked Opportunity Tracker file feedback after testing showed transient notices were insufficient | Accepted JSON files are now listed persistently with filename, record count, size, timestamp, and Accepted state; last-action feedback is persistent too | Re-test with a real JSON file and page refresh to confirm the visible acceptance record |
+
+| 2026-10-08 | New build UX | Changed Opportunity Tracker save flow to a dedicated **Opportunity Saved** completion screen with navigation options | Saving now has a clear end state and immediate next actions | Re-test save, navigation, and refresh behavior in the deployed prototype |
