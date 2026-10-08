@@ -124,3 +124,12 @@ The first public story is already being read by Mom, more than 700 miles away. S
 
 That is a reminder that “public” does not have to mean anonymous strangers only. A public project can also let the people who care about you follow the journey from far away.
 
+
+
+## 2026-10-08 — First external publication
+
+The first gitback2life story was published on Hashnode, extending the story beyond the project's own website.
+
+Article: https://gitback2life.hashnode.dev/i-started-building-again-here-s-what-actually-happened
+
+The milestone is simple: the real story now has an external publishing home as well as the GitHub Pages home base.
