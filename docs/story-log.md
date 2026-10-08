@@ -91,6 +91,13 @@ A practical constraint was identified: before pursuing paid work, the project's 
 This matters because an opportunity is only useful if it is actually legal and feasible to pursue.
 
 
+## 2026-10-08 — The tax part of paid work
+
+Another practical constraint was identified: earning self-employment/independent-contractor income can create both ordinary income-tax obligations and self-employment tax obligations. The IRS generally requires Schedule C reporting for sole-proprietor business income and Schedule SE when net self-employment earnings reach $400 or more. Independent contractors generally do not have taxes withheld like employees and may need estimated tax payments.
+
+This reinforces the rule that the opportunity pipeline must consider **legal setup and taxes before pursuing paid work**, not just whether a listing looks attractive.
+
+
 ### Story principle
 
 Keep the mistakes.
