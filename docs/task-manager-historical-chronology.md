@@ -43,7 +43,7 @@ The anomalous DOCX metadata showing **2013-12-23 23:15:00Z** is not treated as a
 | **2026-10-06 3:30 PM created; ~7:16 PM modified** | **V7 artifact** | Windows Explorer modification evidence shows later activity after creation. | User-provided Windows Explorer screenshot | **VERIFIED** | Useful activity evidence, but not proof of a specific coding event. |
 | **2026-10-06 3:50 PM created; ~7:47 PM modified** | **V8 artifact / V8 build notes** | Windows Explorer evidence shows V8 and its build notes as created/modified in this later portion of the sequence. | User-provided Windows Explorer screenshot | **VERIFIED** | Supports the late-stage chronology without proving exact coding times. |
 | **V8 stage** | **V8 source** | Direct V7→V8 comparison shows `dragenter` added to the task-detail drop-zone handling and `dataTransfer.dropEffect = 'copy'` set during `dragenter` and `dragover`. | V7/V8 source comparison + V8 notes | **VERIFIED** | Directly corroborates the historical Windows 11 drag/drop correction described in the notes. |
-| **V8 stage** | Windows 11 drag/drop incident | Surviving notes describe a Windows 11 observation where dragging a file onto the task page produced a “not allowed” cursor; the source shows the corresponding attempted MSHTML event-handling correction. | V8 notes + V7/V8 source comparison | **VERIFIED** for incident/correction; **UNKNOWN** for final runtime success | Establishes a concrete problem→investigation→correction chain, but not successful native Explorer drag/drop. |
+| **V8 stage** | Windows 11 drag/drop incident | Surviving notes describe a Windows 11 observation where dragging a file onto the task page produced a “not allowed” cursor; the source shows the corresponding attempted MSHTML event-handling correction. | V8 notes + V7/V8 source comparison | **SUPPORTED** for incident; **VERIFIED** for source correction; **UNKNOWN** for final runtime success | Establishes a concrete problem→investigation→correction chain, but not successful native Explorer drag/drop. |
 | **V8 stage** | Runtime verification boundary | No surviving evidence currently proves successful native Explorer drag/drop, real right-click behavior, visual rendering, real FileSystemObject/WScript.Shell behavior, dark mode, or multi-monitor restoration in the target Windows/MSHTML environment. | Source/handoff/build-note review | **UNKNOWN** | Public claims must not describe source presence as equivalent to runtime success. |
 
 ## Development progression
@@ -100,7 +100,7 @@ The strongest currently supportable incident is the **V8 drag/drop problem**.
 
 **Correction:** V8 adds `dragenter` and explicitly sets the drop effect to `copy` during `dragenter` and `dragover`.
 
-**Verification:** The correction is verified in source and matches the surviving development notes. Automated checks passed according to the notes.
+**Verification:** The corrective source change is verified directly and matches the surviving development notes. The notes report that automated checks passed, but that test result remains **SUPPORTED** rather than independently re-executed in this reconstruction.
 
 **Remaining uncertainty:** No recovered evidence proves that native Explorer drag/drop actually worked successfully after the change.
 
@@ -137,6 +137,18 @@ Do **not** currently claim:
 > AI caused the persistence problems.
 
 That stronger causal statement remains **UNKNOWN** unless surviving chat/build evidence establishes it.
+
+## Historical review checkpoint — 2026-10-08
+
+A targeted repository search was performed for additional evidence-backed AI/problem incidents, including navigation, drag/drop, V7/V8 build notes, and Windows 11 drag/drop wording. No additional surviving incident material was found in the current public repository.
+
+### Review result
+- **No new AI/problem incident established.** The chronology remains limited to the V7 navigation incident and V8 drag/drop incident already supported by the recovered material.
+- **No causal AI attribution added.** In particular, V6 persistence/reliability changes remain implementation evidence without a supported claim that AI caused the underlying problems.
+- **Evidence labels tightened.** The V8 incident itself is treated as **SUPPORTED** from historical notes; the V7→V8 source correction is **VERIFIED**; final native Windows/MSHTML success remains **UNKNOWN**.
+- **No contradiction requiring correction was found** in the chronology's current dating model. The 10:45 AM Explorer creation timestamp remains the earliest currently observed artifact timestamp, not a project-start claim.
+- **Public case-study drafting should remain deferred** until the operator reviews this historical record, unless genuinely new evidence is supplied.
+
 
 ## Contradictions and unresolved dating
 
