@@ -375,6 +375,30 @@ Anything that should be checked before publishing.
 
 > gitback2life is a truthful, pseudonymous public rebuilding project using AI, learning, and software development to move toward independence; help continue the work without inventing facts, exposing private identity, or allowing temporary research to become project policy without an explicit decision.
 
+
+## 21. Session record — 2026-10-08
+
+This session clarified how future sessions should maintain project context and research separately.
+
+### Completed
+- Added public GitHub issue forms for **Suggest an Idea** and **Request a Build**.
+- Added `docs/ideas-and-requests.md` describing the public feedback process, privacy expectations, and how suggestions may become experiments or builds.
+- Added a **Help shape the next step** section to the public website.
+- Linked the ideas/request process from the README.
+- Established that the canonical session handoff should be maintained automatically by sessions when meaningful, durable project context changes.
+
+### Process decision
+Future sessions using this repository should not wait for the operator to explicitly ask for a handoff update. When research or work creates durable context that another session will need, the session should update `docs/session-handoff.md` and the relevant project document when repository access is available.
+
+Raw research should remain in dated `research/...` notes rather than being copied wholesale into the handoff.
+
+### New reusable workflow
+The operator will use a reusable research-session starter prompt. It should tell a new session to read `docs/session-handoff.md` first, keep research separate from project facts, verify current information, and maintain the repository handoff automatically when durable context changes.
+
+### Important clarification
+The operator wants to be able to start different research sessions by copy/pasting the same starter file and then simply asking the new research questions. The starter should therefore contain the standing workflow and rules, not the details of any one research topic.
+
+
 ---
 
 Last updated: 2026-10-08
