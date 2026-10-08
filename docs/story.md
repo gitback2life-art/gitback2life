@@ -42,7 +42,7 @@ The repository became the project's code home, documentation archive, progress r
 
 ## Step 6 — Build the identity
 
-The project started with a simple visual direction and then evolved into something much more personal.
+The project started with a simple visual direction and then evolved into something more personal.
 
 The final identity became a cyber-tech comeback story:
 
@@ -61,7 +61,7 @@ One of the most important lessons happened immediately:
 
 **Having AI help does not make a project effortless.**
 
-AI can generate ideas, explain a setting, write code, debug errors, draft documentation, and suggest solutions. But the human still has to understand what is happening, choose what to do, click the right things, verify the result, deal with platform limitations, notice mistakes, and keep going when something fails.
+AI can generate ideas, explain a setting, write code, debug errors, draft documentation, and suggest solutions. But the human still has to understand what is happening, choose what to do, verify the result, deal with platform limitations, notice mistakes, and keep going when something fails.
 
 That is part of the gitback2life story.
 
@@ -95,11 +95,11 @@ The project had to identify the difference and navigate to the correct repositor
 
 #### The first Pages deployment failed
 
-The initial GitHub Actions deployment reached the Pages configuration step and failed because Pages had not yet been enabled.
+The initial Pages deployment failed because Pages had not yet been enabled.
 
 The workflow was examined, the failure was identified, and the configuration was changed so Pages could be enabled.
 
-After the repository setting was corrected, the deployment workflow progressed through configuration, uploaded the site artifact, and completed successfully.
+After the repository setting was corrected, the deployment completed successfully.
 
 **Lesson:** a failed deployment is not a failed project. It is information about what needs to change.
 
@@ -135,7 +135,7 @@ The useful story is:
 
 That distinction matters.
 
-The project is documenting what happens when someone who has been away from normal life for a long time starts using modern tools to learn, build, troubleshoot, and move forward.
+The project is documenting what happens when someone uses modern tools to learn, build, troubleshoot, and move forward after a long interruption.
 
 Sometimes the next step is obvious.
 
