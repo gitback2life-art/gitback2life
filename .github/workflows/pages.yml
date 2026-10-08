@@ -47,6 +47,7 @@ jobs:
           mkdir -p site-dist
           cp index.html site-dist/
           cp -R assets site-dist/assets
+          cp story.html site-dist/story.html
           mkdir -p site-dist/projects/opportunity-tracker
           cp projects/opportunity-tracker/index.html site-dist/projects/opportunity-tracker/index.html
 
