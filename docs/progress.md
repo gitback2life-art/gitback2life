@@ -31,3 +31,5 @@
 | 2026-10-08 | Open-source policy | Operator approved full free/open-source licensing for the current gitback2life repository | Software is MIT, documentation is CC BY 4.0, branding is reserved separately; future commercial apps will be licensed separately when they arise | Consider Codeberg later only if a second code home is actually useful |
 
 | 2026-10-08 | Publishing | Verified the live GitHub Pages URL from the successful deployment logs and closed Issue #1 | Primary public site is confirmed live at https://gitback2life-art.github.io/gitback2life/ | Move to the first support-milestone research |
+
+| 2026-10-08 | Support milestone | Re-verified current OpenAI gift-card/gifting-credit mechanisms and current r/Assistance request rules; updated support draft | Official support routes are current, but r/Assistance requires eligibility before posting; no public request posted | Build genuine public record and revisit support when a suitable eligible route exists |
