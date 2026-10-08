@@ -9,9 +9,9 @@
 - direct support explanation
 
 ## Version 0.2 — Build log
-- task-manager case study
-- project screenshots
-- selected source-code links
+- task-manager case study — **completed**
+- project screenshots — optional future enhancement
+- selected source-code links — optional future enhancement
 - release notes
 
 ## Version 0.3 — Progress
@@ -28,3 +28,6 @@
 
 ## Design rule
 Prefer real evidence of work over decorative fundraising content.
+
+## Scope rule
+A milestone is complete when its evidence-backed core is complete. Optional runtime verification, screenshots, hosted demos, and presentation polish should not become blockers unless they provide a clear new benefit.
