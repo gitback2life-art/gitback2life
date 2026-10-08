@@ -608,3 +608,17 @@ A fresh session should begin from this document and:
 5. focus next on evidence-supported AI/problem incidents
 6. do not request the already-recovered file set again
 7. do not publish or substantially rewrite the public case study until the historical findings are reviewed by the user
+
+ 
+## Current Authoritative Status — October 8, 2026
+ 
+This section supersedes earlier provisional statements in this document where they conflict with later recovery.
+ 
+- Historical source sequence recovered: **V2 → V3 → V4 → V5 → V6 → V7 → V8**.
+- **V8 is the latest directly recovered application source baseline.**
+- The master chronology in `docs/task-manager-historical-chronology.md` has been reviewed and approved for continued use.
+- A targeted repository search found no additional evidence-backed AI/problem incidents beyond the documented V7 navigation and V8 drag/drop incidents.
+- V8 incident status: **SUPPORTED** from historical notes; V8 corrective source change: **VERIFIED**; final native Explorer drag/drop success: **UNKNOWN**.
+- The public technical history and case study have now been drafted under `projects/task-manager/`.
+- No further broad historical inventory is warranted unless new evidence appears.
+- Future work should focus on substantive case-study refinement, real-runtime verification if the application can be run, or genuinely new historical evidence.
