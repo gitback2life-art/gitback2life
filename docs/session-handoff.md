@@ -625,3 +625,21 @@ Test one platform with one useful technical post first. Measure whether it provi
 ### Current next gate
 Creating the first external platform account is now a user-controlled action. No external account has been created or modified by this session.
 
+
+
+## 32. Platform privacy gate — 2026-10-08
+
+A current-platform review changed the next-step recommendation.
+
+### Finding
+- Hashnode is a strong technical-writing fit, but its current signup documentation asks for a Full name and its privacy policy says account information includes a name. citeturn846840search3turn846840search0
+- DEV is also a strong technical-community fit, but its current privacy policy says DEV Community account creation collects a name and email. citeturn203741search0turn203741search4
+- Codeberg's current registration documentation requires username and email, making it more naturally compatible with the project's pseudonymous public-code model, though it serves as a code platform rather than a primary writing community. citeturn188692search1
+
+### Decision
+Do not create Hashnode or DEV accounts yet. Do not weaken the project's established privacy rule merely to add another platform.
+
+GitHub + GitHub Pages remain the primary public home.
+
+The prepared profile kit and first technical post remain reusable. A secondary platform should be chosen only when its current identity/privacy requirements clearly fit.
+
