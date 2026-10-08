@@ -48,6 +48,7 @@ The project's identity is a cyber-tech comeback story:
 - docs/progress.md — ongoing progress log
 - docs/support-request.md — draft support request
 - docs/website-roadmap.md — site evolution plan
+- docs/session-handoff.md — canonical session context and research-separation guide
 - docs/ideas-and-requests.md — public suggestion and build-request process
 - .github/ISSUE_TEMPLATE/idea.yml — public idea form
 - .github/ISSUE_TEMPLATE/request.yml — public build-request form
