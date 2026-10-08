@@ -1,0 +1,361 @@
+# gitback2life — Session Handoff
+
+> Purpose: Give any new AI-assisted session enough context to continue the gitback2life project without repeatedly rebuilding the background, while keeping temporary research separate from established project facts.
+
+Canonical identity: gitback2life
+Repository: gitback2life-art/gitback2life
+Default branch: main
+Project motto: Rebuild. Learn. Build. Become independent.
+Signature line: Rebuilding a life, one line of code at a time.
+
+---
+
+## 1. What this project is
+
+gitback2life is a pseudonymous personal rebuilding project documenting the process of moving from a long interruption toward greater independence using AI as a practical tool, learning, software development, problem-solving, public documentation, and legitimate opportunities.
+
+The project is intentionally built in public, but the operator's private identity is protected.
+
+Long-term objective: use temporary support and modern tools to build enough knowledge, skill, software, and opportunity that outside support is eventually no longer needed.
+
+Core path:
+
+REBUILD → LEARN → BUILD → INDEPENDENCE
+
+## 2. The story that should remain consistent
+
+The public story is truthful and pseudonymous.
+
+The project does not:
+- invent a fake person or fake history
+- fabricate hardship
+- fabricate testimonials, supporters, results, or engagement
+- pretend to be a charity
+- promise donors financial returns
+- pressure people to contribute
+- impersonate other people or organizations
+- hide legally required information
+- sell or expose private data
+
+The project may describe the real rebuilding process, including setbacks, mistakes, learning gaps, failed attempts, and corrections.
+
+Key storytelling principle:
+
+> AI gives me leverage, but it does not remove the hard parts.
+
+Recurring process:
+
+attempt → problem → investigation → correction → result
+
+## 3. Privacy model
+
+The public project is pseudonymous by design.
+
+Do not put the operator's private identity into public project materials. Protected information includes legal name, home address, personal phone number, private/personal email, medical records, government identification, banking/payment information, passwords, API keys, private account identifiers, and other information that could reasonably identify the operator.
+
+A dedicated project email exists for the public project.
+
+GitHub commit privacy has also been addressed by using the GitHub no-reply commit address for new commits.
+
+Privacy means protecting the real person's identity; it does not mean inventing a fake biography.
+
+## 4. Financial/support model
+
+The project began with the practical goal of maintaining access to useful AI tools while rebuilding.
+
+Preferred principle:
+
+> Make it easy for someone to help without requiring them to know who I am.
+
+Support should be voluntary, legitimate, transparent, specific where possible, consistent with platform rules, and treated as a bridge toward independence.
+
+The preferred model has been direct support for the relevant AI service rather than asking people to send cash to the operator, but current OpenAI rules and available support mechanisms must be re-verified before publishing or recommending any current transaction method.
+
+Do not assume a support/gifting method is still available just because an older document mentions it.
+
+## 5. Current visual identity
+
+The approved direction is a cyber-tech comeback story.
+
+Recurring visual ideas:
+- Sunrise = a new beginning
+- Mountains = the climb ahead
+- Backpack = carrying the past forward
+- Code = the tool being used
+- Road / arrow = movement toward independence
+- Neon glow = energy, technology, possibility
+
+The project should feel energetic, distinctive, hopeful, technical, and human — not bland corporate branding and not pity-based fundraising.
+
+Primary visual colors are documented in docs/brand-guide.md.
+
+## 6. Current repository assets
+
+Known project materials include:
+- index.html — public project website
+- assets/gitback2life-mark.svg — reusable project mark
+- docs/project-outline.md — master project plan
+- docs/brand-guide.md — visual and voice standards
+- docs/social-bios.md — platform-ready bios
+- docs/privacy.md — privacy rules/checklist
+- docs/scam-checklist.md — scam screening
+- docs/platform-matrix.md — platform research notes
+- docs/progress.md — progress log
+- docs/support-request.md — support request draft
+- docs/website-roadmap.md — website evolution plan
+- docs/ideas-and-requests.md — public ideas/build-request process
+- .github/ISSUE_TEMPLATE/idea.yml — public idea submission form
+- .github/ISSUE_TEMPLATE/request.yml — public build-request form
+- projects/task-manager/README.md — task-management project documentation
+
+Additional project material may exist outside the repository. Do not assume technical details that have not been inspected.
+
+## 7. Current website concept
+
+The website presents gitback2life as a real-world rebuilding project, an AI + code + persistence story, a public build/learning record, a software-project portfolio, an independence journey, and a carefully controlled support project.
+
+The website now includes a Help shape the next step area.
+
+Visitors can:
+1. Suggest an Idea
+2. Request a Build
+
+These are public GitHub issue forms.
+
+This creates another project loop:
+
+community idea → investigation → build/experiment → documented result
+
+A request is not automatically a promise to build something.
+
+## 8. What has already happened
+
+The project has already gone through real problems and corrections.
+
+Visual design: the first direction was too bland and was replaced with the cyber-tech mountain/sunrise concept.
+
+Repository setup: the GitHub repository had to be created manually because the available connection could not create the new repository itself.
+
+GitHub Pages: the first Pages workflow encountered configuration problems. The project identified the correct repository-level Pages settings and corrected the deployment.
+
+Commit privacy: a privacy issue involving commit metadata was caught, and new commits were configured to use the GitHub no-reply address.
+
+Project direction: the project evolved from mainly thinking about AI support into a broader story + public build log + software portfolio + learning record + independence plan + carefully controlled support.
+
+## 9. Current GitHub issue backlog
+
+### #1 — Publish the project site
+Open. Confirm/record the live Pages URL and finish any remaining publishing documentation.
+
+### #2 — Document the existing task manager
+Open. Turn the actual AI-assisted task-management application into the first complete software case study.
+Do not invent features, architecture, screenshots, links, or technical details. Inspect the real project first.
+
+### #3 — Create platform profile kit
+Open. Use the existing brand/bio material to create consistent public profiles on carefully selected free platforms.
+
+### #4 — Prepare first support milestone
+Open. Finalize the one-month support request only after checking the target community's current rules and the current official OpenAI support method.
+
+### #5 — Security and privacy audit
+Closed. Initial repository review found no obvious secret markers and established the requirement to repeat privacy/security checks for future public uploads.
+
+## 10. MOST IMPORTANT: research separation
+
+Do not let research become project truth automatically.
+
+There are two different kinds of information:
+
+### A. Project facts
+Things already established, documented, or directly verified in the repository or by the operator.
+
+Examples: project identity, privacy principles, visual identity, project goals, known completed work, actual problems encountered, actual repository structure, verified software features, and decisions explicitly approved by the operator.
+
+### B. Research
+Temporary investigation used to answer questions or evaluate options.
+
+Examples: current platform rules, current OpenAI policies, support mechanisms, platform recommendations, monetization possibilities, free-tool availability, technical alternatives, community rules, current pricing, current eligibility requirements, and possible project ideas.
+
+Research is not automatically a decision.
+
+Use this pipeline:
+
+QUESTION → RESEARCH → SOURCES → FINDINGS → EVALUATION → DECISION → PROJECT DOCUMENTATION
+
+Until the operator explicitly adopts a finding, treat it as research only.
+
+## 11. Recommended research workspace
+
+When a session needs substantial research, keep it separate from the main project narrative.
+
+Preferred pattern: research/topic-YYYY-MM-DD.md
+
+Examples:
+- research/openai-support-2026-10-08.md
+- research/community-rules-2026-10-08.md
+- research/free-platforms-2026-10-08.md
+
+A research note should contain:
+
+### Research question
+What are we trying to find out?
+
+### Why it matters
+What project decision could this affect?
+
+### Sources
+Prefer primary/official sources when the subject is policy, rules, pricing, eligibility, APIs, or technical documentation.
+
+### Findings
+What the sources actually say.
+
+### Confidence / uncertainty
+What is confirmed, unclear, conflicting, or likely to change.
+
+### Implications
+What the finding could mean for gitback2life.
+
+### Recommendation
+What the session recommends, clearly marked as a recommendation rather than an established fact.
+
+### Decision
+Leave this blank until the operator decides.
+
+This prevents research notes from quietly becoming project doctrine.
+
+## 12. Research rules for AI sessions
+
+1. Check the current date and verify anything that may have changed.
+2. Use official or primary sources first for policies, rules, pricing, eligibility, APIs, or platform requirements.
+3. Separate source facts from inference and recommendations.
+4. Cite important current claims.
+5. Record the date researched.
+6. Flag uncertainty rather than filling gaps with guesses.
+7. Do not rewrite project policy merely because a research result suggests an alternative.
+8. Never present a recommendation as an operator-approved decision.
+9. Do not expose private identity information during research.
+10. Prefer free/$0-upfront options because the project currently operates under that constraint unless the operator explicitly changes it.
+
+## 13. How a new session should begin
+
+A new session should:
+1. Read this file.
+2. Inspect the specific repository files relevant to the current task.
+3. Identify the exact question or task.
+4. Research only what is needed.
+5. Report: What we knew → what we researched → what we learned → what changed → what remains undecided.
+
+Do not restart the entire project from scratch.
+Do not assume old research is still current.
+Do not assume an undocumented technical detail is true.
+
+## 14. Current known uncertainties
+
+These should be treated as questions requiring verification when relevant:
+- Which OpenAI support/gifting mechanisms are currently available and eligible?
+- Which communities currently permit this type of project/support request?
+- Which free platforms are worth using?
+- Which public-facing opportunities are legitimate and compatible with the project's privacy constraints?
+- What can the existing task-management application actually do?
+- What is the best next software project based on real opportunities and learning value?
+- Which suggestions/build requests from the public are worth pursuing?
+
+These questions should be researched independently from the core story.
+
+## 15. How to handle new ideas
+
+A new idea is allowed to be experimental.
+
+Do not immediately rewrite the project's identity around it.
+
+Use:
+
+Idea → Test → Evidence → Decision
+
+This is especially important for monetization, support methods, platform choices, public claims, technical architecture, new branding, and major changes to the story.
+
+## 16. What success looks like
+
+Success is not number of donations, number of followers, looking impressive, or pretending everything is easy.
+
+Success is measurable forward movement:
+- useful skills learned
+- real software built
+- problems solved
+- mistakes understood
+- useful documentation created
+- legitimate opportunities tested
+- growing ability to support oneself
+- decreasing dependence on outside support
+
+The ultimate goal is independence.
+
+## 17. Tone and personality
+
+The project should feel real, energetic, curious, determined, technical, imperfect, hopeful, and a little fun.
+
+It should not sound like corporate marketing, a generic charity page, a polished overnight-success story, artificial motivational content, or a desperate pressure campaign.
+
+The personality comes from the actual journey.
+
+## 18. Golden rules
+
+### Truth over polish.
+Keep the real mistakes.
+
+### Privacy without fakery.
+Protect identity without inventing one.
+
+### Evidence over assumption.
+Verify what matters.
+
+### Research before current claims.
+Policies and platforms change.
+
+### Build before bragging.
+Show actual work.
+
+### Learn from failure.
+A failed attempt can become part of the story.
+
+### Support is a bridge.
+The goal is eventually not needing it.
+
+### Community can shape the roadmap.
+Ideas and requests can become experiments, but they do not control the project.
+
+## 19. Session handoff template
+
+At the end of a substantial session, summarize new work using:
+
+### Completed
+What was actually finished.
+
+### Verified
+What was directly confirmed.
+
+### Researched
+What was learned from current sources.
+
+### Decisions
+What the operator explicitly approved.
+
+### Open questions
+What still needs research or a decision.
+
+### Next actions
+Concrete next steps.
+
+### Files changed
+Exact repository paths changed.
+
+### Privacy/security notes
+Anything that should be checked before publishing.
+
+## 20. One-sentence context for a fresh session
+
+> gitback2life is a truthful, pseudonymous public rebuilding project using AI, learning, and software development to move toward independence; help continue the work without inventing facts, exposing private identity, or allowing temporary research to become project policy without an explicit decision.
+
+---
+
+Last updated: 2026-10-08
