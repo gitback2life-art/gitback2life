@@ -847,3 +847,15 @@ The tool does not verify opportunities, submit applications, contact third parti
 
 ### Durable next-phase rule
 Prefer small working artifacts that directly support rebuilding, learning, building, or independence. Evaluate the prototype from actual use before expanding it.
+
+## 43. Opportunity Tracker URL input fix — 2026-10-08
+
+A manual browser test exposed a usability defect: the Source URL field rejected shorthand addresses such as `www.google.com` because it used native `type="url"` validation.
+
+### Correction
+- Changed the field to text/inputmode URL so shorthand addresses can be entered.
+- Added normalization so `www.example.com` and bare domain-style addresses become `https://...`.
+- Explicitly rejects non-web schemes at save time rather than silently treating them as web links.
+
+### Durable lesson
+Use forgiving input for normal human-entered web addresses, then normalize and validate deliberately. Native browser validation should not make a useful field less usable.
