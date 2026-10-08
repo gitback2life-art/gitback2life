@@ -61,6 +61,8 @@ The project's identity is a cyber-tech comeback story:
 - projects/task-manager/README.md — existing task-management project documentation
 - projects/task-manager/case-study.md — evidence-based public case study
 - projects/task-manager/technical-history.md — source-oriented V2→V8 technical history
+- projects/opportunity-tracker/README.md — next-build project documentation
+- projects/opportunity-tracker/index.html — dependency-free local opportunity tracker prototype
 
 ## Important
 
