@@ -98,7 +98,7 @@ footer{margin-top:22px;color:var(--muted);font-size:.86rem}
         <div><label>Risk<select id="risk"><option>Unknown</option><option>Low</option><option>Medium</option><option>High</option><option>Avoid</option></select></label></div>
         <div><label>Deadline<input id="deadline" type="date"></label></div>
       </div>
-      <label>Source URL<input id="url" type="text" inputmode="url" placeholder="https://… or www.google.com"></label>
+      <label>Source URL<input id="url" type="text" inputmode="url" placeholder="google.com, www.google.com, or https://example.com"></label>
       <label>Evidence / notes<textarea id="notes" placeholder="What does the source actually say? What requirements or warning signs did you verify?"></textarea></label>
       <button class="primary" type="submit">Save opportunity</button>
     </form>
@@ -179,7 +179,7 @@ function normalizeUrl(value){
   if(!raw) return "";
   if(/^[a-z][a-z0-9+.-]*:\/\//i.test(raw)) return raw;
   if(/^www\./i.test(raw)) return "https://"+raw;
-  if(/^[^\s/]+\.[^\s/]+/.test(raw)) return "https://"+raw;
+  if(/^[^\s/]+\.[^\s/]+$/i.test(raw)) return "https://"+raw;
   return raw;
 }
 el("form").addEventListener("submit",e=>{
