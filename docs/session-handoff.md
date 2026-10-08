@@ -188,6 +188,25 @@ Until the operator explicitly adopts a finding, treat it as research only.
 
 When a session needs substantial research, keep it separate from the main project narrative.
 
+### Automatic handoff maintenance
+
+A research session using this repository should **automatically update this handoff when the research produces durable project context**, without waiting for the operator to ask.
+
+Update the handoff when research or work changes something future sessions need to know, such as:
+
+- a project decision that has been explicitly adopted;
+- a current project status change;
+- a newly verified fact that affects how the project should be handled;
+- a new major uncertainty or dependency;
+- a changed privacy/security rule;
+- a completed milestone or newly created project asset.
+
+Do **not** copy raw research, long source summaries, or every temporary idea into this file. Put detailed research in a dated `research/<topic>-YYYY-MM-DD.md` note and put only the durable conclusion/context into the handoff.
+
+When a session performs meaningful work, it should update the handoff and the relevant project document(s) in the same session whenever repository access is available.
+
+If repository access is unavailable, clearly report that the handoff could not be updated; do not pretend that it was updated.
+
 Preferred pattern: research/topic-YYYY-MM-DD.md
 
 Examples:
