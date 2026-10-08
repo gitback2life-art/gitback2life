@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Opportunity Tracker — gitback2life</title>
+<style>
+:root{
+  color-scheme:light dark;
+  --bg:light-dark(#eef8ff,#030712);
+  --surface:light-dark(#fff,#08111f);
+  --surface2:light-dark(#e2f4ff,#0d1830);
+  --text:light-dark(#101827,#f3f8ff);
+  --muted:light-dark(#52657a,#9eb1c7);
+  --line:light-dark(#c7deef,#20324d);
+  --accent:light-dark(#087ea4,#00d9ff);
+}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at 50% -20%,rgba(0,217,255,.13),transparent 40%),var(--bg);color:var(--text);font:16px/1.55 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.wrap{width:min(1100px,calc(100% - 32px));margin:0 auto;padding:28px 0 60px}
+header{display:flex;justify-content:space-between;gap:20px;align-items:end;margin-bottom:26px}
+h1{margin:0;font-size:clamp(2rem,5vw,3.6rem);line-height:1}
+.lead{color:var(--muted);max-width:760px}
+.toolbar,.card{border:1px solid var(--line);background:linear-gradient(160deg,var(--surface),var(--surface2));border-radius:18px;padding:18px}
+.toolbar{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:18px}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--text);border-radius:10px;padding:10px 12px}
+button.primary{background:linear-gradient(90deg,var(--accent),#7657ff);color:white;border:0;font-weight:800}
+input,select,textarea{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--text)}
+textarea{min-height:100px;resize:vertical}
+.grid{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}
+.list{display:grid;gap:12px}
+.item{border:1px solid var(--line);border-radius:14px;padding:16px;background:var(--surface)}
+.item h3{margin:0 0 5px}
+.meta{display:flex;flex-wrap:wrap;gap:7px;margin:9px 0}
+.tag{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;border:1px solid var(--line);background:var(--surface2);font-size:.78rem}
+.warn{font-size:.9rem;color:var(--muted);margin:10px 0 0}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+label{display:block;font-size:.86rem;font-weight:700;margin-bottom:6px}
+.empty{color:var(--muted);padding:28px;text-align:center;border:1px dashed var(--line);border-radius:14px}
+footer{margin-top:22px;color:var(--muted);font-size:.86rem}
+@media(max-width:850px){.grid{grid-template-columns:1fr}.toolbar{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.row,.toolbar{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div>
+    <div class="tag">gitback2life · prototype</div>
+    <h1>Opportunity Tracker</h1>
+    <p class="lead">Keep useful leads organized, track deadlines, and write down the evidence and warning signs that matter. Everything stays in this browser until you export it.</p>
+  </div>
+  <div class="actions">
+    <button id="exportBtn">Export JSON</button>
+    <label for="importInput" style="display:inline-flex;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:10px;cursor:pointer">Import JSON</label>
+    <input id="importInput" type="file" accept=".json,application/json" hidden>
+  </div>
+</header>
+
+<div class="toolbar">
+  <input id="search" placeholder="Search title, type, notes…">
+  <select id="statusFilter">
+    <option value="">All statuses</option>
+    <option>Researching</option>
+    <option>Ready</option>
+    <option>Applied</option>
+    <option>Waiting</option>
+    <option>Closed</option>
+  </select>
+  <select id="riskFilter">
+    <option value="">All risk levels</option>
+    <option>Unknown</option>
+    <option>Low</option>
+    <option>Medium</option>
+    <option>High</option>
+    <option>Avoid</option>
+  </select>
+  <select id="sort">
+    <option value="deadline">Soonest deadline</option>
+    <option value="updated">Recently updated</option>
+    <option value="title">Title</option>
+  </select>
+  <button class="primary" id="clearFilters">Reset filters</button>
+</div>
+
+<div class="grid">
+  <section class="card">
+    <h2 style="margin-top:0">Add opportunity</h2>
+    <form id="form">
+      <label>Title<input id="title" required maxlength="120" placeholder="Example: freelance bug-fix listing"></label>
+      <div class="row">
+        <div><label>Type<input id="type" maxlength="60" placeholder="Freelance, grant, project, learning…"></label></div>
+        <div><label>Status<select id="status"><option>Researching</option><option>Ready</option><option>Applied</option><option>Waiting</option><option>Closed</option></select></label></div>
+      </div>
+      <div class="row">
+        <div><label>Risk<select id="risk"><option>Unknown</option><option>Low</option><option>Medium</option><option>High</option><option>Avoid</option></select></label></div>
+        <div><label>Deadline<input id="deadline" type="date"></label></div>
+      </div>
+      <label>Source URL<input id="url" type="url" placeholder="https://…"></label>
+      <label>Evidence / notes<textarea id="notes" placeholder="What does the source actually say? What requirements or warning signs did you verify?"></textarea></label>
+      <button class="primary" type="submit">Save opportunity</button>
+    </form>
+    <p class="warn">Safety rule: never store passwords, payment-card data, government identifiers, or other sensitive personal information here.</p>
+  </section>
+
+  <section>
+    <div id="list" class="list"></div>
+  </section>
+</div>
+
+<footer>
+  This tool does not verify opportunities, apply for them, contact third parties, or process payments. It is a local organizer and learning project.
+</footer>
+</div>
+
+<script>
+const KEY="gitback2life-opportunity-tracker-v1";
+let items=load();
+const el=id=>document.getElementById(id);
+
+function load(){
+  try{
+    const raw=localStorage.getItem(KEY);
+    const data=raw?JSON.parse(raw):[];
+    return Array.isArray(data)?data:[];
+  }catch(e){ return []; }
+}
+function save(){ localStorage.setItem(KEY,JSON.stringify(items)); render(); }
+function esc(value){
+  return String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",""":"&quot;","'":"&#39;"}[ch]));
+}
+function matches(x){
+  const q=el("search").value.trim().toLowerCase();
+  const sf=el("statusFilter").value;
+  const rf=el("riskFilter").value;
+  if(sf && x.status!==sf) return false;
+  if(rf && x.risk!==rf) return false;
+  if(!q) return true;
+  return [x.title,x.type,x.status,x.risk,x.notes,x.url].join(" ").toLowerCase().includes(q);
+}
+function sorted(list){
+  const mode=el("sort").value;
+  return [...list].sort((a,b)=>{
+    if(mode==="title") return a.title.localeCompare(b.title);
+    if(mode==="updated") return new Date(b.updatedAt)-new Date(a.updatedAt);
+    const ad=a.deadline||"9999-12-31", bd=b.deadline||"9999-12-31";
+    return ad.localeCompare(bd)||new Date(b.updatedAt)-new Date(a.updatedAt);
+  });
+}
+function render(){
+  const root=el("list");
+  const visible=sorted(items.filter(matches));
+  if(!visible.length){
+    root.innerHTML='<div class="empty">No matching opportunities yet.<br>Add a real lead or change the filters.</div>';
+    return;
+  }
+  root.innerHTML=visible.map(x=>{
+    const deadline=x.deadline?("Deadline: "+x.deadline):"No deadline recorded";
+    return '<article class="item">'
+      +'<h3>'+esc(x.title)+'</h3>'
+      +'<div class="meta">'
+      +'<span class="tag">'+esc(x.type||"Uncategorized")+'</span>'
+      +'<span class="tag">'+esc(x.status)+'</span>'
+      +'<span class="tag">'+esc(x.risk)+' risk</span>'
+      +'</div>'
+      +'<div>'+esc(deadline)+'</div>'
+      +(x.notes?'<p class="warn">'+esc(x.notes).replace(/\n/g,"<br>")+'</p>':"")
+      +(x.url?'<div class="actions"><a href="'+esc(x.url)+'" target="_blank" rel="noopener"><button type="button">Open source</button></a>':'<div class="actions">')
+      +'<button type="button" data-edit="'+x.id+'">Edit</button>'
+      +'<button type="button" data-delete="'+x.id+'">Delete</button></div>'
+      +'</article>';
+  }).join("");
+}
+function resetForm(){ el("form").reset(); }
+el("form").addEventListener("submit",e=>{
+  e.preventDefault();
+  const now=new Date().toISOString();
+  items.unshift({
+    id:crypto.randomUUID(),
+    title:el("title").value.trim(),
+    type:el("type").value.trim(),
+    status:el("status").value,
+    risk:el("risk").value,
+    deadline:el("deadline").value,
+    url:el("url").value.trim(),
+    notes:el("notes").value.trim(),
+    updatedAt:now
+  });
+  save(); resetForm();
+});
+el("list").addEventListener("click",e=>{
+  const edit=e.target.closest("[data-edit]");
+  const del=e.target.closest("[data-delete]");
+  if(edit){
+    const x=items.find(v=>v.id===edit.dataset.edit); if(!x) return;
+    el("title").value=x.title; el("type").value=x.type; el("status").value=x.status;
+    el("risk").value=x.risk; el("deadline").value=x.deadline; el("url").value=x.url; el("notes").value=x.notes;
+    items=items.filter(v=>v.id!==x.id); save(); window.scrollTo({top:0,behavior:"smooth"});
+  }
+  if(del && confirm("Delete this opportunity?")){
+    items=items.filter(v=>v.id!==del.dataset.delete); save();
+  }
+});
+["search","statusFilter","riskFilter","sort"].forEach(id=>el(id).addEventListener("input",render));
+el("clearFilters").addEventListener("click",()=>{
+  el("search").value=""; el("statusFilter").value=""; el("riskFilter").value=""; el("sort").value="deadline"; render();
+});
+el("exportBtn").addEventListener("click",()=>{
+  const blob=new Blob([JSON.stringify(items,null,2)],{type:"application/json"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="gitback2life-opportunities.json";
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+el("importInput").addEventListener("change",async e=>{
+  const file=e.target.files?.[0]; if(!file) return;
+  try{
+    const parsed=JSON.parse(await file.text());
+    if(!Array.isArray(parsed)) throw new Error("Expected an array");
+    const cleaned=parsed.filter(x=>x&&x.title).map(x=>({
+      id:x.id||crypto.randomUUID(), title:String(x.title).slice(0,120),
+      type:String(x.type||""), status:String(x.status||"Researching"),
+      risk:String(x.risk||"Unknown"), deadline:String(x.deadline||""),
+      url:String(x.url||""), notes:String(x.notes||""),
+      updatedAt:x.updatedAt||new Date().toISOString()
+    }));
+    items=cleaned; save();
+  }catch(err){ alert("Import failed. Please use a JSON export from this tool."); }
+  e.target.value="";
+});
+render();
+</script>
+</body>
+</html>
