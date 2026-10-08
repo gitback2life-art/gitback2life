@@ -45,3 +45,5 @@
 | 2026-10-08 | New build fix | Extended Opportunity Tracker URL handling to accept bare domains such as `google.com` as well as `www.google.com` | Source links now match normal lazy human input and are normalized consistently | Continue testing through natural user behavior rather than requiring formal URL syntax |
 
 | 2026-10-08 | New build fix | Added visible import/export feedback to the Opportunity Tracker after browser testing showed that JSON import gave no confirmation | File operations now provide immediate status and record counts | Keep testing natural user flows and address concrete usability friction |
+
+| 2026-10-08 | New build fix | Hardened Opportunity Tracker save/import behavior after testing exposed apparent page refreshes with no completion notice | Save now explicitly prevents default submission, shows success/validation feedback, persists status across reloads, and deployment syntax-checks the embedded JavaScript | Re-test save and JSON import after the updated Pages deployment |
