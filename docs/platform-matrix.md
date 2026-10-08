@@ -8,7 +8,7 @@ Last reviewed: 2026-10-08
 | GitHub Pages | Primary static project site | Available with eligible public GitHub Free repositories | Needs one-time manual Pages source setup | Workflow is prepared for GitHub Actions; repository Settings → Pages → Build and deployment → Source must be set to GitHub Actions before the first manual deployment. |
 | Cloudflare Pages | Alternative static hosting | Free plan | Backup | Candidate for a later second deployment path. |
 | Hashnode | Developer writing / build journal | Free account | Candidate | Re-check current terms, publishing rules, and account requirements immediately before use. |
-| Codeberg | Libre-code mirror / secondary project home | Free account | Candidate | Re-check current documentation and licensing requirements immediately before use. |
+| Codeberg | Secondary public code home / independence backup | Free account | Candidate — not adopted | Community-driven nonprofit software forge built on Forgejo. Strong values/privacy fit, but public projects are expected to use a suitable free/libre license. Do not create a mirror until licensing and the value of a second code home are explicitly decided. |
 | Reddit / r/Assistance | Possible support request | Free | Later | Current requester eligibility and posting rules must be checked immediately before use. |
 
 ## Recommended order
@@ -42,3 +42,12 @@ These are research findings, not a permanent project promise. Verify the current
 ## Rule
 
 Re-check platform terms immediately before creating an account, publishing, or requesting support. This document is a planning record, not a permanent guarantee of eligibility.
+
+
+## Codeberg fit
+
+Codeberg is a community-driven nonprofit software-development platform built on Forgejo. It provides public Git repositories and related project tools, plus Codeberg Pages. It is a potential secondary public code home for gitback2life rather than a replacement for GitHub. citeturn442924search2turn442924search3turn224766search2
+
+For this project, the main potential benefits are resilience/independence from one hosting provider, a second public location for the source, and alignment with a free/libre/privacy-friendly community. The main reasons not to add it immediately are maintenance overhead and Codeberg's expectation that public works carry a suitable free/libre license. citeturn442924search1turn442924search0
+
+Current recommendation: **candidate only**. GitHub remains the primary project home.
