@@ -8,6 +8,10 @@
 
 gitback2life is a pseudonymous personal rebuilding project documenting the process of moving from a long interruption toward greater independence using AI, learning, software development, and practical problem-solving.
 
+## Live site
+
+**[gitback2life on GitHub Pages](https://gitback2life-art.github.io/gitback2life/)**
+
 ## The visual idea
 
 The project's identity is a cyber-tech comeback story:
