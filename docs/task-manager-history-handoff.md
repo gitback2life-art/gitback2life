@@ -416,3 +416,195 @@ It should use:
 The chronology should begin with the earliest currently observed artifact timestamp (**2026-10-06 10:45 AM**) while explicitly labeling that timestamp as an artifact-creation observation, not a proven project start.
 
 No further broad file-collection request should be made unless the chronology exposes a specific unresolved question for which a missing artifact would materially change the conclusion.
+
+## Fresh Session Handoff — October 8, 2026 — Historical Reconstruction Phase
+
+The timestamp investigation is now considered **closed for the currently recovered evidence**. Do not restart timestamp archaeology unless genuinely new evidence appears.
+
+The investigation has moved to the substantive historical reconstruction of the task-manager development story.
+
+### Current authoritative state
+
+- Recovered source sequence: **V2 → V3 → V4 → V5 → V6 → V7 → V8**
+- **V8 is the latest directly recovered application source baseline.**
+- Evidence collection for the currently supplied materials is substantially complete.
+- The next task is **chronology/reconstruction**, not another broad inventory.
+- Do not ask the user to re-upload or re-provide files already supplied to another session.
+- Use the existing evidence and this handoff/checkpoint as the starting point.
+
+### Timestamp conclusion
+
+The strongest currently established creation-time evidence is the user-provided Windows Explorer screenshot showing:
+
+- `sole_proprietor_business_tracker.xlsx` — **2026-10-06 10:45 AM**
+- `sole_proprietor_business_tracker_hybrid.xlsx` — **2026-10-06 11:24 AM**
+- subsequent handoff-package creation times through 3:07 PM
+
+Therefore **2026-10-06 10:45 AM is the earliest currently observed Windows creation timestamp**, but it is **not** established as the project's start date.
+
+A later user-provided Explorer screenshot also showed **Date modified** values. Those are separate evidence and should not be substituted for creation times. They show later editing/activity, including:
+
+- V6 created 3:17 PM; modified later at about 7:16 PM
+- V7 created 3:30 PM; modified later at about 7:16 PM
+- V8 created 3:50 PM; modified later at about 7:47 PM
+- V8 build notes created 3:50 PM; modified later at about 7:47 PM
+
+These modification timestamps are useful as evidence of later activity, but they do not establish project start or exact development events by themselves.
+
+Keep the five evidence categories separate:
+
+1. Windows Explorer creation timestamps
+2. Windows Explorer modification timestamps
+3. ZIP internal timestamps
+4. Document metadata
+5. Source/runtime evidence
+
+The anomalous 2013 DOCX metadata remains unreliable for dating the project.
+
+### Development reconstruction already established
+
+The working chronology currently supports this implementation progression:
+
+**V2**
+- task/category state handling
+- local state persistence
+- category management
+- task rows/status controls
+- dashboard/task views
+- window geometry persistence
+- no dedicated Task Detail workspace
+
+**V3**
+- dedicated Task Detail
+- task notes
+- links
+- attachments
+- Windows path handling
+- drag/drop handling
+- manual path fallback
+- theme state
+- task-detail navigation
+
+**V4**
+- clearer task/category interaction separation
+- context menus
+- task-row navigation
+- task/category edit/delete/add/remove behavior
+
+**V5**
+- Task Detail resource-bar refinement
+- links before attachments
+- link/attachment menus
+- native drop plus manual path fallback
+
+**V6**
+- safer persistence using temporary and backup state files
+- corrupt/empty-state recovery
+- notes autosave/flush
+- multi-file dropped-path parsing
+- window restore bounds
+- stronger attachment-opening checks
+- mailto/tel corrections
+- UI/context-menu corrections
+
+**V7**
+- centralized applyView() navigation
+- task/category navigation corrections
+- safe fallback for missing task-detail pages
+- due-date normalization/validation
+- expanded Task Edit fields
+- notes scheduling/flush
+- scoped context-menu detection
+- 29 new automated checks plus the prior 36 checks
+
+**V8**
+- direct source comparison with V7 confirms the drag/drop correction:
+  - V7 had dragover, dragleave, drop
+  - V8 adds dragenter
+  - V8 sets dataTransfer.dropEffect = copy in dragenter and dragover
+- this directly matches the surviving historical note about a Windows 11 “not allowed” drag cursor
+
+### Runtime boundary
+
+Do not claim that source implementation equals successful Windows/MSHTML behavior.
+
+Still-unproven runtime areas include, unless separate evidence demonstrates them:
+
+- native Explorer drag/drop success
+- actual right-click menu behavior
+- actual visual rendering
+- real Windows FileSystemObject/WScript.Shell behavior
+- dark-mode appearance
+- multi-monitor/window restoration
+
+For V8 specifically:
+
+**Verified:** the corrective source change exists.
+
+**Supported:** it corresponds to the documented Windows 11 drag/drop problem.
+
+**Unknown:** whether the final V8 change actually solved native Explorer drag/drop in the target runtime.
+
+### AI/problem-solving investigation — next major task
+
+The user's goal is to include the real AI-related problems in the story, but accurately.
+
+Do **not** write a generic claim such as “AI broke the app.”
+
+For each incident that can be supported by surviving evidence, reconstruct:
+
+**What was requested → what AI produced/suggested → what went wrong → how it was discovered → what changed → what was actually verified → lesson learned**
+
+The intended lesson is:
+
+> **AI can accelerate building, but it cannot replace verification.**
+
+AI should be treated as both an accelerator and, where the evidence supports it, a contributor to mistakes or misleading confidence. Do not assign blame beyond the evidence.
+
+### Master Historical Evidence Chronology
+
+The next substantive deliverable is the **Master Historical Evidence Chronology**, using:
+
+| Date/time | Artifact | What happened | Evidence | Confidence | Consequence |
+|---|---|---|---|---|---|
+
+Use these confidence labels consistently:
+
+- **VERIFIED**
+- **SUPPORTED**
+- **RECONSTRUCTED / LIKELY**
+- **UNKNOWN**
+- **MISSING**
+
+Do not silently resolve contradictions. Record them.
+
+The chronology should begin with the earliest currently observed artifact timestamp (10:45 AM) while explicitly stating that this is an artifact-creation observation, not a proven project start.
+
+### Public story comes later
+
+Do not immediately turn the chronology into polished public documentation.
+
+First establish the internal historical record. Then derive:
+
+1. technical development history
+2. AI/problem-solving history
+3. lessons learned
+4. public gitback2life case study
+
+The eventual public narrative should follow:
+
+**ATTEMPT → PROBLEM → INVESTIGATION → CORRECTION → RESULT → LESSON**
+
+Before publication, perform a privacy review and ensure no private identity, account data, credentials, personal paths, unrelated conversations, or other sensitive material is exposed.
+
+### Fresh-session instruction
+
+A fresh session should begin from this document and:
+
+1. read docs/task-manager-history-session-checkpoint.md
+2. treat V8 as the latest recovered source baseline
+3. treat timestamp investigation as complete
+4. continue building the Master Historical Evidence Chronology
+5. focus next on evidence-supported AI/problem incidents
+6. do not request the already-recovered file set again
+7. do not publish or substantially rewrite the public case study until the historical findings are reviewed by the user
