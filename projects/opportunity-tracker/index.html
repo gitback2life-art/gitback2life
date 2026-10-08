@@ -50,6 +50,7 @@ footer{margin-top:22px;color:var(--muted);font-size:.86rem}
 </head>
 <body>
 <div class="wrap">
+<div id="appScreen" class="screen active">
 <header>
   <div>
     <div class="tag">gitback2life · prototype</div>
@@ -124,6 +125,21 @@ footer{margin-top:22px;color:var(--muted);font-size:.86rem}
   <section>
     <div id="importStatus" class="card" style="margin-bottom:12px;display:none" role="status" aria-live="polite"></div>
     <div id="list" class="list"></div>
+  </section>
+</div>
+
+</div>
+
+<div id="savedScreen" class="screen saved-screen">
+  <section class="card saved-card">
+    <div class="saved-icon" aria-hidden="true">✓</div>
+    <h2>Opportunity Saved</h2>
+    <p id="savedSummary">Your opportunity has been saved to this browser.</p>
+    <div class="nav-actions">
+      <button class="primary" type="button" id="viewOpportunitiesBtn">View opportunities</button>
+      <button type="button" id="addAnotherBtn">Add another</button>
+      <a href="../../" style="display:inline-flex;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:10px;text-decoration:none">Project home</a>
+    </div>
   </section>
 </div>
 
@@ -229,6 +245,21 @@ function renderImportedFiles(){
     return '<div class="file-row"><div><div class="file-name">✓ '+esc(file.name)+'</div><div class="file-meta">'+esc(records)+' · '+esc(size)+' · '+esc(when)+'</div></div><span class="tag">Accepted</span></div>';
   }).join("");
 }
+function showScreen(name){
+  const app=el("appScreen"), saved=el("savedScreen");
+  const showSaved=name==="saved";
+  app.classList.toggle("active",!showSaved);
+  saved.classList.toggle("active",showSaved);
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function showSavedScreen(item){
+  const summary=el("savedSummary");
+  summary.textContent='“'+item.title+'” has been saved to this browser.';
+  showScreen("saved");
+}
+function showAppScreen(){
+  showScreen("app");
+}
 function resetForm(){ el("form").reset(); }
 function setStatus(id,message,type="info",persistKey=""){
   const box=el(id);
@@ -287,10 +318,11 @@ function saveOpportunity(e){
     notes:el("notes").value.trim(),
     updatedAt:now
   });
+  const savedItem=items[0];
   save();
   resetForm();
   setStatus("saveStatus","✓ Opportunity saved successfully.","ok","gitback2life-save-status");
-  el("title").focus();
+  showSavedScreen(savedItem);
   return false;
 }
 el("form").addEventListener("submit",saveOpportunity);
@@ -352,6 +384,15 @@ el("importInput").addEventListener("change",async e=>{
     showImportStatus("Import failed. The file must be a JSON export from this tool.",false);
   }
   e.target.value="";
+});
+el("viewOpportunitiesBtn").addEventListener("click",()=>{
+  showAppScreen();
+  render();
+});
+el("addAnotherBtn").addEventListener("click",()=>{
+  showAppScreen();
+  resetForm();
+  el("title").focus();
 });
 restoreStatus();
 renderActivity();
