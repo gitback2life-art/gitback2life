@@ -460,3 +460,28 @@ The operator manually ran the Pages workflow after setting the repository Pages 
 
 ### Current state
 GitHub Pages is operational. Future commits to `main` will automatically trigger the Pages deployment workflow.
+
+## 25. Session handoff checkpoint — 2026-10-08
+
+### Current state
+- Main repository remains intentionally public and pseudonymous.
+- Public/private repository boundary is documented and reinforced.
+- Current public-facing story and support copy have been sanitized.
+- GitHub Pages is working successfully.
+- Repository Pages source is set to **GitHub Actions**.
+- The Pages workflow now automatically deploys on pushes to `main` and also supports manual `workflow_dispatch` runs.
+- Pages publishes only the intended site artifact (`index.html` and `assets/`) rather than the whole repository.
+- Dependabot is configured for weekly GitHub Actions dependency updates.
+- Public security/privacy documentation and publishing checklists are strengthened.
+- Session handoff is being maintained as a durable checkpoint for future sessions.
+
+### Important recent discovery
+Earlier Pages failure emails were caused by the old workflow attempting to enable Pages from inside the workflow with `enablement: true`. That workflow has been replaced with the standard manual Pages-source setup, and a manual run succeeded.
+
+### Remaining project/security work
+- Verify GitHub repository security settings that are not exposed through the available connection, especially Secret Scanning/Push Protection and appropriate code scanning.
+- Decide deliberately whether older Git history containing previously published sensitive wording should be rewritten. Do not assume current-file cleanup removes historical content.
+- Continue toward the first complete task-manager case study before expanding the platform footprint.
+
+### Session continuation rule
+Start the next session by reading this handoff first. Treat the repository as public, keep research separate from project facts, verify current rules when researching external platforms or support mechanisms, and update this handoff after meaningful durable changes.
