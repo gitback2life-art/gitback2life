@@ -10,4 +10,12 @@ Thumbs.db
 *.pem
 *.key
 secrets/
+
+# Private/local working material
+private/
 local-private/
+research-private/
+
+# Common local data exports
+*.local
+*.private
