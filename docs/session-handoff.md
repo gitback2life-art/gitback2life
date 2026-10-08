@@ -859,3 +859,12 @@ A manual browser test exposed a usability defect: the Source URL field rejected 
 
 ### Durable lesson
 Use forgiving input for normal human-entered web addresses, then normalize and validate deliberately. Native browser validation should not make a useful field less usable.
+
+## 44. Bare-domain URL shorthand supported — 2026-10-08
+
+The Opportunity Tracker URL field now explicitly accepts the lazy shorthand a normal user would expect:
+- `google.com`
+- `www.google.com`
+- `https://google.com`
+
+Bare domain-style input is normalized to `https://...` before storage. The field remains forgiving while save-time validation prevents non-web schemes from being treated as ordinary source links.
