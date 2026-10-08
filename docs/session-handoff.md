@@ -375,32 +375,33 @@ Anything that should be checked before publishing.
 
 > gitback2life is a truthful, pseudonymous public rebuilding project using AI, learning, and software development to move toward independence; help continue the work without inventing facts, exposing private identity, or allowing temporary research to become project policy without an explicit decision.
 
-
 ## 21. Public repository safety update — 2026-10-08
 
 This session established and applied a stronger public/private boundary for the repository.
 
 ### Completed
 - Confirmed the main repository remains intentionally public.
-- Strengthened `docs/privacy.md` with explicit public-repository rules and a rule that anything committed should be assumed visible and preserved in public history.
+- Strengthened `docs/privacy.md` with explicit public-repository rules and a rule that anything committed should be assumed visible and preserved in public Git history.
 - Expanded `.gitignore` to exclude private/local working directories and local/private data patterns.
-- Sanitized `docs/story.md` so the public story preserves the truthful rebuilding narrative without unnecessary sensitive personal-history detail.
-- Sanitized `docs/support-request.md` so it remains a public draft without committing private payment, account, redemption, or contact information.
-- Hardened `docs/research-session-starter.md` so research sessions explicitly distinguish public from private research and must apply public-repository privacy rules before making changes.
-- Confirmed the repository currently contains no obvious matches for the searched sensitive terms in the current searchable files.
+- Sanitized `docs/story.md` and `docs/support-request.md` so the current public versions avoid unnecessary sensitive personal detail and private transaction information.
+- Hardened `docs/research-session-starter.md` so research sessions explicitly distinguish public from private research.
+- Added public-safety checks to `docs/operating-checklist.md` and `docs/independence-log.md`.
+- Sanitized the README's front-facing project description so unnecessary sensitive personal context is not part of the public project summary.
+- Changed the GitHub Pages workflow to build a limited public-site artifact containing the website and assets rather than uploading the entire repository. This prevents future private/research files from being accidentally published by Pages.
+- Changed website links to repository documentation into explicit GitHub links so the limited Pages artifact remains functional.
+- Added Dependabot configuration for weekly GitHub Actions dependency updates.
+- Strengthened `SECURITY.md` with public-repository and historical-secret guidance.
+- Updated `docs/platform-matrix.md` so current support research is clearly distinguished from permanent project policy and Pages is not described as blocked when the deployment workflow is configured.
+- Re-verified the current files after the changes.
 
-### Operating rule
-The GitHub repository is the public project. Detailed private research, personal records, account information, unpublished operational notes, credentials, and other sensitive material belong in a private workspace or private repository.
+### Historical privacy note
+An older public commit still contains the former support-request wording with a specific personal-health duration. The current file no longer contains that detail. History was not rewritten during this pass because rewriting public commit history would change the project's historical record and requires deliberate handling.
 
-Research is not automatically public. Only deliberately selected, sanitized research should be added to this public repository.
+### Current remaining security work
+- Verify GitHub repository-level security settings not exposed through the available connection, including Secret Scanning/Push Protection and any appropriate code scanning.
+- Decide separately whether historical Git history should be rewritten/sanitized. Do not treat current-file cleanup as removal from historical commits.
 
-### Remaining security work
-- Review Git history separately for any previously exposed sensitive information; removing a file from the current tree does not erase historical commits.
-- Verify GitHub security features such as secret scanning/push protection, Dependabot, and appropriate code scanning in repository settings when those controls are available.
-
----
-
-## 22. Session record — 2026-10-08
+## 22. Earlier session record — 2026-10-08
 
 This session clarified how future sessions should maintain project context and research separately.
 
@@ -422,34 +423,6 @@ The operator will use a reusable research-session starter prompt. It should tell
 ### Important clarification
 The operator wants to be able to start different research sessions by copy/pasting the same starter file and then simply asking the new research questions. The starter should therefore contain the standing workflow and rules, not the details of any one research topic.
 
-
 ---
 
 Last updated: 2026-10-08
-
-## 21. Session record — 2026-10-08
-
-This session completed a broader public-repository hardening pass.
-
-### Completed
-- Confirmed the main repository remains intentionally public.
-- Strengthened `docs/privacy.md` with an explicit public-repository boundary.
-- Expanded `.gitignore` for private/local working material.
-- Sanitized the public story and support-request draft.
-- Hardened `docs/research-session-starter.md` so private research is not automatically placed in the public repository.
-- Added public-safety checks to the operating checklist and independence log.
-- Sanitized the README's front-facing project description so unnecessary sensitive personal context is not part of the public project summary.
-- Changed the GitHub Pages workflow to build a limited public-site artifact containing the website and assets rather than uploading the entire repository. This prevents future private/research files from being accidentally published by Pages.
-- Changed website links to repository documentation into explicit GitHub links so the limited Pages artifact remains functional.
-- Added Dependabot configuration for weekly GitHub Actions dependency updates.
-- Strengthened `SECURITY.md` with public-repository and historical-secret guidance.
-- Updated the platform matrix to distinguish current support research from permanent project policy and to avoid describing Pages as blocked when the deployment workflow is configured.
-- Re-verified the current files after the changes.
-
-### Historical privacy note
-An older public commit still contains the former support-request wording with a specific personal-health duration. The current file no longer contains that detail. History was not rewritten during this pass because rewriting the public commit history would change the project's historical record and requires deliberate handling.
-
-### Current remaining security work
-- Verify GitHub repository-level security settings that are not exposed through the available connection, including Secret Scanning/Push Protection and any appropriate code scanning.
-- Decide separately whether historical Git history should be rewritten/sanitized. Do not treat the current-file cleanup as removal from historical commits.
-
