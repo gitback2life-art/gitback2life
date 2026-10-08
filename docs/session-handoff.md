@@ -699,3 +699,19 @@ Codeberg remains **candidate / not adopted**. Do not create the mirror until the
 
 Detailed research:
 `research/2026-10-08-codeberg-fit.md`
+
+
+## 35. Open-source policy clarified — 2026-10-08
+
+The operator explicitly approved a **full free/open-source model for the current gitback2life repository**.
+
+### Current policy
+- Software in this repository is licensed under the root **MIT License**.
+- Documentation is licensed under **CC BY 4.0** unless a file states otherwise.
+- The gitback2life name, logo, and branding remain reserved as documented in `BRANDING.md`.
+
+### Future commercial software
+When the operator begins creating a separate app/program intended for sale or other proprietary use, licensing will be addressed **at that time and for that project**. That future decision does not change the current gitback2life open-source policy.
+
+### Codeberg implication
+The licensing gate for considering a Codeberg secondary code home is now cleared for the current repository. Codeberg remains optional; GitHub stays the primary public home until the operator decides a second code home is worth the maintenance.
