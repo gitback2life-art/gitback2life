@@ -895,3 +895,17 @@ Browser testing found a more serious interaction issue than missing feedback: th
 
 ### Durable lesson
 For user-facing forms, successful state change must be both prevented from falling through to default browser navigation and visibly confirmed. Deployment should fail early on syntax errors in the embedded application code.
+
+## 47. Opportunity Tracker file acceptance made persistent — 2026-10-08
+
+Testing showed that transient success messages were not enough for file import.
+
+### Correction
+- Added a persistent **Imported files** section to the page.
+- Every accepted JSON file now appears in the list with a check mark, filename, record count, file size, timestamp, and **Accepted** state.
+- Imported-file metadata persists in browser local storage, so it remains visible after a page refresh.
+- Added a persistent **last action** area for save/import/export feedback.
+- Saved opportunities still appear immediately in the opportunity list.
+
+### Terminology
+The tool is local: JSON files are **accepted/imported into the browser**, not uploaded to a project server. The UI now makes that distinction explicit while still giving the user clear acceptance evidence.
