@@ -89,6 +89,17 @@ footer{margin-top:22px;color:var(--muted);font-size:.86rem}
   <button class="primary" id="clearFilters">Reset filters</button>
 </div>
 
+<div id="activity" class="card activity" role="status" aria-live="polite">
+  <p id="activityMain" class="activity-main">Ready. Nothing has been imported yet.</p>
+  <p id="activityMeta" class="activity-meta">Imported files and saved opportunities stay in this browser until you export them.</p>
+</div>
+
+<div class="card activity">
+  <h2 style="margin-top:0">Imported files</h2>
+  <p class="lead">Files accepted by this tool are listed here so you can see exactly what was imported. The original file is not uploaded to a server.</p>
+  <div id="fileList" class="file-list"></div>
+</div>
+
 <div class="grid">
   <section class="card">
     <h2 style="margin-top:0">Add opportunity</h2>
@@ -123,7 +134,10 @@ footer{margin-top:22px;color:var(--muted);font-size:.86rem}
 
 <script>
 const KEY="gitback2life-opportunity-tracker-v1";
+const FILE_KEY="gitback2life-opportunity-tracker-files-v1";
+const ACTIVITY_KEY="gitback2life-opportunity-tracker-activity-v1";
 let items=load();
+let importedFiles=loadImportedFiles();
 const el=id=>document.getElementById(id);
 
 function load(){
@@ -133,7 +147,14 @@ function load(){
     return Array.isArray(data)?data:[];
   }catch(e){ return []; }
 }
-function save(){ localStorage.setItem(KEY,JSON.stringify(items)); render(); }
+function save(){ localStorage.setItem(KEY,JSON.stringify(items)); render(); renderImportedFiles(); }
+function loadImportedFiles(){
+  try{
+    const raw=localStorage.getItem(FILE_KEY);
+    const data=raw?JSON.parse(raw):[];
+    return Array.isArray(data)?data:[];
+  }catch(e){ return []; }
+}
 function esc(value){
   return String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",""":"&quot;","'":"&#39;"}[ch]));
 }
@@ -179,15 +200,47 @@ function render(){
       +'</article>';
   }).join("");
 }
+function renderActivity(){
+  const main=el("activityMain"), meta=el("activityMeta");
+  if(!main || !meta) return;
+  try{
+    const raw=localStorage.getItem(ACTIVITY_KEY);
+    if(raw){
+      const data=JSON.parse(raw);
+      main.textContent=data.message||"Ready.";
+      meta.textContent=data.at?"Last action: "+new Date(data.at).toLocaleString():"";
+    }else{
+      main.textContent="Ready. Nothing has been imported yet.";
+      meta.textContent="Imported files and saved opportunities stay in this browser until you export them.";
+    }
+  }catch(e){}
+}
+function renderImportedFiles(){
+  const root=el("fileList");
+  if(!root) return;
+  if(!importedFiles.length){
+    root.innerHTML='<div class="empty">No JSON files accepted yet.</div>';
+    return;
+  }
+  root.innerHTML=importedFiles.map(file=>{
+    const when=file.importedAt?new Date(file.importedAt).toLocaleString():"";
+    const size=file.size?Math.max(1,Math.round(file.size/1024))+" KB":"";
+    const records=file.records+" record"+(file.records===1?"":"s");
+    return '<div class="file-row"><div><div class="file-name">✓ '+esc(file.name)+'</div><div class="file-meta">'+esc(records)+' · '+esc(size)+' · '+esc(when)+'</div></div><span class="tag">Accepted</span></div>';
+  }).join("");
+}
 function resetForm(){ el("form").reset(); }
 function setStatus(id,message,type="info",persistKey=""){
   const box=el(id);
-  if(!box) return;
-  box.style.display="block";
-  box.className="card status-"+type;
-  const p=box.querySelector(".status-text");
-  if(p) p.textContent=message; else box.textContent=message;
+  if(box){
+    box.style.display="block";
+    box.className="card status-"+type;
+    const p=box.querySelector(".status-text");
+    if(p) p.textContent=message; else box.textContent=message;
+  }
   if(persistKey) sessionStorage.setItem(persistKey,JSON.stringify({message,type}));
+  localStorage.setItem(ACTIVITY_KEY,JSON.stringify({message,type,at:new Date().toISOString()}));
+  renderActivity();
 }
 function restoreStatus(){
   [["saveStatus","gitback2life-save-status"],["importStatus","gitback2life-import-status"]].forEach(([id,key])=>{
@@ -285,13 +338,24 @@ el("importInput").addEventListener("change",async e=>{
       updatedAt:x.updatedAt||new Date().toISOString()
     }));
     items=cleaned; save();
-    showImportStatus("✓ Imported "+cleaned.length+" opportunit"+(cleaned.length===1?"y":"ies")+" from "+file.name+".");
+    importedFiles.unshift({
+      id:(crypto.randomUUID?crypto.randomUUID():String(Date.now())),
+      name:file.name,
+      size:file.size||0,
+      records:cleaned.length,
+      importedAt:new Date().toISOString()
+    });
+    localStorage.setItem(FILE_KEY,JSON.stringify(importedFiles));
+    renderImportedFiles();
+    showImportStatus("✓ Accepted "+file.name+" — "+cleaned.length+" opportunit"+(cleaned.length===1?"y":"ies")+" imported.");
   }catch(err){
     showImportStatus("Import failed. The file must be a JSON export from this tool.",false);
   }
   e.target.value="";
 });
 restoreStatus();
+renderActivity();
+renderImportedFiles();
 render();
 </script>
 </body>
