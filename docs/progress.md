@@ -53,3 +53,5 @@
 | 2026-10-08 | New build UX | Changed Opportunity Tracker save flow to a dedicated **Opportunity Saved** completion screen with navigation options | Saving now has a clear end state and immediate next actions | Re-test save, navigation, and refresh behavior in the deployed prototype |
 
 | 2026-10-08 | Public story | Published the first narrative gitback2life story as a dedicated public page and linked it from the homepage | The project now has a readable public story in addition to the repository history, build log, and case study | Reuse the story as the basis for one carefully chosen external publishing experiment |
+
+| 2026-10-08 | External publishing | Published the first gitback2life story on Hashnode and shared its public URL | The story now has an external publishing home as well as the GitHub Pages site | Share the article with a few relevant people/communities thoughtfully, then learn from any real response |
