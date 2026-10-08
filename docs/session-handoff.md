@@ -927,6 +927,23 @@ After **Save opportunity** succeeds:
 For major state-changing actions, prefer a clear completion screen with obvious next actions over a transient confirmation that leaves the user wondering what happened.
 
 
+## 50. Story log started — 2026-10-08
+
+A dedicated `docs/story-log.md` now records meaningful, funny, confusing, failed, and corrective moments from the rebuilding process.
+
+### Durable story rule
+Do not treat the project as a polished success story. Preserve useful moments of confusion, goofy tests, mistakes, failed attempts, and the corrections that followed.
+
+The story log is **not** a transcript and should not capture every mundane interaction. Capture moments that are useful, funny, revealing, or meaningful to the project's real rebuilding narrative.
+
+### Current entries
+The initial log records:
+- the clarification that the Opportunity Tracker is for saving real opportunities found elsewhere, not generating them;
+- the random-text `.json` import test;
+- the discovery that the save-success message was too visually subtle.
+
+Future sessions doing meaningful project work should add notable story moments to `docs/story-log.md` while avoiding protected private identity information and other sensitive data.
+
 ## 49. Opportunity Tracker implementation reconciliation — 2026-10-08
 
 ### Problem found
