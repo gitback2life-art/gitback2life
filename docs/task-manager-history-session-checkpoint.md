@@ -203,3 +203,62 @@ The direct V7→V8 diff identified the drag/drop handler change above; no broade
 V8 is now the latest directly recovered source baseline.
 
 Future investigation should compare the V8 source against the documented final requirements and determine which remaining behaviors can be verified statically versus which require real Windows/MSHTML execution.
+
+
+## Timestamp Evidence Review — October 8, 2026
+
+Additional historical packages and tracker files were supplied and inspected, including V2/V3/V4/V5 handoff ZIPs and the spreadsheet files.
+
+### Earliest preserved ZIP-entry timestamp currently found
+
+The earliest filesystem-style timestamp preserved inside the supplied ZIP archives is:
+
+**2026-10-06 17:24:16**
+
+This timestamp appears on the earliest files in the original/updated package, including:
+
+- `Solo_Business_Command_Center_Handoff_Outline.docx`
+- `Solo_Business_Command_Center_Handoff_Outline.md`
+- `current_ui_sidebar_reference.png`
+- `sole_proprietor_business_tracker_hybrid.xlsx`
+
+This is **archive-preserved file timestamp evidence**, not proof of the moment the project was originally created. ZIP timestamps can represent file modification/package state and can change when files are copied or repackaged.
+
+### Stronger source-file sequence
+
+The supplied package metadata also gives a useful source sequence:
+
+- V2 source: **2026-10-06 17:41:28**
+- V2 backup in V3 package: **2026-10-06 17:41:28**
+- V3 source: **2026-10-06 17:57:04**
+- V4 package/source set: **2026-10-06 18:51:22**
+- V5 package/source set: **2026-10-06 19:00:40**
+
+This supports a chronological V2 → V3 → V4 → V5 progression on October 6, 2026, but should not be treated as a complete development timeline.
+
+### DOCX metadata caveat
+
+The handoff-outline DOCX contains internal Office metadata showing a creation/modified timestamp of **2013-12-23 23:15:00Z**.
+
+This is observed metadata, but it is **not currently credible as the project-development date** because the same metadata appears across later 2026 packages and conflicts with the surrounding package/source chronology. Treat it as metadata contamination/default/template history unless independently corroborated.
+
+### Evidence labels for timestamps
+
+- **Observed:** ZIP entry timestamps and embedded document metadata.
+- **Strong historical evidence:** repeated October 6, 2026 timestamps attached to the versioned source/package sequence.
+- **Not established:** the exact moment the project was first created or first developed.
+- **Do not claim:** that October 6 at 17:24:16 is the project's absolute start time.
+- **Do not claim:** that the 2013 DOCX metadata dates the project to 2013.
+
+### Current historical baseline
+
+The investigation now has:
+
+1. source-level implementation evidence through **V8**
+2. build/handoff evidence through **V8**
+3. preserved package timestamps establishing a chronological V2–V5 sequence on **October 6, 2026**
+4. a clear distinction between archive timestamps, document metadata, source evidence, and runtime verification
+
+The earliest currently useful project-related timestamp is therefore **October 6, 2026 at 17:24:16**, with the earliest directly timestamped V2 source at **17:41:28**.
+
+This timestamp section should be treated as a checkpoint, not as a final project chronology. Further packages, original chat exports, source backups, test harnesses, or filesystem-preserving archives could establish earlier or more precise dates.
