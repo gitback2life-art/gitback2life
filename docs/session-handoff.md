@@ -798,3 +798,15 @@ Real Windows/MSHTML runtime verification, screenshots, a hosted demo, and expand
 
 ### Durable context
 The public project should continue from the documented evidence rather than reopening the same historical reconstruction or runtime-testing loop.
+
+## 40. Public site progress presentation improved — 2026-10-08
+
+The public site now presents concrete milestones instead of an arbitrary overall percentage.
+
+### Completed
+- Added a public **Build log** section linking to verified publishing, task-manager chronology, licensing, and dated progress records.
+- Replaced the unsupported 18% progress bar with evidence-based milestone cards.
+- Recorded the current checkpoint as 2026-10-08 and kept next work framed around useful public building and legitimate opportunity testing.
+
+### Durable context
+Do not invent a project-wide completion percentage unless a defensible measurement model is created first. Prefer dated milestones and evidence links.
