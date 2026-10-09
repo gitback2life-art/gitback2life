@@ -48,3 +48,9 @@ The prototype is dependency-free and can also be served as static files from any
 Prototype / learning project.
 
 The goal is to learn by building a small useful tool, then decide from evidence whether it deserves more development.
+
+Other researched candidates:
+
+- [Code Your Future volunteer record](codeyourfuture-volunteer-record.json) — first-choice candidate for a small AI-guidance/documentation contribution, pending maintainer confirmation.
+- [Cboard volunteer record](cboard-volunteer-record.json) — alternative assistive-technology code issue, more technically demanding.
+- Full evaluation: [volunteer opportunities research](../../research/2026-10-08-volunteer-opportunities.md).
