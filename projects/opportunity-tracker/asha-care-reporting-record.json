@@ -2,10 +2,10 @@
   {
     "title": "ASHA Care — aggregate household and coverage report",
     "type": "Volunteer / community health worker software",
-    "status": "Prepared for review",
+    "status": "Inactive — owner said work was done",
     "risk": "Medium",
     "deadline": "",
     "url": "https://github.com/orgs/community/discussions/208007",
-    "notes": "Current, specific help request: on 2026-10-07 the author said their web app for their mother, an ASHA community health worker, still needed improvements and especially a reporting section. App repo: https://github.com/parth270520/My-Mom-Project-. An open PR already adds attendance/duty tracking and a monthly attendance register, so the prepared contribution is separate: a read-only standard-library Python CLI that emits per-village aggregate household/member/coverage counts as CSV or JSON. Output omits person-level PII and health notes. Tests use synthetic SQLite schema only; no real DB or patient data was accessed. Five tests pass. This is a CLI/report-export starter, not a full UI or official government report; owner review is needed. The patch has not been submitted upstream because the connected GitHub integration cannot write comments to other repositories. Patch/zip were prepared in the current session. Sources: https://github.com/orgs/community/discussions/208007 ; https://github.com/parth270520/My-Mom-Project- ; https://github.com/parth270520/My-Mom-Project-/pull/1"
+    "notes": "Do not pursue or submit the prepared patch. The owner wrote on 2026-09-29 in the discussion that their work was done because someone had helped: https://github.com/orgs/community/discussions/208007#discussioncomment-18654196. The page also shows later Oct 7 replies describing remaining improvements, so the thread is inconsistent; operator's correction is to treat this request as inactive rather than infer current need from an unclosed discussion. Any locally prepared script stays unsubmitted practice work only. No comment, branch, PR, or contact made. No real health data used."
   }
 ]
