@@ -1168,3 +1168,11 @@ If the operator approves the first choice, read the referenced course guidance a
 ### Exact next step
 For the worthy-cause path, review Code Your Future's current contribution guide and AI-use guidance, then—only if the operator wants to proceed—ask whether issue #1902 is still needed. No other work is required before that decision.
 
+
+## Section 61 — Code Your Future contribution attempt — 2026-10-08
+
+- Operator approved proceeding with the first remote volunteer candidate: Code Your Future curriculum issue [#1902 — Add AI guidelines to Launch](https://github.com/CodeYourFuture/curriculum/issues/1902).
+- Rechecked current public status: issue is still Open; Launch prep page currently has no Launch-specific AI-use section matching the issue; the course-wide AI guidance is linked from the Guides site. Reviewed current `CONTRIBUTING.md` and the public AI Usage Guidelines landing page.
+- Attempted to ask maintainers whether the issue is still wanted before drafting, as planned. The connected GitHub integration returned HTTP 403 “Resource not accessible by integration”; no comment was posted. No patch, fork, branch, pull request, or commitment has been created.
+- Next step: operator can post the short confirmation question directly on issue #1902 from the project’s intended pseudonymous GitHub account. Wait for maintainer guidance before drafting the actual content. Do not expose private identity information.
+- A wallet is not relevant to this contribution; no crypto setup or use is planned.
