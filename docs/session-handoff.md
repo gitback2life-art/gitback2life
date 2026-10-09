@@ -1099,4 +1099,6 @@ The operator prefers to keep the dedicated project email hidden for now because 
 If the operator later wants a private contact path, first assess moderation and abuse protections such as anti-bot controls, rate limits, spam filtering, minimal data collection, and a safe way to handle reports. Explain who receives submissions and what is public versus private before publishing the form.
 
 This is a privacy/scope decision, not a permanent rejection of contact options. Revisit only when the operator feels ready.
+### Response-time expectation
+Comments and messages are asynchronous. The operator has normal real-life needs, including sleep and time away from the computer; no immediate or same-day response is promised or required. Respond when convenient and comfortable. gitback2life is a personal rebuild, not a staffed support desk.
 
