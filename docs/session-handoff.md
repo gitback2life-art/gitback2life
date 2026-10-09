@@ -1191,3 +1191,19 @@ For the worthy-cause path, review Code Your Future's current contribution guide 
 - Why: recent documentation-only commits had triggered repeated Pages deployments even though the artifact is assembled from a small, explicit set of site files. This filter should reduce unnecessary queued deployments while preserving deployment on site changes.
 - This is a targeted workflow improvement; it does not establish the root cause of the prior stall. Check the first run triggered by this workflow-file change and confirm successful deployment before treating the change as validated.
 - Further edits to handoff, progress, research, and other non-site docs will not trigger Pages deployment unless the workflow itself or a deployed site input changes.
+
+## Section 64 — Current community-requested work: ASHA Care reporting — 2026-10-08
+
+- New current candidate selected from a GitHub Community help request: https://github.com/orgs/community/discussions/208007. The author requested assistance for a web app intended to help their mother, an ASHA community health worker in India; on 2026-10-07 the author said the app was mostly built but needed improvements/bug fixes and especially a reporting section.
+- Target repository: https://github.com/parth270520/My-Mom-Project-. It is a Django/SQLite app with `Village`, `Family`, and `Member` models. Handle its personal and health fields carefully.
+- There is already an open contributor PR #1 adding attendance/duty tracking and a print-ready monthly attendance register. Our proposed slice is distinct: an aggregate household/member coverage snapshot by village, not attendance logs.
+- Research record: `research/2026-10-08-asha-care-reporting-opportunity.md`; tracker item: `projects/opportunity-tracker/asha-care-reporting-record.json`.
+
+## Section 65 — ASHA Care report patch prepared and tested — 2026-10-08
+
+- Prepared a small CLI contribution consisting of `scripts/generate_coverage_report.py`, `tests/test_generate_coverage_report.py`, and `docs/coverage-report-script.md`. The script opens SQLite read-only and emits CSV or JSON with per-village and all-village aggregate counts for household/member totals, selected current coverage fields, and recorded pregnancy-date completeness.
+- Safety boundary: output contains aggregate counts only, not person-level names, addresses, phone numbers, Aadhaar/ABHA identifiers, disease notes, caste, religion, or pregnancy rows. It reports the database snapshot only; not service history, verified enrollment, official forms, or clinical guidance.
+- Five standard-library unit tests passed using synthetic in-memory/file-backed SQLite fixtures. A patch application check passed against a sample repository root with an existing README. No live database or patient records were opened. No Django integration test or operational validation was performed against the owner's system.
+- Downloadable files in the current conversation: `asha-care-coverage-report.zip` (README + script + test + report documentation) and `asha-care-coverage-report.patch` (new files only, ready to apply at the target repo root).
+- No comment, branch, or PR has been created in the target repo. The external GitHub comment write previously returned 403 through the connected integration, so direct delivery upstream is still blocked by permissions. Do not claim it has been delivered or accepted.
+- Next step: the operator can inspect/use the patch and submit a PR from a fork or post a short confirmation question on the community discussion, asking whether an aggregate village-level snapshot is the type of reporting desired. Keep the report scope small and wait for feedback before adding any individual-level exports.
