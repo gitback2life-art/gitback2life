@@ -78,6 +78,6 @@ This is a more technical first contribution than the previous documentation task
 
 The original Code Your Future issue #1902 is still open, but it was created and last updated in June 2026. It is now **deprioritized as our primary pick** because the task looked stale and lacked recent activity; no comment was posted.
 
-**Current recommendation:** investigate Open Food Facts issue #14853 first. The issue was opened and updated within the last two days of this research, includes a concrete diagnosis, and points to existing parser/test code. The scope still requires care because parser behavior can change the way ingredient lists are structured. This is research, not an accepted assignment or a claim that maintainers have reserved the issue for us.
+**Recommendation at the time of this research:** Open Food Facts issue #14853 was the most recent concrete code-and-test alternative found in that search. After the operator asked specifically for a community request where we can make and test a small deliverable, the later-selected current candidate is the ASHA Care reporting request documented in [the dedicated evaluation](2026-10-08-asha-care-reporting-opportunity.md). Open Food Facts remains an alternative, not the current top choice.
 
-Work at a sustainable pace. Re-check that the issue remains open and that no PR has appeared before preparing a contribution. No income, acceptance, or deadline is implied.
+Work at a sustainable pace. Re-check that an issue remains open and that no PR has appeared before preparing a contribution. No income, acceptance, or deadline is implied.
