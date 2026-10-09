@@ -2,7 +2,7 @@
 
 ## From a task list to a real Windows application
 
-One of the first substantial software projects in the gitback2life rebuilding process was a standalone Windows task-management application: a small business command center designed to keep tasks, notes, links, files, and categories together in one place.
+One of the first substantial software projects in gitback2life was a standalone Windows task-management application: a small business command center designed to keep tasks, notes, links, files, and categories together in one place.
 
 What makes the project worth documenting is not a perfect final product.
 

@@ -2,11 +2,11 @@
 
 **Rebuild. Learn. Build. Become independent.**
 
-> **Rebuilding a life, one line of code at a time.**
+> **Building what comes next, one line of code at a time.**
 
 ![gitback2life](assets/gitback2life-mark.svg)
 
-gitback2life is a pseudonymous personal rebuilding project documenting the process of moving from a long interruption toward greater independence using AI, learning, software development, and practical problem-solving.
+gitback2life is a pseudonymous project documenting real software work, learning, and problem-solving. I'm disabled and live with complicated health issues; for a long time, those realities limited the work and projects I could take on. I'm now building useful tools, developing practical skills, and creating more options and independence. The focus is on the work and what it demonstrates—not on reducing a person to their circumstances.
 
 ## Live site
 
@@ -36,7 +36,7 @@ The project's identity is a cyber-tech comeback story:
 2. Build a public but privacy-preserving project identity.
 3. Document real software and learning progress.
 4. Explore legitimate, $0-upfront-cost income opportunities.
-5. Reduce and ultimately eliminate the need for outside support.
+5. Build skills, useful software, and opportunities that increase agency, choice, and independence.
 
 ## Current assets
 

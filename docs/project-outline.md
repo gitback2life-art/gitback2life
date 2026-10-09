@@ -1,7 +1,7 @@
 # gitback2life — Project Outline
 
 ## Mission
-Use AI, learning, and software building as practical tools for rebuilding life and moving toward independence.
+Use AI, learning, and software building to develop capability, create useful things, and move toward greater independence after a long period shaped by disability and complicated health issues.
 
 ## Pillars
 - Rebuild: routines, organization, problem-solving, momentum
@@ -25,4 +25,4 @@ Fund one month of continued ChatGPT access through a legitimate direct support m
 - keep important decisions under the user's control
 
 ## Success
-The project succeeds when the user increasingly handles life independently and no longer needs outside support for the tools used to rebuild.
+The project succeeds by building skills, useful tools, and real opportunities that increase the user's agency and choices, with sustainable access to the tools and support that make the work possible.

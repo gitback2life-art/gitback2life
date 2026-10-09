@@ -74,7 +74,7 @@ The fixes show how the reasoning improved.
 
 The uncertainty shows where verification still matters.
 
-This project is part of a larger rebuilding effort called **gitback2life**. The goal is not to pretend everything is easy or polished. It is to rebuild skills by doing real work, learn from what goes wrong, and keep moving toward greater independence.
+This work is part of **gitback2life**, a project I began while disabled and living with complicated health issues that limited the work and projects I could take on for a long time. Now I'm putting my energy into practical software, real problem-solving, and learning in public. This article documents the work itself: what I tried, what failed, what I changed, and what the evidence supports. AI helps accelerate the process; the decisions and verification remain mine.
 
 The task manager is one piece of that process.
 
