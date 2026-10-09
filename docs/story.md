@@ -135,7 +135,7 @@ The useful story is:
 
 That distinction matters.
 
-The project documents how I use modern tools to learn, build, troubleshoot, and create opportunities after a long period when disability and complicated health issues limited the work I could take on. The story is about agency and what gets built—not a single recovery narrative.
+The project documents how I use modern tools to learn, build, troubleshoot, and create opportunities. The story is about agency and what gets built—not a single recovery narrative.
 
 Sometimes the next step is obvious.
 
