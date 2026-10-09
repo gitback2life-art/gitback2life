@@ -1102,3 +1102,15 @@ This is a privacy/scope decision, not a permanent rejection of contact options. 
 ### Response-time expectation
 Comments and messages are asynchronous. The operator has normal real-life needs, including sleep and time away from the computer; no immediate or same-day response is promised or required. Respond when convenient and comfortable. gitback2life is a personal rebuild, not a staffed support desk.
 
+## 58. Operator-confirmed sample import — 2026-10-08
+
+The operator imported `projects/opportunity-tracker/utest-academy-research-record.json` into the deployed Opportunity Tracker and reported that it worked.
+
+### Verification boundary
+- Confirmed by operator: the sample JSON import succeeded.
+- Not established by this test: full end-to-end reliability of all tracker features, storage edge cases, edit/delete paths, or every browser environment.
+- Keep the uTest candidate in **Researching** with **Unknown** risk. Import success verifies the JSON workflow for this sample, not the legitimacy or availability of any paid opportunity.
+
+### Next step
+When convenient, decide whether uTest's eligibility and real-name/account requirements are acceptable before creating an account. No urgency or response-time expectation applies; sustainable real-life pace takes priority.
+
