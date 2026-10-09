@@ -49,8 +49,11 @@ Prototype / learning project.
 
 The goal is to learn by building a small useful tool, then decide from evidence whether it deserves more development.
 
-Other researched candidates:
+Current and previous candidates:
 
-- [Code Your Future volunteer record](codeyourfuture-volunteer-record.json) — first-choice candidate for a small AI-guidance/documentation contribution, pending maintainer confirmation.
+- [ASHA Care reporting request](asha-care-reporting-record.json) — current selected candidate; aggregate CSV/JSON report patch prepared and tested with synthetic data, awaiting operator submission/review. This is a CLI starter, not yet an upstream contribution.
+- [Open Food Facts parser issue](openfoodfacts-parser-record.json) — recent code-and-test issue, alternative if we decide against the ASHA Care report.
+- [Code Your Future volunteer record](codeyourfuture-volunteer-record.json) — deprioritized because issue #1902 was last updated in June and now looks stale; no comment posted.
 - [Cboard volunteer record](cboard-volunteer-record.json) — alternative assistive-technology code issue, more technically demanding.
-- Full evaluation: [volunteer opportunities research](../../research/2026-10-08-volunteer-opportunities.md).
+- Full earlier evaluation: [volunteer opportunities research](../../research/2026-10-08-volunteer-opportunities.md).
+- Current request evaluation: [ASHA Care reporting research](../../research/2026-10-08-asha-care-reporting-opportunity.md).
