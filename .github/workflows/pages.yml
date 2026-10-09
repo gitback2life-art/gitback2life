@@ -3,6 +3,12 @@ name: Deploy gitback2life site
 on:
   push:
     branches: ["main"]
+    paths:
+      - ".github/workflows/pages.yml"
+      - "index.html"
+      - "story.html"
+      - "assets/**"
+      - "projects/opportunity-tracker/index.html"
   workflow_dispatch:
 
 permissions:
