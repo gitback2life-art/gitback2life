@@ -1,0 +1,11 @@
+[
+  {
+    "title": "Open Food Facts — fix the sheep's and goat's milk parser case",
+    "type": "Volunteer / open food-data parsing and tests",
+    "status": "Researching",
+    "risk": "Unknown",
+    "deadline": "",
+    "url": "https://github.com/openfoodfacts/openfoodfacts-server/issues/14853",
+    "notes": "Current front-runner because this issue is recent: opened 2026-10-07, updated 2026-10-08, and still open when checked. One public comment traces the case to the ingredient parser's requirement that both sides of an 'and' expression be recognized independently; 'Pasteurised sheep's and goat's milk' leaves 'sheep's' unrecognized because 'milk' is shared. Suggested scope: inspect existing parser fixtures, add a regression test, then consider the smallest safe shared-head handling change without breaking phrases where 'and' is part of an ingredient description. No assignee was shown. No matching title was found in the first page of recent open pull requests, but re-check before implementation. This is a code-and-test task, more technical than the previous documentation candidate. No comment, fork, branch, PR, or commitment has been made. No payment or crypto required. Contribution guide: https://github.com/openfoodfacts/openfoodfacts-server/blob/main/CONTRIBUTING.md"
+  }
+]
