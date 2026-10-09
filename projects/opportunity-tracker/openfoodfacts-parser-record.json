@@ -1,11 +1,11 @@
 [
   {
-    "title": "Open Food Facts — fix the sheep's and goat's milk parser case",
-    "type": "Volunteer / open food-data parsing and tests",
+    "title": "Open Food Facts — fix shared-head ingredient parsing for sheep's and goat's milk",
+    "type": "Volunteer / open food-data parser and tests",
     "status": "Researching",
-    "risk": "Unknown",
+    "risk": "Medium",
     "deadline": "",
     "url": "https://github.com/openfoodfacts/openfoodfacts-server/issues/14853",
-    "notes": "Current front-runner because this issue is recent: opened 2026-10-07, updated 2026-10-08, and still open when checked. One public comment traces the case to the ingredient parser's requirement that both sides of an 'and' expression be recognized independently; 'Pasteurised sheep's and goat's milk' leaves 'sheep's' unrecognized because 'milk' is shared. Suggested scope: inspect existing parser fixtures, add a regression test, then consider the smallest safe shared-head handling change without breaking phrases where 'and' is part of an ingredient description. No assignee was shown. No matching title was found in the first page of recent open pull requests, but re-check before implementation. This is a code-and-test task, more technical than the previous documentation candidate. No comment, fork, branch, PR, or commitment has been made. No payment or crypto required. Contribution guide: https://github.com/openfoodfacts/openfoodfacts-server/blob/main/CONTRIBUTING.md"
+    "notes": "Alternative current issue, opened 2026-10-07 and updated 2026-10-08. Reporter says 'Pasteurised sheep's and goat's milk' is not split correctly because the parser tries to recognize 'sheep's' without its shared head word 'milk'. Existing parser logic and tests are available. More technical and requires care around broadening 'and' splitting. No comment, branch or PR made; no assignment or acceptance implied. Superseded as our first choice by the ASHA Care community request because that owner explicitly said the reporting section is missing and shared the active project. Source: https://github.com/openfoodfacts/openfoodfacts-server/issues/14853"
   }
 ]
