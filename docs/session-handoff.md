@@ -1138,3 +1138,33 @@ Research only. No issue comments, applications, pull requests, account registrat
 ### Next step
 If the operator approves the first choice, read the referenced course guidance and contribution instructions, then ask maintainers if issue #1902 remains wanted. Only then draft a small contribution for review.
 
+## 60. Session checkpoint — 2026-10-08
+
+### Completed and recorded
+- Published two Hashnode articles and added both links to the primary GitHub Pages homepage under **Writing from the build** and to the repository README.
+- Confirmed the Pages workflow that deployed those homepage links completed successfully. The repository source contains the writing section; no separate manual browser click-through was performed.
+- Researched uTest Academy as a free learning candidate and confirmed the operator successfully imported the sample JSON in the deployed Opportunity Tracker. This verifies that sample import only—not the entire application. uTest remains a candidate pending a privacy/eligibility decision.
+- Researched two remote, no-cost volunteer possibilities:
+  - **Code Your Future issue #1902 — Add AI guidelines to Launch**, recommended first because it is primarily curriculum/documentation for free coding education. The issue was open at research time but several months old; confirm maintainers still want it before drafting or opening a PR.
+  - **Cboard issue #2250 — audio filename extension and unit test**, an alternative with more JavaScript/React work affecting assistive communication software; handle carefully and confirm ongoing need first.
+- Added public-safe research and importable tracker records for both volunteer candidates.
+- Recorded the operator's contact decision: keep the project email hidden and do not launch a contact form yet, due to spam/scam concerns. Existing public GitHub forms and optional Hashnode comments remain; replies are asynchronous, with no promise of an immediate response.
+
+### Current guardrails
+- Do not publish the dedicated project email or add contact intake until the operator is ready and anti-spam handling is considered.
+- Do not contact a volunteer organization, comment on an issue, submit a pull request, register for a service, or make a commitment without proceeding deliberately with the operator.
+- Do not assume old issues are still wanted merely because their status is Open.
+- Keep public contribution activity pseudonymous and do not commit private identity details.
+- Preserve the user's sustainable pace. Real-life time, sleep, and breaks take priority; comments do not create a response-time obligation.
+
+### Files most relevant to resume
+- `research/2026-10-08-volunteer-opportunities.md`
+- `projects/opportunity-tracker/codeyourfuture-volunteer-record.json`
+- `projects/opportunity-tracker/cboard-volunteer-record.json`
+- `projects/opportunity-tracker/utest-academy-research-record.json`
+- `docs/progress.md`
+- `docs/story-log.md`
+
+### Exact next step
+For the worthy-cause path, review Code Your Future's current contribution guide and AI-use guidance, then—only if the operator wants to proceed—ask whether issue #1902 is still needed. No other work is required before that decision.
+
