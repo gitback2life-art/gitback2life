@@ -12,6 +12,13 @@ gitback2life is a pseudonymous personal rebuilding project documenting the proce
 
 **[gitback2life on GitHub Pages](https://gitback2life-art.github.io/gitback2life/)**
 
+## Published writing
+
+Stories from the real rebuilding and software-development process:
+
+- [I Started Building Again: Here's What Actually Happened](https://gitback2life.hashnode.dev/i-started-building-again-here-s-what-actually-happened)
+- [We Thought the Feature Was Finished. Then We Tried Using the Full App.](https://gitback2life.hashnode.dev/we-thought-the-feature-was-finished-then-we-tried-using-the-full-app)
+
 ## The visual idea
 
 The project's identity is a cyber-tech comeback story:
