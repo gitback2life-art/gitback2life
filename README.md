@@ -71,6 +71,9 @@ The project's identity is a cyber-tech comeback story:
 - projects/opportunity-tracker/README.md — next-build project documentation
 - projects/opportunity-tracker/index.html — dependency-free local opportunity tracker prototype
 - projects/opportunity-tracker/utest-academy-research-record.json — importable, research-only testing candidate
+- projects/opportunity-tracker/codeyourfuture-volunteer-record.json — research-only Code Your Future volunteer candidate
+- projects/opportunity-tracker/cboard-volunteer-record.json — research-only Cboard assistive-technology candidate
+- research/2026-10-08-volunteer-opportunities.md — evaluation of two remote tech-volunteer candidates
 - research/2026-10-08-utest-evaluation.md — official-source evaluation of the candidate
 
 ## Important
