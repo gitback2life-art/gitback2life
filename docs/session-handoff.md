@@ -1181,5 +1181,13 @@ For the worthy-cause path, review Code Your Future's current contribution guide 
 
 - Operator reports the GitHub Pages workflow stalled and they had to rerun the jobs manually.
 - Verified run #198 (ID 37867845877): attempt 2 completed successfully; latest job summary shows the `deploy` job succeeded. Later documentation commits also completed successfully in runs #199 and #200.
-- Workflow file `.github/workflows/pages.yml` currently has `cancel-in-progress: false` and supports `workflow_dispatch`. The observed stall's root cause has not been established, so do not claim a configuration fix or change workflow behavior without further diagnosis.
+- At the time of this note, `.github/workflows/pages.yml` had `cancel-in-progress: false` and `workflow_dispatch`; the original stall's root cause was unknown. A follow-up change is recorded in Section 63: automatic deploys are now limited to site inputs and the workflow file, to avoid redundant deployments for docs-only commits. This is a queue-noise reduction, not a proven fix for the original stall.
 - Operational note: after rapid documentation pushes or any apparent stall, check the latest Actions run and its attempt/job status before declaring deployment complete. If still stalled, use the appropriate manual rerun and record what happened.
+
+## Section 63 — Pages workflow trigger improvement — 2026-10-08
+
+- Updated `.github/workflows/pages.yml` so pushes to `main` automatically deploy only when one of the deployed inputs changes: `index.html`, `story.html`, `assets/**`, `projects/opportunity-tracker/index.html`, or the workflow file itself.
+- Manual `workflow_dispatch` remains enabled. Deployment concurrency remains `group: pages` with `cancel-in-progress: false`.
+- Why: recent documentation-only commits had triggered repeated Pages deployments even though the artifact is assembled from a small, explicit set of site files. This filter should reduce unnecessary queued deployments while preserving deployment on site changes.
+- This is a targeted workflow improvement; it does not establish the root cause of the prior stall. Check the first run triggered by this workflow-file change and confirm successful deployment before treating the change as validated.
+- Further edits to handoff, progress, research, and other non-site docs will not trigger Pages deployment unless the workflow itself or a deployed site input changes.
