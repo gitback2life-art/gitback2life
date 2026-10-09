@@ -1207,3 +1207,11 @@ For the worthy-cause path, review Code Your Future's current contribution guide 
 - Downloadable files in the current conversation: `asha-care-coverage-report.zip` (README + script + test + report documentation) and `asha-care-coverage-report.patch` (new files only, ready to apply at the target repo root).
 - No comment, branch, or PR has been created in the target repo. The external GitHub comment write previously returned 403 through the connected integration, so direct delivery upstream is still blocked by permissions. Do not claim it has been delivered or accepted.
 - Next step: the operator can inspect/use the patch and submit a PR from a fork or post a short confirmation question on the community discussion, asking whether an aggregate village-level snapshot is the type of reporting desired. Keep the report scope small and wait for feedback before adding any individual-level exports.
+
+## Section 66 — ASHA Care request invalidated — 2026-10-08
+
+- Operator provided the specific completion comment: https://github.com/orgs/community/discussions/208007#discussioncomment-18654196. The linked public thread contains a September 29, 2026 comment by the author saying their work was done because someone had helped. Later October 7 comments in that same thread describe remaining improvement needs, creating conflicting status signals.
+- Operator's correction is to treat the request as no longer needing help and to recognize that the discussion was not correctly closed. We must not submit the prepared report patch or contact the author unless they clearly renew the request.
+- Tracker status changed to **Inactive — owner said work was done**; dedicated research note now warns **do not submit**; Opportunity Tracker index and historical volunteer research were updated.
+- The aggregate CSV/JSON prototype was practice work only, not a delivered contribution. It has not been submitted upstream, no real health database was read, and synthetic tests do not establish suitability for that app. Keep that distinction clear in any future case study.
+- Next step: find a different community request that is narrow enough to build and test, and verify from the latest owner comment / issue activity that help is still wanted before investing in implementation.
