@@ -37,6 +37,10 @@ Do not enter passwords, payment-card details, government identifiers, or other s
 
 Open `index.html` in a modern browser.
 
+### Optional sample import
+
+[`utest-academy-research-record.json`](utest-academy-research-record.json) is one researched candidate record you can import with **Import JSON**. It is marked **Researching** with **Unknown** risk; it is not a verified open paid assignment or a recommendation to create an account. Read [the evaluation](../../research/2026-10-08-utest-evaluation.md) first. The sample contains no personal account or payment details.
+
 The prototype is dependency-free and can also be served as static files from any free static host.
 
 ## Status
