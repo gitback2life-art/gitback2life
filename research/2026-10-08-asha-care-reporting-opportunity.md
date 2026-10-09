@@ -1,10 +1,10 @@
-# ASHA Care reporting contribution — 2026-10-08
+# ASHA Care reporting candidate — inactive after status correction
 
-**Status:** A small, tested contribution patch is prepared locally; it has **not** been submitted upstream. No real database or patient record was accessed.
+**Status: INACTIVE — do not submit.** A small practice patch was prepared and tested locally, but it has not been submitted upstream and should not be offered as a current contribution. No real database or patient record was accessed.
 
 ## The request
 
-A GitHub Community discussion asks for help improving a web application intended to support the author's mother, an ASHA community health worker in India. On October 7, the author said the app was mostly built but still needed improvements, bug fixes, and especially a reporting section.
+The discussion is internally inconsistent about whether help is still needed. The original author posted on September 29: “My work is done now—someone helped me with it.” The discussion also contains later October 7 replies where the author appears to describe remaining work. The operator linked the September 29 completion reply and corrected us that this should be treated as an inactive request that was not properly closed. For opportunity selection, the explicit status correction takes precedence: do not approach the author or submit work unless they clearly renew the request.
 
 - Discussion: https://github.com/orgs/community/discussions/208007
 - App repository: https://github.com/parth270520/My-Mom-Project-
