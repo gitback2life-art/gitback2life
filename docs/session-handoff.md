@@ -1067,3 +1067,20 @@ Last updated: 2026-10-08
 ### Next action
 Check the deployment outcome. After the change is confirmed live, continue with a small useful $0-upfront build/learning experiment rather than expanding the platform footprint.
 
+## 56. First researched Opportunity Tracker candidate — 2026-10-08
+
+### Research result
+The first concrete candidate selected for the Opportunity Tracker is **uTest Academy**, a free software-testing learning program with a possible path to conditional paid testing tasks.
+
+Official uTest support pages state that there is no membership fee and that the Academy provides free training. They also state that testers must be 18 or older and must provide a real name; signup asks for additional personal/profile details. Paid work is based on project invitations and approved tasks, and payout varies. No live paid test cycle was verified.
+
+### Files added
+- `research/2026-10-08-utest-evaluation.md` — sources, findings, constraints, and recommendation.
+- `projects/opportunity-tracker/utest-academy-research-record.json` — one importable, public-safe candidate record.
+
+### Decision status
+**Research only.** No account was created, no paid assignment was verified, and the project has not decided to join uTest. The real-name/private-account requirement is a material privacy gate. Do not ask the operator to put private identity or payment information in this public repository or in the Opportunity Tracker.
+
+### Next action
+Review the official Academy page and the evaluation note. The operator decides whether the age/privacy/account requirements are acceptable before any signup. If not, search for a privacy-friendlier no-upfront-cost learning or opportunity route instead.
+
