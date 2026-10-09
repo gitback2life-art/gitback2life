@@ -1083,4 +1083,20 @@ Official uTest support pages state that there is no membership fee and that the 
 
 ### Next action
 Review the official Academy page and the evaluation note. The operator decides whether the age/privacy/account requirements are acceptable before any signup. If not, search for a privacy-friendlier no-upfront-cost learning or opportunity route instead.
+## 57. Contact and message intake kept closed for now — 2026-10-08
+
+### Operator decision
+The operator prefers to keep the dedicated project email hidden for now because gitback2life is new and they want to avoid spam and scams.
+
+### Current contact surface
+- Do not display the project email publicly.
+- Do not add or launch a contact form yet.
+- Existing GitHub **Suggest an Idea** and **Request a Build** forms remain available; they are public, and their templates warn contributors not to post private details.
+- Hashnode comments remain an optional public interaction channel.
+- The website may link to official OpenAI support/gift-card information, but it must never collect or display card PINs, redemption codes, private gift claim links, account credentials, or payment details.
+
+### Future gate before adding contact intake
+If the operator later wants a private contact path, first assess moderation and abuse protections such as anti-bot controls, rate limits, spam filtering, minimal data collection, and a safe way to handle reports. Explain who receives submissions and what is public versus private before publishing the form.
+
+This is a privacy/scope decision, not a permanent rejection of contact options. Revisit only when the operator feels ready.
 
