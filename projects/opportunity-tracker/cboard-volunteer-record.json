@@ -1,0 +1,11 @@
+[
+  {
+    "title": "Cboard — use correct audio format extension for recorded AAC sounds",
+    "type": "Volunteer / assistive technology",
+    "status": "Researching",
+    "risk": "Unknown",
+    "deadline": "",
+    "url": "https://github.com/cboard-org/cboard/issues/2250",
+    "notes": "Alternative, more code-focused candidate. Cboard is a browser-based Augmentative and Alternative Communication (AAC) system with text-to-speech. Issue #2250 is Open and labeled good first issue; it asks to derive uploaded recorded-sound filename extensions from MIME types and add a unit test. Requires reading JavaScript/React code and testing carefully because this is assistive communication software. Confirm maintainer still wants the issue before investing time. No contact or PR made. Sources: https://github.com/cboard-org/cboard ; https://github.com/cboard-org/cboard/issues/2250 ; https://forgoodfirstissue.github.com/"
+  }
+]
