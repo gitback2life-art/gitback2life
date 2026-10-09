@@ -1,0 +1,11 @@
+[
+  {
+    "title": "ASHA Care — aggregate household and coverage report",
+    "type": "Volunteer / community health worker software",
+    "status": "Prepared for review",
+    "risk": "Medium",
+    "deadline": "",
+    "url": "https://github.com/orgs/community/discussions/208007",
+    "notes": "Current, specific help request: on 2026-10-07 the author said their web app for their mother, an ASHA community health worker, still needed improvements and especially a reporting section. App repo: https://github.com/parth270520/My-Mom-Project-. An open PR already adds attendance/duty tracking and a monthly attendance register, so the prepared contribution is separate: a read-only standard-library Python CLI that emits per-village aggregate household/member/coverage counts as CSV or JSON. Output omits person-level PII and health notes. Tests use synthetic SQLite schema only; no real DB or patient data was accessed. Five tests pass. This is a CLI/report-export starter, not a full UI or official government report; owner review is needed. The patch has not been submitted upstream because the connected GitHub integration cannot write comments to other repositories. Patch/zip were prepared in the current session. Sources: https://github.com/orgs/community/discussions/208007 ; https://github.com/parth270520/My-Mom-Project- ; https://github.com/parth270520/My-Mom-Project-/pull/1"
+  }
+]
