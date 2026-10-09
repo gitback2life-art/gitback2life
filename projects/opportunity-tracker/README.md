@@ -51,8 +51,8 @@ The goal is to learn by building a small useful tool, then decide from evidence 
 
 Current and previous candidates:
 
-- [ASHA Care reporting request](asha-care-reporting-record.json) — current selected candidate; aggregate CSV/JSON report patch prepared and tested with synthetic data, awaiting operator submission/review. This is a CLI starter, not yet an upstream contribution.
-- [Open Food Facts parser issue](openfoodfacts-parser-record.json) — recent code-and-test issue, alternative if we decide against the ASHA Care report.
+- [ASHA Care reporting request](asha-care-reporting-record.json) — **inactive; do not submit**. The discussion contains a September 29 reply saying the work was done, followed by inconsistent later comments. A standalone practice patch was prepared, but was never submitted.
+- [Open Food Facts parser issue](openfoodfacts-parser-record.json) — alternate current code-and-test issue; re-check for existing work and fit before picking it.
 - [Code Your Future volunteer record](codeyourfuture-volunteer-record.json) — deprioritized because issue #1902 was last updated in June and now looks stale; no comment posted.
 - [Cboard volunteer record](cboard-volunteer-record.json) — alternative assistive-technology code issue, more technically demanding.
 - Full earlier evaluation: [volunteer opportunities research](../../research/2026-10-08-volunteer-opportunities.md).
