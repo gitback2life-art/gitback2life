@@ -90,13 +90,11 @@ A practical constraint was identified: before pursuing paid work, the project's 
 
 This matters because an opportunity is only useful if it is actually legal and feasible to pursue.
 
-
 ## 2026-10-08 — The tax part of paid work
 
 Another practical constraint was identified: earning self-employment/independent-contractor income can create both ordinary income-tax obligations and self-employment tax obligations. The IRS generally requires Schedule C reporting for sole-proprietor business income and Schedule SE when net self-employment earnings reach $400 or more. Independent contractors generally do not have taxes withheld like employees and may need estimated tax payments.
 
 This reinforces the rule that the opportunity pipeline must consider **legal setup and taxes before pursuing paid work**, not just whether a listing looks attractive.
-
 
 ### Story principle
 
@@ -108,7 +106,6 @@ The value of this story is not that everything worked the first time. It is the 
 
 That process is part of gitback2life.
 
-
 ## 2026-10-08 — “cry cry cry”
 
 After realizing the Opportunity Tracker had briefly pulled attention away from the larger purpose of gitback2life, the response was simply:
@@ -117,14 +114,11 @@ After realizing the Opportunity Tracker had briefly pulled attention away from t
 
 A useful reminder that keeping the project pointed at its real purpose sometimes matters more than adding another feature.
 
-
 ## 2026-10-08 — 700+ miles away, still following along
 
 The first public story is already being read by Mom, more than 700 miles away. She is also enjoying the project conversations and watching the work take shape.
 
 That is a reminder that “public” does not have to mean anonymous strangers only. A public project can also let the people who care about you follow the journey from far away.
-
-
 
 ## 2026-10-08 — First external publication
 
@@ -133,3 +127,13 @@ The first gitback2life story was published on Hashnode, extending the story beyo
 Article: https://gitback2life.hashnode.dev/i-started-building-again-here-s-what-actually-happened
 
 The milestone is simple: the real story now has an external publishing home as well as the GitHub Pages home base.
+
+## 2026-10-08 — Second external publication: the feature wasn't finished until we tried it
+
+The second gitback2life article was published on Hashnode. It documents how attempting to use the full Opportunity Tracker exposed JavaScript and validation issues that had been missed when the work was treated as complete.
+
+Article: https://gitback2life.hashnode.dev/we-thought-the-feature-was-finished-then-we-tried-using-the-full-app
+
+The core lesson is practical: **don't assume a feature works because the work looks finished. Try using it, investigate mismatches, fix them, and verify again.** A syntax check is useful, but it does not prove the full application works correctly.
+
+This is the second published Hashnode article. No external promotion or outreach is implied by this entry.
