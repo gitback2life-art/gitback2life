@@ -1215,3 +1215,39 @@ For the worthy-cause path, review Code Your Future's current contribution guide 
 - Tracker status changed to **Inactive — owner said work was done**; dedicated research note now warns **do not submit**; Opportunity Tracker index and historical volunteer research were updated.
 - The aggregate CSV/JSON prototype was practice work only, not a delivered contribution. It has not been submitted upstream, no real health database was read, and synthetic tests do not establish suitability for that app. Keep that distinction clear in any future case study.
 - Next step: find a different community request that is narrow enough to build and test, and verify from the latest owner comment / issue activity that help is still wanted before investing in implementation.
+
+
+## Section 67 — Animal-rescue checker investigation checkpoint — 2026-10-08
+
+### Current question
+Determine whether the unusually high flag rates reported by the NYC Animal Rescue weekly checker could indicate a compromised website or are explained by checker logic/network behavior. **Infection or compromise is not established.**
+
+### Verified findings
+- Target project: https://github.com/btaylor62000-spec/nyc-animal-rescue. Its weekly report issue remains open: https://github.com/btaylor62000-spec/nyc-animal-rescue/issues/1.
+- The report for 2026-09-28 flagged 65 of 311 organizations; the report for 2026-10-05 flagged 58 of 311. Both runs tripped the safety valve. The workflow logs show the rules-engine test step succeeded and the scanner reached 311/311 records before the safety valve exited with failure. The workflow skipped rebuilding and committing proposed data, so this did not establish widespread real-world contact changes.
+- Confirmed checker logic defect: `scripts/agent/weekly.ts` builds a page list from the primary website, intake URLs, contact paths, and source URLs. `scripts/agent/rules.ts` then treats the first `offDomain` redirect on **any** fetched page as evidence that the organization's site may have moved. Third-party intake services such as short links redirecting to a hosted form can therefore create a false positive even if the organization's primary website is healthy.
+- The fetcher in `scripts/agent/fetch.ts` uses `redirect: 'follow'` and compares the final URL with the requested URL. A separate defense-in-depth question remains: review whether each redirect target is validated against private/local addresses before it is followed. This is a review item, not evidence that the behavior was exploited.
+- No evidence of malware, a compromised organization website, or a compromised project/repository has been confirmed. No threat-intelligence lookup, safe redirect-chain investigation, or malware/payload analysis has been performed yet.
+
+### Safety boundary
+- Do not treat the 58 or 65 entries as confirmed findings; the issue explicitly labels the report as a checker bug report.
+- Do not modify live directory contact data, emergency numbers, or organization statuses as part of this investigation.
+- Do not open suspected destination pages in a normal browser or download/execute content while investigating.
+- Keep the redirect-logic fix separate from the question of compromise. A false-positive fix must not silently convert suspicious redirects into verified contacts.
+
+### Proposed bounded next step
+Prepare and validate a regression test where a healthy primary website confirms its stored contact while a third-party intake form redirects to a hosted form. The expected result is unchanged/verified; the existing test that a redirect from the primary website is flagged must continue to pass. Review every redirect target validation separately. Only after local tests and review should a contribution be considered.
+
+### Delivery status
+- A narrow patch and a research note were prepared in the working session.
+- Creating a branch in the target animal-rescue repository was denied by the GitHub integration with HTTP 403. No target-repository branch, commit, issue comment, or pull request was created.
+- This checkpoint is being recorded in gitback2life's own repository only. It is not a claim that a fix has been merged or that the target maintainer has accepted it.
+
+### Sources
+- Open anomaly report: https://github.com/btaylor62000-spec/nyc-animal-rescue/issues/1
+- 2026-09-28 failed safety-valve run: https://github.com/btaylor62000-spec/nyc-animal-rescue/actions/runs/36438667140
+- 2026-10-05 failed safety-valve run: https://github.com/btaylor62000-spec/nyc-animal-rescue/actions/runs/37332890503
+- `scripts/agent/weekly.ts`, `scripts/agent/rules.ts`, `scripts/agent/fetch.ts`, and `tests/agent.test.ts` in the target repository.
+
+### Decision
+No conclusion about infection yet. Continue with controlled, read-only verification after this checkpoint.
