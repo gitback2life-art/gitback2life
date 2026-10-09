@@ -1048,3 +1048,22 @@ The first gitback2life story is now published on Hashnode. Its exact public URL 
 ---
 
 Last updated: 2026-10-08
+
+## 55. Two Hashnode articles connected to the project home — 2026-10-08
+
+### Completed
+- Confirmed two Hashnode articles are published:
+  - https://gitback2life.hashnode.dev/i-started-building-again-here-s-what-actually-happened
+  - https://gitback2life.hashnode.dev/we-thought-the-feature-was-finished-then-we-tried-using-the-full-app
+- Added a dedicated **Writing from the build** section to `index.html), with a short factual description and one direct link for each article.
+- Added both articles under **Published writing** in `README.md`.
+- Updated `docs/progress.md` with this discoverability improvement.
+
+### Intent and guardrails
+- This connects the existing published work to the project's home base; it is not a new platform, paid promotion, direct outreach, or community link-drop.
+- Article counts and titles are grounded in the public URLs supplied by the operator.
+- The GitHub Pages workflow normally deploys changes pushed to `main`; verify the run and published site before claiming the new section is live.
+
+### Next action
+Check the deployment outcome. After the change is confirmed live, continue with a small useful $0-upfront build/learning experiment rather than expanding the platform footprint.
+
