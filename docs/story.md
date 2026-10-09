@@ -2,7 +2,7 @@
 
 ## From an idea to a live project
 
-gitback2life started with a simple goal: rebuild a life after a long interruption and use modern AI as one of the tools for doing it.
+I'm disabled and live with complicated health issues. For a long time, those realities limited the work and projects I could take on. gitback2life documents what I'm doing now: learning, building useful software, solving real problems, and creating more options. Disability is part of my context, not my whole identity or the point of the project.
 
 The first day of the project became proof that the idea could turn into something real.
 
@@ -10,7 +10,7 @@ The first day of the project became proof that the idea could turn into somethin
 
 The project became **gitback2life**.
 
-The name says what the project is about: getting back into life while using code, technology, and persistence to move forward.
+The name points toward forward motion: learning in public, making useful things, and using code, technology, and persistence to build more options and independence.
 
 ## Step 2 — Create a private starting point
 
@@ -44,11 +44,11 @@ The repository became the project's code home, documentation archive, progress r
 
 The project started with a simple visual direction and then evolved into something more personal.
 
-The final identity became a cyber-tech comeback story:
+The final identity became a cyber-tech story about forward motion and possibility:
 
 - **Sunrise** represents a new beginning.
 - **Mountains** represent the climb.
-- **Backpack** represents carrying the past forward.
+- **Backpack** represents bringing experience into the next chapter.
 - **Code** represents the tool being used.
 - **The road** represents moving toward independence.
 - **Neon light** represents technology, energy, and possibility.
@@ -135,7 +135,7 @@ The useful story is:
 
 That distinction matters.
 
-The project is documenting what happens when someone uses modern tools to learn, build, troubleshoot, and move forward after a long interruption.
+The project documents how I use modern tools to learn, build, troubleshoot, and create opportunities. The story is about agency and what gets built—not a single recovery narrative.
 
 Sometimes the next step is obvious.
 
@@ -199,8 +199,8 @@ After that, the project can begin documenting additional builds, learning experi
 
 The long-term goal remains simple:
 
-**Use temporary support and modern tools to build enough knowledge, skill, software, and opportunity that outside support is eventually no longer needed.**
+**Build durable skills, useful software, and real opportunities that increase agency, choice, and independence.** Tools and support that make the work possible are part of a practical strategy, not a personal failing.
 
 ---
 
-**Rebuilding a life, one line of code at a time.**
+**Building what comes next, one line of code at a time.**

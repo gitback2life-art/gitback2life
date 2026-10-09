@@ -2,13 +2,13 @@
 
 ## Core visual idea
 
-The identity is a cyber-tech comeback story.
+The identity is a cyber-tech story about forward motion, practical resilience, and possibility.
 
 The recurring visual language combines:
 - Sunrise — a new beginning
 - Mountains — the climb ahead
-- Backpack — carrying the past forward
-- Code — the tool being used to rebuild
+- Backpack — bringing experience into the next chapter
+- Code — a practical tool for creating something useful
 - Road / arrow — movement toward independence
 - Neon glow — energy, technology, and possibility
 
@@ -38,13 +38,14 @@ Prefer:
 Avoid:
 - exaggerated success claims
 - pity-based messaging
+- defining the person primarily by disability or recovery
 - fake urgency
 - overnight-success language
 - corporate-sounding slogans
 
 ## Signature line
 
-**Rebuilding a life, one line of code at a time.**
+**Building what comes next, one line of code at a time.**
 
 ## Four recurring words
 

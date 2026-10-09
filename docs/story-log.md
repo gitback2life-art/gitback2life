@@ -1,6 +1,6 @@
 # gitback2life — Story Log
 
-> A running record of the real questions, mistakes, surprises, goofy tests, breakthroughs, and corrections that show the human side of rebuilding. This is not a transcript and should not capture every mundane interaction. It should capture moments that are useful, funny, revealing, or meaningful to the project's story.
+> A running record of real questions, mistakes, surprises, goofy tests, breakthroughs, and corrections that show the human side of learning, building, and making progress. This is not a transcript and should not capture every mundane interaction. It should capture moments that are useful, funny, revealing, or meaningful to the project's story.
 
 ## 2026-10-08 — “What is this page even for?”
 

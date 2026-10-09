@@ -2,11 +2,11 @@
 
 ## Title
 
-Help provide one month of ChatGPT access while I rebuild
+Support one month of practical AI-assisted building
 
 ## Public draft
 
-I'm rebuilding my life after a long interruption and working toward greater independence.
+I'm disabled and live with complicated health issues. For a long time, those realities constrained the work and projects I could pursue. I'm now putting my energy into learning, building useful software, solving real problems, and creating more options and independence.
 
 One of the practical tools I'm using is ChatGPT. I'm using AI to learn, research, plan, solve problems, and build software. I've already created projects with AI assistance, including a task-management system, and I'm continuing to learn and build.
 
@@ -18,7 +18,7 @@ Where eligible, the simplest support route is an **official OpenAI ChatGPT gift 
 
 The project does not need cash sent directly to me. I would prefer support to go through an official OpenAI mechanism so the purpose of the support is clear.
 
-The long-term goal is not permanent dependence on donations. It's to use this period of support to learn, build useful software, find legitimate opportunities, and become increasingly independent.
+This is a specific request for access to tools used in real projects—not a promise of overnight transformation. The aim is to build practical skills, useful software, and legitimate opportunities that increase agency and independence over time.
 
 Thank you for reading. Any support is voluntary, and no support is required to follow the project or wish me well.
 

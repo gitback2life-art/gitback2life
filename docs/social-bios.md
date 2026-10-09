@@ -2,24 +2,24 @@
 
 ## Ultra short
 
-Rebuilding a life through AI, code, and persistence.
+Building useful things with AI, code, and persistence.
 **Rebuild - Learn - Build - Independence**
 
 ## Short
 
-After a long interruption, I'm rebuilding my life with AI, learning, and software development. I document real projects, real progress, and the road toward independence.
+I'm disabled and live with complicated health issues. For a long time, that limited the work I could take on; now I'm building useful software, learning in public, and creating more options through practical projects.
 
 ## Technical
 
-AI-assisted builder documenting the journey from rebuilding skills to shipping useful software.
+AI-assisted builder shipping useful software, solving practical problems, and documenting what works.
 
 ## Project-focused
 
-gitback2life is a pseudonymous project about rebuilding, learning modern technology, building software, and moving toward independence.
+gitback2life is a pseudonymous project about real software work, learning modern technology, solving problems, and building toward greater independence.
 
 ## Signature
 
-**Rebuilding a life, one line of code at a time.**
+**Building what comes next, one line of code at a time.**
 
 ## Important
 
