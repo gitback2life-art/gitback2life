@@ -137,3 +137,12 @@ Article: https://gitback2life.hashnode.dev/we-thought-the-feature-was-finished-t
 The core lesson is practical: **don't assume a feature works because the work looks finished. Try using it, investigate mismatches, fix them, and verify again.** A syntax check is useful, but it does not prove the full application works correctly.
 
 This is the second published Hashnode article. No external promotion or outreach is implied by this entry.
+
+## 2026-10-08 — “I better not look away”
+
+After the researched JSON sample was imported into the deployed Opportunity Tracker, the operator confirmed: **“it works.”**
+
+This is a small but real verification milestone: a researched record passed through the import flow and appeared to work in the actual tool. It is not proof that every part of the application is finished or fully tested.
+
+The running joke was that the operator had better not look away, or the project might accidentally grow another department—or a comedy club—before anyone notices.
+
