@@ -70,6 +70,8 @@ The project's identity is a cyber-tech comeback story:
 - projects/task-manager/technical-history.md — source-oriented V2→V8 technical history
 - projects/opportunity-tracker/README.md — next-build project documentation
 - projects/opportunity-tracker/index.html — dependency-free local opportunity tracker prototype
+- projects/opportunity-tracker/utest-academy-research-record.json — importable, research-only testing candidate
+- research/2026-10-08-utest-evaluation.md — official-source evaluation of the candidate
 
 ## Important
 
