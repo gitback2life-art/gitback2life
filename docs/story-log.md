@@ -146,3 +146,11 @@ This is a small but real verification milestone: a researched record passed thro
 
 The running joke was that the operator had better not look away, or the project might accidentally grow another department—or a comedy club—before anyone notices.
 
+## 2026-10-09 — Hashnode articles revised to match the agency-first framing
+
+The operator reported that both published Hashnode articles were updated to align with the revised gitback2life story: disability and complicated health issues can be stated honestly as context, while the articles keep their main focus on practical work, learning, problem-solving, and agency.
+
+- [I Started Building Again — Here's What Actually Happened](https://gitback2life.hashnode.dev/i-started-building-again-here-s-what-actually-happened) centers the project on building useful software and learning through real problems.
+- [We Thought the Feature Was Finished. Then We Tried Using the Full App.](https://gitback2life.hashnode.dev/we-thought-the-feature-was-finished-then-we-tried-using-the-full-app) keeps its focus on the Opportunity Tracker debugging and verification lessons.
+
+This entry records the operator's report that the updates are complete; the published Hashnode page text was not independently verified from this session. The goal is consistency across the project site and external articles without making disability or recovery the headline of every technical story.
