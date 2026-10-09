@@ -1114,3 +1114,27 @@ The operator imported `projects/opportunity-tracker/utest-academy-research-recor
 ### Next step
 When convenient, decide whether uTest's eligibility and real-name/account requirements are acceptable before creating an account. No urgency or response-time expectation applies; sustainable real-life pace takes priority.
 
+## 59. Remote volunteer candidates researched — 2026-10-08
+
+### First choice: Code Your Future
+- Cause: volunteer-led education that teaches people to code for free and explicitly welcomes remote contributions.
+- Specific open issue checked: https://github.com/CodeYourFuture/curriculum/issues/1902 — “Add AI guidelines to Launch.” The issue was Open at research time, showed a 1–4-hour size, had no assignee and no linked branch/PR, but was several months old.
+- Why it fits: it's a scoped curriculum/prep-material task about AI use and learning, which is close to the project's real experience with AI-assisted building, testing, and correction.
+- Guardrail: check the current AI guidance and contribution guide; ask maintainers whether the old issue is still wanted before spending significant time or opening a PR.
+
+### Alternative: Cboard
+- Cause: browser-based Augmentative and Alternative Communication (AAC) with text-to-speech, supporting people who need communication assistance.
+- Specific issue checked: https://github.com/cboard-org/cboard/issues/2250 — use the correct audio extension based on MIME type and add a unit test. It was Open and labeled `good first issue` at research time.
+- This is more code-intensive (JavaScript/React) and requires careful testing because it affects assistive communication.
+
+### Files recorded
+- `research/2026-10-08-volunteer-opportunities.md`
+- `projects/opportunity-tracker/codeyourfuture-volunteer-record.json`
+- `projects/opportunity-tracker/cboard-volunteer-record.json`
+
+### Decision status
+Research only. No issue comments, applications, pull requests, account registrations, or commitments have been made. The tracker records both as Researching with Unknown risk. The project remains pseudonymous; public GitHub contributions would be associated with the project account. Keep a sustainable pace and do not promise rapid responses.
+
+### Next step
+If the operator approves the first choice, read the referenced course guidance and contribution instructions, then ask maintainers if issue #1902 remains wanted. Only then draft a small contribution for review.
+
