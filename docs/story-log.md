@@ -154,3 +154,9 @@ The operator reported that both published Hashnode articles were updated to alig
 - [We Thought the Feature Was Finished. Then We Tried Using the Full App.](https://gitback2life.hashnode.dev/we-thought-the-feature-was-finished-then-we-tried-using-the-full-app) keeps its focus on the Opportunity Tracker debugging and verification lessons.
 
 This entry records the operator's report that the updates are complete; the published Hashnode page text was not independently verified from this session. The goal is consistency across the project site and external articles without making disability or recovery the headline of every technical story.
+
+## 2026-10-10 — Adding the practical reason AI helps me build
+
+The project's longer-form story now explains that some health complications affect my memory and make it difficult to stay focused on a task. This is one reason I use AI as a practical tool: to organize ideas, break work into manageable steps, and regain context when I lose my place.
+
+The framing keeps decisions and verification under my control. This detail belongs where it explains the project and workflow; it should not be repeated in every technical article or become the whole story.
