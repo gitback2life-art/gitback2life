@@ -3,6 +3,9 @@
 ## Mission
 Use AI, learning, and software building to develop capability, create useful things, and move toward greater independence after a long period shaped by disability and complicated health issues.
 
+## Why AI is part of the workflow
+Some of my health complications affect my memory and make it difficult to stay focused on a task. AI is a practical aid for organizing ideas, breaking work into manageable steps, and regaining context after losing my place. It supports the workflow; decisions and verification remain under my control.
+
 ## Pillars
 - Rebuild: routines, organization, problem-solving, momentum
 - Learn: programming, AI, technology, research, communication
