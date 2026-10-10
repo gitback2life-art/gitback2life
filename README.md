@@ -6,7 +6,7 @@
 
 ![gitback2life](assets/gitback2life-mark.svg)
 
-gitback2life is a pseudonymous project documenting real software work, learning, and problem-solving. I'm disabled and live with complicated health issues; for a long time, those realities limited the work and projects I could take on. I'm now building useful tools, developing practical skills, and creating more options and independence. The focus is on the work and what it demonstrates—not on reducing a person to their circumstances.
+gitback2life is a pseudonymous project documenting real software work, learning, and problem-solving. I'm disabled and live with complicated health issues; for a long time, those realities limited the work and projects I could take on. Some of those health complications affect my memory and make it difficult to stay focused on a task. That's one reason I've chosen AI as a practical tool: it can help me organize ideas, break work into manageable steps, and regain context when I lose my place. I still make the decisions and verify the results. I'm now building useful tools, developing practical skills, and creating more options and independence. The focus is on the work and what it demonstrates—not on reducing a person to their circumstances.
 
 ## Live site
 
