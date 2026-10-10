@@ -2,7 +2,7 @@
 
 ## From an idea to a live project
 
-I'm disabled and live with complicated health issues. For a long time, those realities limited the work and projects I could take on. gitback2life documents what I'm doing now: learning, building useful software, solving real problems, and creating more options. Disability is part of my context, not my whole identity or the point of the project.
+I'm disabled and live with complicated health issues. For a long time, those realities limited the work and projects I could take on. Some of those complications affect my memory and make it difficult to stay focused on a task. That's one reason I chose AI as a tool: it can help me organize ideas, break work into manageable steps, and regain context when I lose my place. I still make the decisions and verify the results; AI helps me work through the steps. gitback2life documents what I'm doing now: learning, building useful software, solving real problems, and creating more options. Disability is part of my context, not my whole identity or the point of the project.
 
 The first day of the project became proof that the idea could turn into something real.
 

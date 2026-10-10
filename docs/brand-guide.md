@@ -43,6 +43,10 @@ Avoid:
 - overnight-success language
 - corporate-sounding slogans
 
+## Health-context framing
+
+When relevant in a longer story, it is okay to state plainly that some health complications affect memory and make it difficult to stay focused on tasks. Explain this as part of why AI is a practical tool for organizing ideas, breaking work into manageable steps, and regaining context after losing one's place. Keep the emphasis on agency and useful work: AI supports the process, while human decisions and verification remain essential. Do not repeat this detail in every technical article or make it the person's whole identity.
+
 ## Signature line
 
 **Building what comes next, one line of code at a time.**
