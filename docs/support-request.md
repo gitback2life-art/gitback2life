@@ -6,9 +6,9 @@ Support one month of practical AI-assisted building
 
 ## Public draft
 
-I'm disabled and live with complicated health issues. For a long time, those realities constrained the work and projects I could pursue. I'm now putting my energy into learning, building useful software, solving real problems, and creating more options and independence.
+I'm disabled and live with complicated health issues. For a long time, those realities constrained the work and projects I could pursue. Some of those complications affect my memory and make it difficult to stay focused on a task. That's one reason AI is important in my workflow: it can help me organize ideas, break work into manageable steps, and regain context when I lose my place. I still make the decisions and verify the results.
 
-One of the practical tools I'm using is ChatGPT. I'm using AI to learn, research, plan, solve problems, and build software. I've already created projects with AI assistance, including a task-management system, and I'm continuing to learn and build.
+I'm now putting my energy into learning, building useful software, solving real problems, and creating more options and independence. One of the practical tools I'm using is ChatGPT. I'm using AI to learn, research, plan, solve problems, and build software. I've already created projects with AI assistance, including a task-management system, and I'm continuing to learn and build.
 
 I'm keeping my real-world identity private for personal privacy and safety, but the story behind this project is truthful. I'm not claiming to be a charity, and I'm not promising a financial return to anyone.
 
