@@ -4,7 +4,7 @@
 
 This file preserves the development story and continuity handoffs for the Local AI Coding Command Center project.
 
-It is the continuity record between GPT-6 Big Brother, Baby Brother ChatGPT, local Qwen2.5-Coder development, Aider workflows, and future sessions.
+It is the continuity record between GPT-6 Big Brother, Baby Brother ChatGPT, local Qwen2.5-Coder development, Aider workflows, and future sessions. Big Brother handoffs provided in chat are archived below so that subsequent sessions can recover the reported milestones, test evidence, unresolved problems, constraints, and pause/resume state without relying on conversational memory alone.
 
 ## Project
 
@@ -16,12 +16,13 @@ Local Windows AI Coding Command Center using:
 - Aider controlled coding workflow
 - Git worktrees
 - Automated regression validation
+- Harness report data and Docker-gated validation where configured
 
-## Verified Milestones
+## Verified Milestones — Current Summary
 
 ### Desktop Foundation
 
-Completed:
+Completed / reported verified:
 
 - Standalone PySide6 application
 - Dark interface
@@ -36,16 +37,20 @@ Completed:
 
 ### Report Integration
 
-Completed:
+Completed / reported verified:
 
 - JSON harness report reader
 - Overview statistics
 - Run History display
 - Regression validation
 
+### Persistent Coding Tasks
+
+At checkpoint `a463917`, Big Brother reported the Coding Tasks page supported task creation, JSON persistence, table display, completion state, deletion, creation-time tracking, and integration with dashboard navigation. A functional smoke test and the complete development regression suite were reported passing.
+
 ### Autonomous Development Controller
 
-Implemented:
+Implemented / reported present:
 
 - backups
 - SHA-256 verification
@@ -54,41 +59,710 @@ Implemented:
 - regression testing
 - diagnostics
 
-## Git Checkpoints
+The controller remains under development and is not approved for unattended production use.
 
-- bfd05cc — Working PySide6 desktop navigation
-- 4898dbb — Working overview cards and compact sidebar
-- 5cae623 — Validated Run History column alignment
-- a463917 — Feature: persistent Coding Tasks dashboard
+## Git Checkpoints — Reported Timeline
 
-## Current Status
+- `bfd05cc` — Working PySide6 desktop navigation
+- `4898dbb` — Working overview cards and compact sidebar
+- `0bba58a` — Reported as a verified development checkpoint in a subsequent handoff
+- `3a307dc` — First Aider Run History cell-centering change preserved after independent regression testing, even though Aider did not terminate normally
+- `5cae623` — Validated Run History column alignment
+- `a463917` — Feature: persistent Coding Tasks dashboard
 
-The desktop foundation is functional.
+These checkpoint descriptions and chronology are transcribed from Big Brother's supplied handoffs; this story log does not imply that the local Windows worktree was independently inspected from ChatGPT.
 
-Verified features:
+## Current Status (Latest Supplied Handoff)
 
-- navigation
-- report display
-- run history
-- coding task persistence
-- regression validation
+The latest Big Brother handoff in this chat reports checkpoint `a463917` and says development is paused intentionally until the user authorizes resumption.
 
-Remaining work:
-
-- complete remaining pages
-- harden autonomous Qwen/Aider workflow
-- improve recovery and safety controls
-- connect AI execution workflow
-- package Windows application
+The desktop foundation, Overview / Run History integrations, and persistent Coding Tasks feature are reported functional. The autonomous Qwen/Aider execution cycle is not yet fully reliable. Do not resume engineering work, run commands, or imply additional testing has occurred unless the user authorizes it and supplies or enables the necessary current context.
 
 ## Operating Rules
 
 - Preserve production Ollama settings.
-- Do not modify production models.
+- Do not modify production models, Modelfiles, tokenizer settings, or global Ollama settings.
+- Do not modify production projects or merge unverified changes.
+- Keep development isolated in the specified development worktree.
 - Validate before checkpointing.
-- Do not merge unverified changes.
-- Keep development isolated.
+- Do not treat Git worktrees as an operating-system sandbox.
+- Do not claim tests, edits, commits, or clean status without evidence.
+- The user manually ensures exclusive GPU use between production processing and the Command Center; do not implement unnecessary cross-project GPU scheduling.
+- User requested no Codex.
+- The user's role for Baby Brother ChatGPT in this portion of the collaboration is Ghostwriter / continuity writer. Big Brother carries the engineering work; the user controls whether development resumes.
+- Screenshots shared by the user are progression references during active testing and updating, not necessarily final acceptance evidence.
+- New generated deliverables should append `GPT-6` to filenames when applicable.
 
 ## Continuity Rule
 
-Future handoffs should append updates here instead of rebuilding project history from scratch.
+Future Big Brother handoffs and progress updates for this particular project story should be appended to this file, preserving previous records rather than replacing them. When asked for the story link, provide the actual GitHub file URL:
+https://github.com/gitback2life-art/gitback2life/blob/main/docs/AI_Coding_Command_Center_Project_Story_GPT-6.md
+
+---
+
+# Session Handoff Archive
+
+The following sections archive the substantive Big Brother handoff/progress messages supplied by the user in the October 10–11, 2026 conversation. Wording and Markdown have been normalized for readability; reported states remain reports from the handoffs, not independent re-verifications. The recipient correction on the second handoff is recorded explicitly.
+
+## Handoff A — QWEN LOCAL AI PROJECT — PROGRESS UPDATE
+
+**From:** GPT-6 (ChatGPT)  
+**Date:** October 10, 2026  
+**Project:** AI Coding Command Center — Standalone Windows Desktop Application
+
+### 1. Current Development Checkpoint
+
+**Reported verified checkpoint:** `4898dbb`
+
+- **Repository:** `D:\CRTS apps\MY_tools\AI_Command_Center_GPT-6\development\desktop_build`
+- **Development worktree:** `D:\CRTS apps\MY_tools\AI_Command_Center_GPT-6\development\worktrees\task-001-desktop-foundation`
+- **Branch:** `ai/task-001-desktop-foundation`
+- **Commit message:** `Checkpoint: working overview cards and compact sidebar`
+- **Original main branch:** Reported clean (`## main`).
+- No changes had been merged into `main`.
+
+The preceding known-good checkpoint was `bfd05cc`, containing working desktop navigation.
+
+### 2. Changes Since Previous Handoff
+
+Local Qwen2.5-Coder:7B, operating through Aider 0.86.2, was tasked with improving the desktop application's sidebar.
+
+Sidebar modifications in `desktop/ui/sidebar.py` attempted to:
+
+- Move all seven buttons to the top of the sidebar.
+- Reduce vertical spacing.
+- Add a stretch below the navigation buttons.
+- Apply dark navy styling.
+- Highlight the selected page in purple.
+
+Qwen also changed the `Sidebar` constructor to require a `stacked_widget` argument, breaking compatibility with the existing MainWindow implementation. This was repaired by making the constructor argument optional:
+
+```python
+def __init__(self, stacked_widget=None):
+```
+
+The existing MainWindow supplies the navigation reference after constructing the Sidebar.
+
+### 3. Actual Test Results
+
+Reported verified: automated window initialization and navigation tests passed after the constructor repair.
+
+- MainWindow initialization: PASS
+- Overview navigation: PASS
+- Coding Tasks navigation: PASS
+- Run History navigation: PASS
+- Git Worktrees navigation: PASS
+- Execution Logs navigation: PASS
+- AI Models navigation: PASS
+- Settings navigation: PASS
+- Test exit code: 0
+
+**Total: 7/7 navigation tests passed.**
+
+A separate visual launch was reported successful without application errors. A Qt font-directory warning appeared during offscreen testing but did not prevent initialization.
+
+### 4. Visual Results
+
+Reported verified through user-provided screenshots. The standalone PySide6 application had:
+
+- A dark navy interface.
+- A fixed left navigation area.
+- Seven navigation buttons grouped toward the top.
+- Purple highlighting on Overview.
+- Working navigation.
+- Four visible summary cards.
+- A functional standalone Windows application window.
+
+Remaining visual issues at that point:
+
+- Navigation buttons still taller than desired.
+- Dashboard cards sat too low.
+- Cards had inconsistent widths.
+- Cards occupied two rows rather than one.
+- Large unused areas remained.
+- Purple selection behavior on every page had not been visually verified.
+
+### 5. Dashboard Statistics Were Demonstration Values
+
+The handoff explicitly said the following values were hardcoded placeholders, not actual measurements:
+
+| Card | Displayed value |
+| --- | ---: |
+| Total Runs | 100 |
+| Successful Runs | 80 |
+| Failed Runs | 20 |
+| Active Tasks | 5 |
+
+The application had not yet been connected to existing harness reports at that point.
+
+### 6. New Verified Git Checkpoint
+
+After successful navigation and visual testing, the following command reportedly created the checkpoint:
+
+```powershell
+git commit -m "Checkpoint: working overview cards and compact sidebar"
+```
+
+Reported result:
+
+```
+[ai/task-001-desktop-foundation 4898dbb]
+2 files changed, 43 insertions(+), 36 deletions(-)
+```
+
+Committed files:
+
+- `desktop/ui/main_window.py`
+- `desktop/ui/sidebar.py`
+
+The original `main` branch was reported clean immediately afterward.
+
+### 7. Latest Task Assigned to Local Qwen — Step 36
+
+**Status when handed off:** INSTRUCTIONS ISSUED — execution results not yet received.
+
+The task was to correct the Overview dashboard card layout, modifying only `desktop/ui/main_window.py`.
+
+Requested results:
+
+1. Keep the Overview heading and subtitle at the top.
+2. Place four equal-width statistic cards in one horizontal row immediately beneath the heading.
+3. Use standard PySide6 widgets such as QFrame.
+4. Use navy backgrounds, subtle borders, and purple accents.
+5. Put vertical stretch below the cards, not above them.
+6. Preserve all seven navigation pages.
+7. Preserve sidebar integration.
+8. Do not modify other files.
+9. Do not create incorrectly named files.
+10. Do not commit.
+
+The supplied Aider invocation used `ollama/qwen2.5-coder:7b`, `--no-auto-commits`, and a single-file edit scope.
+
+### 8. Remaining Engineering Concerns
+
+Not yet verified or complete at that point:
+
+- Real-time desktop integration with harness reports.
+- Actual Ollama model status inside the desktop application.
+- Docker service status.
+- Functional Coding Tasks interface.
+- Automated coding-task submission through desktop UI.
+- Independent Docker verification for desktop application edits.
+- Forced escalation after repeated coding failures.
+- Interrupted-task recovery.
+- Robust protection of test files while Aider executes.
+- Operating-system-level restriction of Aider filesystem access.
+- Windows executable packaging.
+- Comprehensive desktop regression tests.
+
+The original factorial harness remained the only end-to-end Docker-gated coding scenario demonstrated successfully. Current desktop development had used direct Aider execution rather than that harness.
+
+### 9. Repository Hygiene
+
+Previously observed untracked or misplaced files had not been comprehensively classified. Examples included misnamed `Updated` source files, backup files, `hutil`, and an oddly encoded filename.
+
+Instruction: do not indiscriminately remove them. Continue staging only explicitly reviewed source files.
+
+### 10. Recommended Next Actions in Handoff A
+
+1. Collect terminal output of Step 36.
+2. Inspect the resulting Git diff and verify Qwen edited only the intended file.
+3. Run Python syntax checks.
+4. Run offscreen MainWindow initialization.
+5. Repeat all seven navigation tests.
+6. Visually inspect whether four cards display in one row near the top.
+7. Commit a new checkpoint only after validation.
+8. Next, replace fake Overview statistics with real harness report data.
+
+---
+
+## Handoff B — AI Coding Command Center — Progress Handoff
+
+**From:** GPT-6 (Big Brother)  
+**Original “To” field:** Claude (Baby Brother)  
+**Correction supplied by user:** Recipient is **ChatGPT (Baby Brother)**. This corrected recipient is the operative one.  
+**Date:** October 10, 2026  
+**Status:** Desktop foundation and automated validation working; autonomous Qwen development trial in progress.
+
+### 1. Current Project Status
+
+**Reported latest verified development checkpoint:** `0bba58a`
+
+- **Development branch:** `ai/task-001-desktop-foundation`
+- **Development worktree:** `D:\CRTS apps\MY_tools\AI_Command_Center_GPT-6\development\worktrees\task-001-desktop-foundation`
+- **Original Git checkout:** `D:\CRTS apps\MY_tools\AI_Command_Center_GPT-6\development\desktop_build`
+
+The original `main` checkout was confirmed clean during controller validation. No merge into `main` had been performed.
+
+### 2. Completed Desktop Application
+
+The application uses PySide6 and includes seven navigation pages:
+
+1. Overview
+2. Coding Tasks
+3. Run History
+4. Git Worktrees
+5. Execution Logs
+6. AI Models
+7. Settings
+
+Functioning components reported:
+
+- Seven-page navigation
+- Dark desktop interface
+- Overview statistics from real JSON reports
+- Read-only Run History table
+- Report-reader module
+- Automated regression tests
+
+Several other pages remained placeholders.
+
+### Actual Harness Statistics
+
+Reports directory: `D:\Testing\harness_reports_GPT-6`
+
+Latest verified historical counts in this handoff:
+
+- Total runs: 5
+- Successful: 1
+- Failed: 4
+- Active tasks: Not tracked
+
+These are historical harness outcomes, not a general Qwen coding success-rate measurement.
+
+### 3. Report Reader
+
+- **Source:** `desktop/core/report_reader.py`
+- **Tests:** `tests/test_report_reader.py`
+
+Functions:
+
+- `load_reports(report_dir)`
+- `summarize_reports(report_dir)`
+
+Features:
+
+- UTF-8 BOM compatibility
+- Malformed JSON handling
+- Non-dictionary JSON filtering
+- Missing-directory handling
+- Read-only access
+
+Latest validation reported: **6/6 unit tests passed.**
+
+### 4. Automated Development Controllers
+
+Both scripts reside in `D:\CRTS apps\MY_tools\AI_Command_Center_GPT-6\development\automation`.
+
+**`Run_Development_Cycle_GPT-6.ps1`**
+
+Existing automated regression gate testing desktop navigation, real dashboard counts, Run History records, and report-reader unit tests.
+
+**`Auto_Development_Controller_GPT-6.ps1`**
+
+New orchestration layer supporting:
+
+- Git branch and original-checkout checks
+- Regression execution
+- Local Aider/Qwen repair attempts
+- Maximum repair-attempt limit
+- Regression retesting
+- Diagnostic logs
+- Optional Git checkpointing
+
+The controller previously had a PowerShell function named `Git`, which recursively called itself because PowerShell command names are case-insensitive. GPT-6 identified and repaired this by renaming the function to `Invoke-RepoGit`.
+
+The corrected controller subsequently completed a full validation-only run with `FINAL: PASS`. Validation confirmed seven navigation pages, five Run History records, real dashboard counts, and six passing unit tests.
+
+### 5. Current Activity in Handoff B — Important
+
+A live automated Qwen/Aider development trial had been started using `Auto_Development_Controller_GPT-6.ps1`.
+
+Task: improve Run History table styling and readability while preserving navigation, report data, and functionality.
+
+Command used `-Repair` and `-MaxAttempts 2`, without enabling automatic Git commits.
+
+The user reported that Aider opened:
+
+https://aider.chat/docs/llms/warnings.html
+
+Aider also appeared to install something.
+
+**The trial's result was not yet known in this handoff.** No final terminal output had been received showing whether Qwen made a successful edit, whether regression tests passed, or what dependency was installed.
+
+### 6. Existing Safety Limitations
+
+The controller checks Git state and detects some unexpected file changes, but it is **not an operating-system sandbox**.
+
+Aider runs under the Windows user's account permissions. Git worktrees isolate development branches, not operating-system filesystem access.
+
+The controller's repair functionality still requires real-world verification. No automatic production modifications or merges should be performed.
+
+### 7. Next Priorities in Handoff B
+
+- Verify result of the live Aider/Qwen repair trial.
+- Confirm which package, if any, Aider installed.
+- Inspect actual Run History styling changes and verify automated regression results.
+- Harden controller error handling, change detection, and bounded retries.
+- Improve logging and automated checkpoints after successful validation.
+- Build out remaining desktop pages.
+- Eventually package the application into a standalone Windows executable.
+
+---
+
+## Handoff C — AI Coding Command Center — Development Handoff
+
+**From:** GPT-6  
+**To:** Baby Brother ChatGPT  
+**Date:** October 10, 2026  
+**Status:** Desktop application functional; automated validation and Aider timeout protection verified; autonomous coding workflow still being hardened.
+
+### 1. Latest Verified Checkpoint
+
+**Reported Git commit:** `5cae623`  
+**Branch:** `ai/task-001-desktop-foundation`
+
+Development worktree:
+
+`D:\CRTS apps\MY_tools\AI_Command_Center_GPT-6\development\worktrees\task-001-desktop-foundation`
+
+Original Git checkout:
+
+`D:\CRTS apps\MY_tools\AI_Command_Center_GPT-6\development\desktop_build`
+
+The latest commit preserved repaired Run History column alignment. The original `main` branch had not been merged or intentionally modified.
+
+### 2. Desktop Application Status
+
+The application is built using Python and PySide6. Seven navigation pages exist:
+
+1. Overview
+2. Coding Tasks
+3. Run History
+4. Git Worktrees
+5. Execution Logs
+6. AI Models
+7. Settings
+
+Functioning components reported:
+
+- Seven-page navigation
+- Dark desktop interface
+- Overview statistics from real JSON reports
+- Read-only Run History table
+- Report-reader module
+- Automated regression tests
+
+Several pages still contain placeholder content.
+
+### Actual Harness Statistics
+
+Reports directory: `D:\Testing\harness_reports_GPT-6`
+
+Latest verified historical counts in this handoff:
+
+- Total runs: 5
+- Passed: 1
+- Failed: 4
+- Active tasks: Not tracked
+
+These represent historical harness outcomes, not a general Qwen coding success rate.
+
+Statistics load when the application starts; automatic dashboard refresh had not been implemented.
+
+### 3. Current Automation Scripts
+
+Both scripts are stored in:
+
+`D:\CRTS apps\MY_tools\AI_Command_Center_GPT-6\development\automation`
+
+**`Run_Development_Cycle_GPT-6.ps1`**
+
+Known-working regression controller. It verifies:
+
+- Desktop application initialization
+- All seven navigation pages
+- Real Overview statistics
+- Run History table
+- Five historical reports and six columns
+- Report-reader unit tests
+
+Latest result reported: all checks passed, including six unit tests.
+
+**`Auto_Development_Controller_GPT-6.ps1`**
+
+Autonomous development orchestration controller, then at V2.
+
+Features implemented:
+
+- Development branch verification
+- Original `main` checkout checks
+- Existing regression-gate execution
+- Automatic source backups
+- SHA-256 backup verification
+- Qwen/Aider execution
+- Dedicated stdout and stderr logs
+- Progress updates
+- Configurable overall timeout
+- Process-tree termination following timeout
+- Regression testing following successful Aider exit
+- Failure reporting
+- No automatic commits or merges
+
+Default Aider timeout: 300 seconds.
+
+The controller was still being hardened and was not suitable for unattended production use.
+
+### 4. Autonomous Qwen Testing — Important Findings
+
+#### First Automated Edit
+
+Qwen successfully modified the Run History table to center-align table-cell text. The code passed independent regression testing.
+
+However, Aider did not terminate normally, so the overall autonomous controller run could not be considered successful.
+
+The verified change was preserved in Git commit:
+
+`3a307dc`
+
+#### Controller V2 Test
+
+The upgraded controller successfully:
+
+- Started Aider
+- Created a verified source backup
+- Recorded output progress
+- Enforced a 300-second timeout
+- Terminated the associated Aider process tree
+
+Recorded output progression:
+
+| Elapsed time | Stdout size |
+| --- | ---: |
+| 30 seconds | 4,326 bytes |
+| 60 seconds | 10,916 bytes |
+| 90 seconds | 20,103 bytes |
+| 120–300 seconds | 20,103 bytes |
+
+At 300 seconds, process-tree cleanup succeeded. The controller correctly ended with a failure rather than committing unverified code.
+
+#### Invalid Qwen Edit
+
+During the timed run, Qwen attempted to use `QHeaderView.Left` and `QHeaderView.Center` as Qt header resize modes. These were invalid for the intended API.
+
+GPT-6 repaired the source by restoring `QHeaderView.Stretch` for the first column and applying the appropriate alignment to table cells:
+
+`Qt.AlignLeft | Qt.AlignVCenter` for task names.
+
+Other columns remained center-aligned.
+
+The repaired application passed all existing regression checks. The existing regression tests did not explicitly assert individual cell alignment; that was identified as the next gap to address.
+
+**Reported latest verified commit:** `5cae623` — Checkpoint: validated Run History column alignment.
+
+### 5. Production LLM Configuration — Must Preserve
+
+The user also operates a large production dataset-processing pipeline using local LLMs. The existing LLM settings are already tested and must not be changed by this project.
+
+Earlier testing materials include:
+
+- `Guardrail_scripts.zip`
+- `Testing_app.zip`
+
+The guardrail testing documented Qwen2.5-Coder 7B running with a 32,768-token context in the direct-Ollama testing workflow. That did not necessarily establish the context setting used by every Aider request.
+
+**Critical operational decision:** The user will manually ensure the production dataset project and AI Coding Command Center do not run simultaneously. Each project receives exclusive GPU usage when operating.
+
+Therefore:
+
+- Do not change global Ollama settings.
+- Do not modify existing Modelfiles.
+- Do not reinstall or replace production models.
+- Do not modify production tokenizer settings.
+- Do not implement unnecessary cross-project GPU scheduling.
+- Keep development-specific execution controls within the development controller.
+
+Local development environment reported: GTX 1080 Ti with 11 GB VRAM and 64 GB system RAM.
+
+### 6. Guardrails and Safety
+
+Existing testing materials provide reusable designs for:
+
+- SHA-256 verification
+- Verified backups
+- Persistent recovery state
+- Single-instance protection
+- Offline self-tests
+- Token-budget validation
+- Prompt/context verification
+
+The development controller had adopted source-backup hashing and timed process cleanup, but not all guardrail functions.
+
+**Security limitation:** Git worktrees and controller checks are not operating-system sandboxes. Aider runs with the user's Windows account permissions.
+
+Do not merge into `main` or modify production.
+
+### 7. Next Engineering Priorities in Handoff C
+
+1. Add explicit PySide6 table-alignment regression tests to detect incorrect header-versus-cell alignment changes.
+2. Add an Aider inactivity timeout in addition to the five-minute maximum runtime.
+3. Improve Aider execution and shutdown handling so completed edits do not leave the controller waiting indefinitely.
+4. Improve diagnostic capture and bounded repair behavior without automatic acceptance of failed Aider runs.
+5. Introduce single-instance locking and stronger source-change protection using techniques from the provided testing ZIP.
+6. Continue implementing the remaining desktop application pages.
+7. Validate the complete autonomous Qwen → edit → test → checkpoint workflow before relying on it unattended.
+
+### 8. User Workflow Requirements in Handoff C
+
+The user strongly prefers:
+
+- One copy-and-paste PowerShell block per operation.
+- Scripts that modify existing files directly.
+- No repeated downloads or manual file moving.
+- Automated testing and diagnostics.
+- Minimal manual intervention.
+- No Codex.
+- No production changes.
+- Clear PASS/FAIL results.
+- `GPT-6` appended to filenames for new deliverables.
+
+The user has a Windows desktop shortcut opening PowerShell directly in the development worktree.
+
+### 9. Project Assessment in Handoff C
+
+The desktop foundation and real report integration were working. The automated regression controller was reliable for the tests then implemented. The autonomous controller had demonstrated process timeout detection and cleanup, but not yet a complete successful unattended coding cycle.
+
+**Resume development from commit `5cae623`.** Preserve the existing production LLM environment and focus next on automation reliability, stronger regression assertions, and controlled recovery.
+
+---
+
+## Handoff D — AI Coding Command Center — Baby Brother Update
+
+**From:** GPT-6  
+**To:** Baby Brother ChatGPT  
+**Date:** October 10, 2026  
+**Project:** Local AI Coding Command Center  
+**Status:** Development paused at a successful Git checkpoint.
+
+### 1. Latest Verified Checkpoint
+
+**Reported latest verified Git commit:** `a463917`  
+**Commit message:** `Feature: persistent Coding Tasks dashboard`  
+**Branch:** `ai/task-001-desktop-foundation`
+
+Development worktree:
+
+`D:\CRTS apps\MY_tools\AI_Command_Center_GPT-6\development\worktrees\task-001-desktop-foundation`
+
+Original Git checkout:
+
+`D:\CRTS apps\MY_tools\AI_Command_Center_GPT-6\development\desktop_build`
+
+The latest commit preserved the repaired Run History column alignment. The original `main` branch had not been merged or intentionally modified.
+
+### 2. Desktop Application Status
+
+The application uses Python and PySide6.
+
+Seven navigation pages:
+
+1. Overview
+2. Coding Tasks
+3. Run History
+4. Git Worktrees
+5. Execution Logs
+6. AI Models
+7. Settings
+
+**Functioning components reported:**
+
+- Seven-page navigation
+- Dark desktop interface
+- Overview statistics from real JSON reports
+- Read-only Run History table
+- Report-reader module
+- Automated regression tests
+- Persistent Coding Tasks page
+
+Some navigation pages still contain placeholder content.
+
+### Actual Harness Statistics
+
+Reports directory:
+
+`D:\Testing\harness_reports_GPT-6`
+
+Latest verified historical counts in this handoff:
+
+- Total runs: 5
+- Passed: 1
+- Failed: 4
+- Active tasks: Not tracked
+
+These historical harness outcomes must not be presented as a general Qwen coding success rate. Dashboard statistics load at application startup; automatic refresh has not been implemented.
+
+### 3. Coding Tasks Dashboard
+
+The Coding Tasks page supports:
+
+- Adding new coding tasks.
+- Saving tasks to a local JSON file.
+- Displaying tasks in a table.
+- Marking tasks as completed.
+- Deleting selected tasks.
+- Tracking each task's creation time and status.
+
+The feature reportedly passed an automated functional smoke test covering task creation, persistence to disk, completion, deletion, and integration with existing dashboard navigation.
+
+The complete development regression suite was reported passing: **seven automated tests — six report-reader tests and one Qt table-alignment test.**
+
+The latest commit reportedly saved two files:
+
+- `desktop/ui/main_window.py`
+- `desktop/ui/coding_tasks_GPT-6.py`
+
+Reported commit result: `a463917`, 147 lines added across the two files. All existing regression tests passed before the commit.
+
+### 4. Autonomous Development Controller
+
+The local Qwen/Aider automation controller had gained source backups, SHA-256 verification, automated regression validation, UTF-8 process settings, failure detection, timeouts, and process-tree cleanup attempts.
+
+However, **the autonomous execution system was not yet fully reliable**.
+
+During testing, Aider encountered a Windows `UnicodeEncodeError` followed by an interactive error-reporting prompt. Later synthetic tests exposed a separate log-file locking problem during process cleanup.
+
+The user decided to stop spending time on Avast and synthetic-test troubleshooting and return to building the actual application. The handoff characterized this as the correct project-priority decision. The unresolved controller issue was documented for future work.
+
+### 5. Safety and Production
+
+Development occurred in a separate Git worktree. No production changes or merges were reported during this development sequence.
+
+Existing production Ollama and LLM settings were to remain preserved. The user manually ensures exclusive GPU use between production processing and the AI Coding Command Center.
+
+### 6. Latest Milestone
+
+The latest reported commit: `a463917` — Feature: persistent Coding Tasks dashboard.
+
+**Reported verified:**
+
+- Desktop foundation works.
+- Run History and Overview integrations work.
+- Coding Tasks page is functional.
+- Automated regression suite passes.
+- Development checkpoint saved.
+- Original main branch not merged.
+
+### 7. Current Position and Required Pause
+
+The next stage is building out remaining Command Center features and eventually connecting task management to reliable local AI execution.
+
+**Important:** The user explicitly requested a pause immediately after the latest checkpoint. Development is stopped until the user authorizes resumption.
+
+---
+
+# Ongoing Collaboration Notes
+
+- The user clarified that screenshots are progression references shared while the user and Big Brother are actively testing and updating; do not treat each image as final acceptance evidence.
+- The user explicitly designated Baby Brother ChatGPT as the Ghostwriter / Ghost Rider for this project story. Preserve continuity and archive supplied Big Brother handoffs. Do not take over the active engineering workflow unless asked.
+- When asked for a link to this project story, provide the canonical GitHub URL above.
+- The correct project story file is this file; future messages from Big Brother should be appended here in chronological order.
