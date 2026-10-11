@@ -766,3 +766,29 @@ The next stage is building out remaining Command Center features and eventually 
 - The user explicitly designated Baby Brother ChatGPT as the Ghostwriter / Ghost Rider for this project story. Preserve continuity and archive supplied Big Brother handoffs. Do not take over the active engineering workflow unless asked.
 - When asked for a link to this project story, provide the canonical GitHub URL above.
 - The correct project story file is this file; future messages from Big Brother should be appended here in chronological order.
+
+---
+
+## Continuity Workflow Repair and Fresh-Session Handoff — October 11, 2026
+
+### Repository actions completed
+
+This session established the persistent continuity artifact in the connected GitHub repository instead of leaving the project history only in chat.
+
+1. Created the canonical story file at `docs/AI_Coding_Command_Center_Project_Story_GPT-6.md` in commit `3fbd984139fd029d899db3fa8f79c07b98bd12af`.
+2. Read the file from GitHub, then expanded it to archive the four substantive Big Brother handoffs supplied in this conversation. That update was committed as `b959ecf26bdf528b93dd81e2bcf8a90852a2feee` and read back for verification.
+3. Created a detailed fresh-session bootstrap file at `docs/AI_Coding_Command_Center_Session_Handoff_GPT-6.md`, in commit `56da44ba3b64bc14166673e1fae12e3b3868ab4f`. The file was read back from GitHub; it contained 241 lines at the time of verification.
+
+### Key continuity failure and prevention
+
+During this session the assistant repeatedly failed to use the available GitHub connector, incorrectly claimed the repository file/link was unavailable, and gave explanations instead of performing the requested repository operation. The user had already supplied the repository and stated that GitHub was connected. Repository metadata ultimately confirmed push permission, and GitHub file create/update/read-back actions succeeded.
+
+Future sessions must not repeat this. When asked to update the story or provide its link, use the connected GitHub actions directly; do not ask the user to reconnect an already working connector, do not invent paths, and do not claim a file write happened without tool confirmation and read-back verification.
+
+### Role and pause remain unchanged
+
+ChatGPT Baby Brother is acting as the Ghostwriter / continuity writer for this story, not as the active engineering lead. The latest supplied Big Brother update reports checkpoint `a463917` and explicitly pauses development until the user authorizes resumption. Creating and maintaining documentation is authorized; making local application-code changes, running engineering commands, or resuming autonomous coding is not authorized by this handoff.
+
+**Canonical story URL:** https://github.com/gitback2life-art/gitback2life/blob/main/docs/AI_Coding_Command_Center_Project_Story_GPT-6.md  
+**Fresh-session handoff URL:** https://github.com/gitback2life-art/gitback2life/blob/main/docs/AI_Coding_Command_Center_Session_Handoff_GPT-6.md
+
