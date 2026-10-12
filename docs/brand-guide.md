@@ -1,5 +1,14 @@
 # gitback2life Brand Guide
 
+## Product naming
+
+- **Umbrella project/brand:** GitBack2Life.
+- **Full product name:** GitBack2Life AI Coding Command Center.
+- **Short product name:** GitBack2Life AI.
+- Use the full product name on first mention in a story, handoff, or public project page; use GitBack2Life AI afterward when the shorter form reads more naturally.
+- Use the same approved names for past, current, and future narrative references. Do not introduce internal codenames or retired working names into public stories, current-status summaries, screenshots captions, handoffs, or future writing.
+- When preserving review evidence, retain package hashes, commit IDs, results, and limitations, but describe artifacts using the approved product name rather than exposing a retired name in public narrative.
+
 ## Core visual idea
 
 The identity is a cyber-tech story about forward motion, practical resilience, and possibility.
