@@ -10,7 +10,7 @@ gitback2life is a pseudonymous project documenting real software work, learning,
 
 ## Current focus — October 12, 2026
 
-The current coding and development effort is focused entirely on **GitBack2Life AI**, a local AI Coding Command Center intended—once fully implemented and verified—to improve the speed and quality of future programming work. That benefit is a goal, not a claim of a finished system.
+The current coding and development effort is focused entirely on **GitBack2Life AI Coding Command Center** intended—once fully implemented and verified—to improve the speed and quality of future programming work. That benefit is a goal, not a claim of a finished system.
 
 The **911 GetBack2Life Toolbox** and **Task Command Center** workstreams are paused by the project owner. The earlier Task Manager case study is documented, and the Opportunity Tracker remains a prototype rather than the current coding focus. These priorities can change only when the owner deliberately changes them.
 
