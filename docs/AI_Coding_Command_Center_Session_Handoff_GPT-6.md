@@ -1,4 +1,4 @@
-# AI Coding Command Center — Fresh Session Handoff GPT-6
+# GitBack2Life AI Coding Command Center — Fresh Session Handoff GPT-6
 
 **Prepared:** October 11, 2026  
 **Prepared by:** ChatGPT — Baby Brother / Ghostwriter  
