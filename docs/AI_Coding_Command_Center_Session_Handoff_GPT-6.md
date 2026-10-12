@@ -47,84 +47,29 @@ https://github.com/gitback2life-art/gitback2life/blob/main/docs/AI_Coding_Comman
 
 The user has explicitly corrected a handoff that addressed “Claude (Baby Brother)”: the correct recipient is **ChatGPT (Baby Brother)**.
 
-## 3. Current development state — last supplied Big Brother handoff
+## 3. Current development state — October 12, 2026 owner direction and R15 review
 
-**Latest reported checkpoint:** `a463917`  
-**Commit message:** `Feature: persistent Coding Tasks dashboard`  
-**Branch:** `ai/task-001-desktop-foundation`
+**Current project priority:** the owner has set **100% of current coding/development focus on GitBack2Life AI**. GitBack2Life AI is the sole active engineering focus because, once fully implemented and its benefits are demonstrated, it is intended to improve the speed and quality of other programming projects. This intended benefit is not yet a measured result.
 
-**Reported development worktree:**
-`D:\CRTS apps\MY_tools\AI_Command_Center_GPT-6\development\worktrees\task-001-desktop-foundation`
+**Other workstreams explicitly paused by the owner:**
+- **911 GetBack2Life Toolbox — paused.** Big Claude has the current working source/patch state; old Library bundles and earlier audits must not be treated as current source truth.
+- **Task Command Center — paused.** Do not restart work unless the owner changes priorities.
 
-**Reported original checkout:**
-`D:\CRTS apps\MY_tools\AI_Command_Center_GPT-6\development\desktop_build`
+The earlier Task Manager case study in the GitBack2Life repository is a historical documentation milestone and must not be confused with the separately named Task Command Center workstream. The Opportunity Tracker remains an existing prototype, not the current coding/development focus.
 
-These are the user's local Windows development locations. They are not the same repository as the GitHub repository used to store this story log. Do not imply that editing a file in `gitback2life` changes the local Command Center source code.
+### GitBack2Life AI checkpoint and review boundary
 
-### Desktop application
+- Development branch reported in the R15 materials: `ai/task-001-desktop-foundation`.
+- Checkpoint recorded by the R15 report: `672e6914512fa476606b2ccbe605d7ff86bdc949`.
+- R15-reviewed candidate: `GitBack2Life_AI_Stage_A1_Model_Free_v3_1_GPT-6.zip`.
+- Package SHA-256 reported and matched by Claude: `b021c032e02670591f3d17b6cee63f6a351fe29242bc2cb04aa9c5f6e569716c`.
+- Claude's Windows doctor result: PASS, exit 0; 39/39 portable tests PASS, according to the R15 report.
+- **Not yet done in R15:** a complete Stage A1 `run`; any live Qwen/Aider/Ollama Stage A2 experiments.
+- **Authorization boundary:** R15 approved the candidate to become eligible for the owner's separate authorization of exactly one controlled model-free Stage A1 run. The review itself did not authorize execution. Stage A2 remains a separate approval gate.
 
-The standalone Windows desktop application is built with Python and PySide6. Seven navigation pages exist:
+The R15 review also recorded that the GUI-closed case was mocked rather than tested by actually closing the GUI, and noted a possible process-detection gap for a nonstandard direct-script launch. Do not erase those caveats when summarizing the verdict.
 
-1. Overview
-2. Coding Tasks
-3. Run History
-4. Git Worktrees
-5. Execution Logs
-6. AI Models
-7. Settings
-
-Reported working components include seven-page navigation, dark UI, Overview report statistics, a read-only Run History table, report reader, regression tests, and a persistent Coding Tasks page. Some other pages remain placeholders.
-
-### Coding Tasks feature — latest milestone
-
-At `a463917`, Big Brother reported the Coding Tasks page supports:
-
-- Creating coding tasks
-- Saving tasks to a local JSON file
-- Displaying tasks in a table
-- Marking tasks completed
-- Deleting selected tasks
-- Tracking creation time and status
-
-A functional smoke test reportedly covered creation, persistence, completion, deletion, and navigation integration. The complete development regression suite reportedly passed: seven tests, including six report-reader tests and one Qt table-alignment test.
-
-These are handoff-reported facts, not newly independently rerun from this session.
-
-### Harness report integration
-
-Reports directory:
-`D:\Testing\harness_reports_GPT-6`
-
-Latest counts reported in the handoff:
-
-- Total runs: 5
-- Passed: 1
-- Failed: 4
-- Active tasks: Not tracked
-
-These are historical harness outcomes and must not be described as a general Qwen success rate. Dashboard counts load at application startup; automatic refresh had not been implemented.
-
-Report reader:
-
-- Source: `desktop/core/report_reader.py`
-- Tests: `tests/test_report_reader.py`
-- Functions: `load_reports(report_dir)`, `summarize_reports(report_dir)`
-- Reported features: UTF-8 BOM compatibility, malformed JSON handling, filtering non-dictionary JSON, missing-directory handling, read-only access
-- Latest reported result: 6/6 report-reader unit tests passed
-
-### Autonomous controller status
-
-Scripts are reported under:
-`D:\CRTS apps\MY_tools\AI_Command_Center_GPT-6\development\automation`
-
-- `Run_Development_Cycle_GPT-6.ps1` — existing regression controller.
-- `Auto_Development_Controller_GPT-6.ps1` — autonomous development controller, at V2 in the handoff.
-
-Reported controls include branch/checkout checks, regression execution, bounded Qwen/Aider repair attempts, backups, SHA-256 backup verification, separate stdout/stderr logs, progress reporting, configurable runtime timeout, process-tree cleanup attempts, post-edit regression testing, and optional checkpointing. No automatic commits/merges are intended by default.
-
-The controller is **not yet reliable enough for unattended production use**. Aider previously hit a Windows `UnicodeEncodeError` and an interactive reporting prompt; synthetic tests also exposed log-file locking during cleanup. Earlier tests showed Aider could hang after making a valid edit. Controller timeout termination was tested, but a complete consistently successful unattended Qwen edit → test → safe checkpoint cycle has not been established.
-
-Git worktrees are not an OS security sandbox. Aider runs with the Windows user's permissions.
+GitBack2Life AI remains the active engineering workstream in Big Brother's separate session. Baby Brother's scope is the public-facing story, cross-project continuity, evidence labeling, and user-requested documentation—not local code changes, execution, installation, or engineering actions.
 
 ## 4. Reported checkpoint chronology
 
@@ -135,7 +80,7 @@ Keep these as supplied-history entries, not claims that the hashes were independ
 - `0bba58a` — named as a verified checkpoint in a subsequent Big Brother handoff.
 - `3a307dc` — Run History cell-centering edit preserved after independent regression testing, although Aider did not exit normally.
 - `5cae623` — validated Run History column alignment; repaired invalid `QHeaderView.Left` / `QHeaderView.Center` usage, keeping appropriate resize-mode and table-cell alignment APIs separate.
-- `a463917` — persistent Coding Tasks dashboard; latest supplied checkpoint and current pause point.
+- `a463917` — historical persistent Coding Tasks dashboard checkpoint; superseded as the latest reported development checkpoint by `672e6914512fa476606b2ccbe605d7ff86bdc949` in the October 12 R15 context.
 
 Earlier report: `4898dbb` showed dashboard numbers 100, 80, 20, and 5 as hardcoded demo placeholders. A later handoff reported real harness report integration and counts of 5 total / 1 pass / 4 fail, with active tasks untracked. Preserve chronology instead of treating these different-time descriptions as simultaneous.
 
@@ -167,13 +112,11 @@ Reported PC hardware: GTX 1080 Ti with 11 GB VRAM and 64 GB system RAM.
 
 The user requested **no Codex**.
 
-## 6. Explicit pause instruction
+## 6. Current scope and approval boundaries — owner update, October 12, 2026
 
-The latest Big Brother update expressly states:
+The older pause statement was based on the earlier `a463917` checkpoint and has been superseded by the owner's newer direction: **GitBack2Life AI is now the sole active coding/development focus** in Big Brother's engineering workstream. The **911 GetBack2Life Toolbox** and **Task Command Center** remain paused.
 
-> The user requested a pause immediately after checkpoint `a463917`. Development is stopped until the user authorizes resumption.
-
-Therefore this handoff is for a fresh **continuity/documentation session**, not authorization to resume engineering. Do not give PowerShell commands, ask for current local test output, start a new coding task, or modify local-source code unless the user authorizes work to resume. Archiving handoffs in the GitHub story file is permitted and is the purpose of Baby Brother's role.
+This update does not turn Baby Brother into the engineering lead. Baby Brother should continue documentation and continuity work; do not run code, install updates, edit local application source, initiate A1 execution, or run Stage A2 experiments. For GitBack2Life AI, the next gated action described by R15 is the owner's explicit authorization of one controlled model-free Stage A1 run; general priority confirmation is not that authorization. Stage A2 requires a separate authorization.
 
 ## 7. User workflow and communication requirements
 
@@ -236,4 +179,4 @@ On opening a fresh session:
 6. If the user simply asks for the story link, return it immediately without additional explanation.
 7. Only resume coding / automation engineering when the user explicitly authorizes it.
 
-**Current status: Story continuity established; project development remains paused pending user authorization.**
+**Current status (October 12, 2026): GitBack2Life AI is the sole active engineering focus in Big Brother's workstream; its next Stage A1 controlled run still awaits separate explicit authorization. The 911 Toolbox and Task Command Center are paused. Baby Brother's role is story and documentation continuity.**
