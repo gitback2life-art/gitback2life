@@ -8,6 +8,22 @@ Default branch: main
 Project motto: Rebuild. Learn. Build. Become independent.
 Signature line: Rebuilding a life, one line of code at a time.
 
+## Current cross-project priority snapshot — 2026-10-12
+
+**This is the newest owner-provided priority statement and supersedes older status summaries below where they conflict.**
+
+- **GitBack2Life AI Coding Command Center:** the sole active coding/development focus (100% of current development attention). It is intended, when fully implemented and verified, to improve the rate and quality of programming across the owner's other projects. Do not claim the intended benefit is already proven.
+- **911 GetBack2Life Toolbox:** paused by the owner. The latest source and patch status remain with Big Claude; old audits are historical, not a substitute for current evidence.
+- **Task Command Center:** paused by the owner.
+- **Earlier Task Manager:** its evidence-based case study is documented; do not confuse that completed documentation milestone with active work on the separately named Task Command Center.
+- **Opportunity Tracker:** existing local prototype; not the current active coding focus. No new development priority is implied by its presence in this repository.
+
+This snapshot records project direction, not a technical verification of the local GitBack2Life AI source. The dedicated GitBack2Life AI story log records the R15 review boundary. Claude's R15 approval covered a candidate eligible for the owner's separate authorization of one controlled model-free Stage A1 run; it did not authorize that run or Stage A2. Baby Brother's role remains documentation and continuity, not taking over Big Brother's engineering work.
+
+Source of latest GitBack2Life AI review summary: [AI Coding Command Center Project Story GPT-6](https://github.com/gitback2life-art/gitback2life/blob/main/docs/AI_Coding_Command_Center_Project_Story_GPT-6.md).
+
+---
+
 ---
 
 ## 1. What this project is
