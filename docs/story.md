@@ -191,13 +191,15 @@ The actual record shows something more useful:
 
 That is the process the project wants to document.
 
-## What comes next
+## What comes next — the current chapter
 
-The next major milestone is to take the existing task-management application and turn it into the project's first complete software case study.
+The next engineering chapter is **GitBack2Life AI**, the local AI Coding Command Center. As of October 12, 2026, the owner has set GitBack2Life AI as the sole active coding and development focus. The reason is strategic: when it is fully implemented and its benefits are demonstrated, it is intended to improve the speed and quality of programming work across the owner's other projects.
 
-After that, the project can begin documenting additional builds, learning experiments, legitimate opportunities, and measurable steps toward independence.
+That is a goal, not a claim that GitBack2Life AI is finished or has already delivered those gains. The project still has review gates and unverified behavior to work through, and its progress must be recorded from evidence rather than optimism.
 
-The long-term goal remains simple:
+This focus is also an intentional sequencing decision. The **911 GetBack2Life Toolbox** and the **Task Command Center** workstreams are currently paused. Their pauses are not abandonment; they stay paused unless the owner changes priorities. The earlier Task Manager case study is already documented, and the Opportunity Tracker remains a prototype rather than the current coding focus.
+
+The wider mission has not changed:
 
 **Build durable skills, useful software, and real opportunities that increase agency, choice, and independence.** Tools and support that make the work possible are part of a practical strategy, not a personal failing.
 
