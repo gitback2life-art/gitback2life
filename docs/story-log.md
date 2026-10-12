@@ -160,3 +160,19 @@ This entry records the operator's report that the updates are complete; the publ
 The project's longer-form story now explains that some health complications affect my memory and make it difficult to stay focused on a task. This is one reason I use AI as a practical tool: to organize ideas, break work into manageable steps, and regain context when I lose my place.
 
 The framing keeps decisions and verification under my control. This detail belongs where it explains the project and workflow; it should not be repeated in every technical article or become the whole story.
+
+
+## 2026-10-12 — One engineering focus, not three competing fronts
+
+The owner clarified the current direction for the whole GitBack2Life project: **100% of current coding and development focus is on GitBack2Life AI**.
+
+This is a strategic choice, not simply a preference for one project. GitBack2Life AI is intended to become a local AI coding system that can improve the speed and quality of future programming projects once it is fully implemented and those benefits are demonstrated. The owner is choosing to concentrate effort on that enabling system before splitting attention across several other engineering tracks.
+
+Two workstreams are explicitly paused:
+
+- **911 GetBack2Life Toolbox — paused.**
+- **Task Command Center — paused.**
+
+Their paused status is not a claim that their goals no longer matter, and it does not mean their underlying problems are solved. They remain paused until the owner changes the priority. The older Task Manager case study remains a completed documentation milestone; the Opportunity Tracker remains a prototype and is not the current coding focus.
+
+The lesson for the broader story is that progress can mean choosing the right sequence rather than doing more things at once. GitBack2Life AI's intended future leverage is the reason for the focus; until that leverage is verified in later work, it stays an objective rather than a measured result.
