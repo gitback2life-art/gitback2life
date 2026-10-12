@@ -4,7 +4,7 @@
 **Prepared by:** ChatGPT — Baby Brother / Ghostwriter  
 **Purpose:** Bootstrap a fresh clean ChatGPT session with accurate project context and the established continuity workflow.
 
-> **Read this handoff and the linked Project Story Log before asking the user to repeat project history. Do not begin development or run commands: the last supplied Big Brother handoff explicitly paused development pending the user's authorization.**
+> **Read this handoff and the linked Project Story Log before asking the user to repeat project history. Current owner direction (October 12, 2026): GitBack2Life AI is the sole active coding/development focus in Big Brother's separate engineering workstream; the 911 GetBack2Life Toolbox and Task Command Center are paused. Baby Brother remains documentation/continuity only. The R15-reviewed Stage A1 candidate still awaits separate explicit authorization for one controlled run; do not infer permission to execute it from the general priority decision.**
 
 ## 1. Canonical project story and continuity source
 
@@ -173,7 +173,7 @@ On opening a fresh session:
 
 1. Read this handoff.
 2. Open the canonical project story URL and verify its latest contents using the connected GitHub tool.
-3. Recognize the development pause at `a463917`.
+3. Recognize that the `a463917` note is historical; the R15 handoff records `672e6914512fa476606b2ccbe605d7ff86bdc949` as the latest checkpoint and GitBack2Life AI as the active engineering focus.
 4. Do not initiate engineering tasks.
 5. When the user pastes a new Big Brother handoff, append it to the canonical story file through GitHub, preserving previous content, commit, read back, and return the true link and commit SHA.
 6. If the user simply asks for the story link, return it immediately without additional explanation.
