@@ -20,46 +20,37 @@ Local Windows AI Coding Command Center using:
 
 ## Verified Milestones — Current Summary
 
-### Desktop Foundation
+This summary reflects the latest project state recorded in the October 12, 2026 R15 review entry below. Historical handoffs remain archived and should be read as dated reports, not as a claim that every earlier checkpoint is still current.
 
-Completed / reported verified:
+### Desktop Foundation and Report Integration
 
-- Standalone PySide6 application
-- Dark interface
-- Seven navigation pages:
-  1. Overview
-  2. Coding Tasks
-  3. Run History
-  4. Git Worktrees
-  5. Execution Logs
-  6. AI Models
-  7. Settings
+Earlier handoffs reported the following components as functional:
 
-### Report Integration
+- Standalone PySide6 desktop application with a dark interface and seven navigation pages.
+- JSON harness-report reader and Overview statistics.
+- Run History display and regression validation.
+- Persistent Coding Tasks functionality at historical checkpoint `a463917`.
 
-Completed / reported verified:
-
-- JSON harness report reader
-- Overview statistics
-- Run History display
-- Regression validation
-
-### Persistent Coding Tasks
-
-At checkpoint `a463917`, Big Brother reported the Coding Tasks page supported task creation, JSON persistence, table display, completion state, deletion, creation-time tracking, and integration with dashboard navigation. A functional smoke test and the complete development regression suite were reported passing.
+These milestones are preserved from supplied Big Brother handoffs. This story file is a continuity record; it does not independently inspect the owner's local Windows worktree.
 
 ### Autonomous Development Controller
 
-Implemented / reported present:
+The controller has been under development with safeguards including backups, SHA-256 verification, bounded Aider execution, timeouts, regression testing, and diagnostics. Those features do not make it an operating-system sandbox, and the controller is not approved for unattended production use.
 
-- backups
-- SHA-256 verification
-- Aider execution controls
-- timeout handling
-- regression testing
-- diagnostics
+### Latest Recorded Checkpoint and R15 Review — October 12, 2026
 
-The controller remains under development and is not approved for unattended production use.
+The latest checkpoint recorded in the supplied R15 review materials is branch `ai/task-001-desktop-foundation`, HEAD `672e6914512fa476606b2ccbe605d7ff86bdc949`. This is a reported checkpoint from those materials, not a fresh inspection of the local Windows machine.
+
+The R15 review by Big Claude returned **APPROVE** for the specific Stage A1 model-free v3.1 candidate to become eligible for the owner's separate authorization of exactly one controlled run.
+
+- Candidate ZIP SHA-256: `b021c032e02670591f3d17b6cee63f6a351fe29242bc2cb04aa9c5f6e569716c`
+- Reported Windows doctor: PASS, exit code 0.
+- Reported portable tests: 39/39 passed.
+- Reported inner manifest: 15 entries, zero mismatches.
+
+**Approval boundary:** the R15 review is not authorization to execute the test. The owner must explicitly authorize the one controlled model-free Stage A1 run. No Stage A1 run was completed in R15, and Stage A2 remains a separate authorization gate. The review also documented that the GUI-closed case was mocked rather than tested by actually closing the GUI, and noted a possible detection gap for a nonstandard direct-script launch.
+
+**Current operating state:** GitBack2Life AI Coding Command Center is the sole active engineering focus in Big Brother's separate workstream. Baby Brother's role remains documentation and continuity; do not run code, install anything, edit local application source, initiate the controlled run, or begin Stage A2 experiments without the owner's explicit instruction.
 
 ## Git Checkpoints — Reported Timeline
 
