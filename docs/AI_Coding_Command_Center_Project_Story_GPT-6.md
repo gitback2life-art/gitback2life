@@ -63,11 +63,11 @@ The R15 review by Big Claude returned **APPROVE** for the specific Stage A1 mode
 
 These checkpoint descriptions and chronology are transcribed from Big Brother's supplied handoffs; this story log does not imply that the local Windows worktree was independently inspected from ChatGPT.
 
-## Current Status (Latest Supplied Handoff)
+## Historical Status Note — Superseded by R15 (October 12, 2026)
 
-The latest Big Brother handoff in this chat reports checkpoint `a463917` and says development is paused intentionally until the user authorizes resumption.
+The older status text in this location described checkpoint `a463917` and an intentional pause pending owner authorization. It is retained here as historical context, but **it is not the latest recorded status**. The newer R15 evidence entry above records the reported checkpoint `672e6914512fa476606b2ccbe605d7ff86bdc949`, the review's limited APPROVE verdict for eligibility for one separately owner-authorized model-free Stage A1 run, and the explicit fact that no full Stage A1 run has yet occurred.
 
-The desktop foundation, Overview / Run History integrations, and persistent Coding Tasks feature are reported functional. The autonomous Qwen/Aider execution cycle is not yet fully reliable. Do not resume engineering work, run commands, or imply additional testing has occurred unless the user authorizes it and supplies or enables the necessary current context.
+The R15 entry and the approval boundary in **Verified Milestones — Current Summary** take precedence for the latest recorded project state. All R15 results remain attributed to the supplied review materials; this story file does not independently inspect the owner's local Windows worktree or rerun tests.
 
 ## Operating Rules
 
