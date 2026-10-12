@@ -18,7 +18,7 @@ Local Windows AI Coding Command Center using:
 - Automated regression validation
 - Harness report data and Docker-gated validation where configured
 
-## Verified Milestones — Current Summary
+## Reported Milestones — Current Summary
 
 This summary reflects the latest project state recorded in the October 12, 2026 R15 review entry below. Historical handoffs remain archived and should be read as dated reports, not as a claim that every earlier checkpoint is still current.
 
