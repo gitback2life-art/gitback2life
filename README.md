@@ -8,6 +8,12 @@
 
 gitback2life is a pseudonymous project documenting real software work, learning, and problem-solving. I'm disabled and live with complicated health issues; for a long time, those realities limited the work and projects I could take on. Some of those health complications affect my memory and make it difficult to stay focused on a task. That's one reason I've chosen AI as a practical tool: it can help me organize ideas, break work into manageable steps, and regain context when I lose my place. I still make the decisions and verify the results. I'm now building useful tools, developing practical skills, and creating more options and independence. The focus is on the work and what it demonstrates—not on reducing a person to their circumstances.
 
+## Current focus — October 12, 2026
+
+The current coding and development effort is focused entirely on **GitBack2Life AI**, a local AI Coding Command Center intended—once fully implemented and verified—to improve the speed and quality of future programming work. That benefit is a goal, not a claim of a finished system.
+
+The **911 GetBack2Life Toolbox** and **Task Command Center** workstreams are paused by the project owner. The earlier Task Manager case study is documented, and the Opportunity Tracker remains a prototype rather than the current coding focus. These priorities can change only when the owner deliberately changes them.
+
 ## Live site
 
 **[gitback2life on GitHub Pages](https://gitback2life-art.github.io/gitback2life/)**
