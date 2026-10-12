@@ -61,7 +61,7 @@ The earlier Task Manager case study in the GitBack2Life repository is a historic
 
 - Development branch reported in the R15 materials: `ai/task-001-desktop-foundation`.
 - Checkpoint recorded by the R15 report: `672e6914512fa476606b2ccbe605d7ff86bdc949`.
-- R15-reviewed candidate: `GitBack2Life_AI_Stage_A1_Model_Free_v3_1_GPT-6.zip`.
+- R15-reviewed candidate: `Stage A1 model-free v3.1 ZIP (identified by the SHA-256 below)`.
 - Package SHA-256 reported and matched by Claude: `b021c032e02670591f3d17b6cee63f6a351fe29242bc2cb04aa9c5f6e569716c`.
 - Claude's Windows doctor result: PASS, exit 0; 39/39 portable tests PASS, according to the R15 report.
 - **Not yet done in R15:** a complete Stage A1 `run`; any live Qwen/Aider/Ollama Stage A2 experiments.
