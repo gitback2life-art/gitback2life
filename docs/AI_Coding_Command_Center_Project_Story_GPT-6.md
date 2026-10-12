@@ -814,3 +814,51 @@ The owner supplied screenshots showing the AI Coding Command Center during early
 
 ![AI Coding Command Center visual snapshot from October 11, 2026](../assets/AI_Coding_Command_Center/Screenshot%202026-10-11%20011956.png)
 
+
+
+---
+
+## GitBack2Life AI Stage A1 — Independent Review R15 Evidence Update (October 12, 2026)
+
+**Record type:** Documentation and continuity entry based on the private evidence compendium `GitBack2Life_AI_Story_Handoff_With_Review_Evidence_R15_GPT-6.zip`, especially the original `Claude_Review_Stage_A1_v3_1_GPT-6.md`. This is a record of the cited review—not a new audit of the owner's current Windows machine.
+
+**Project boundary:** GitBack2Life AI is the owner's separate local Windows AI Coding Command Center application. This story entry is a continuity cross-reference; it does not mean GitBack2Life AI and the GitBack2Life repository are the same codebase.
+
+### R15 verdict and exact scope
+
+Claude's read-only R15 review, dated October 12, 2026, returned **APPROVE** for the reviewed **Stage A1 model-free v3.1 candidate to become eligible for the owner's separate authorization of exactly one controlled run**. This is not approval to execute the run, install anything, or change production code.
+
+- Reviewed package: `GitBack2Life_AI_Stage_A1_Model_Free_v3_1_GPT-6.zip`
+- Outer ZIP SHA-256 reported and independently matched by Claude: `b021c032e02670591f3d17b6cee63f6a351fe29242bc2cb04aa9c5f6e569716c`
+- Claude's Windows doctor: **PASS**, exit code 0.
+- Portable tests in R15: **39/39 passed**.
+- The inner manifest had 15 entries with zero mismatches.
+- The documented diff from v3 to v3.1 was limited to interpreter resolution, enforcement of the expected sandbox gate hash, GUI-running detection, and related schema/doctor text.
+
+These results are attributed to Claude's R15 review. The documentation session did not rerun those tests.
+
+### Findings R15 recorded as resolved for this candidate
+
+1. **N1 — Python interpreter resolution:** Claude reported that the PowerShell-resolved Python executable matched the executable used by the interpreter probe, including the previously failing `py -3` launch case. Deliberately mismatched, empty, multiple-line, relative, and missing-path cases were reported as blocked.
+2. **N2 — Sandbox regression-gate integrity:** the real gate was transformed into sandbox-only bytes and the expected output SHA-256 was enforced. The reviewed transformed gate parsed in Windows PowerShell 5.1 with zero parse errors. This applies to the reviewed candidate; it is not evidence that the installed gate was modified or repaired.
+3. **N3 — GUI-running check:** a probe against the real, open GitBack2Life AI GUI correctly blocked before Git reads, inventory work, or scratch creation. The review reports fail-closed behavior for several malformed or ambiguous process-query results.
+
+Claude also reported that HEAD, both Git status outputs, controller/gate hashes, and the listed logs, backups, updates, diagnostics, and report inventories were unchanged by its read-only probes. Those are historical observations from that review, not a fresh check performed by this documentation session.
+
+### Limitations and work still not performed
+
+- The **GUI-closed case was mocked, not tested by actually closing the GUI**.
+- A nonstandard launch using a direct script path instead of the documented module-launch pattern may not be detected by the GUI check. Claude identified this as a limitation; the documented normal launch pattern was covered.
+- A GUI started after the initial check remains a possible race, with additional fail-closed checks described in the review.
+- No complete Stage A1 `run` occurred in R15. The Stage A1 controller and regression gate were not executed as part of a full run.
+- No Qwen, Aider, Ollama, or live Stage A2 A/B trials were run.
+- No installation, source modification, Git write, commit, merge, or production change was authorized or performed by the review.
+- The reported development checkpoint remained branch `ai/task-001-desktop-foundation`, HEAD `672e6914512fa476606b2ccbe605d7ff86bdc949`, and installed-controller SHA-256 `14cb49dc26c10a44dea75572600fd0c26460b35e3e62fc2c76a1e90261e92015`. These are the latest values cited by the retrieved R15 report, not a current-machine audit.
+
+### Approval boundary and documented next step
+
+The R15 report says the owner **may separately authorize exactly one** controlled model-free Stage A1 run from a fresh extraction whose SHA-256 matches the value above. The report's stated prerequisites include the GUI being closed, the controller mutex being free, using the pinned validation-only controllers against a sandbox clone, and permitting only one synthetic wrong-location edit inside that clone.
+
+The report explicitly excludes Aider, Ollama, Qwen, repair/checkpoint options, installation, commits, merges, and deletion of the preserved scratch folder. A BLOCK ends that one run; no retry is authorized. After a permitted run, Claude is to review its report, preserved scratch evidence, and resulting live-state comparison. **Stage A2 remains a separate authorization.**
+
+**Story accuracy rule:** R15 approves a specific review candidate for possible one-run authorization. It does not mean the full workflow passed, the live isolation defect is permanently fixed in the installed application, a Qwen/Aider winner exists, or GitBack2Life AI is complete.
