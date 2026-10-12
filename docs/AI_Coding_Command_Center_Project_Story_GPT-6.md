@@ -1,4 +1,4 @@
-# AI Coding Command Center — Project Story Log GPT-6
+# GitBack2Life AI Coding Command Center — Project Story Log GPT-6
 
 ## Purpose
 
@@ -818,17 +818,17 @@ The owner supplied screenshots showing the AI Coding Command Center during early
 
 ---
 
-## GitBack2Life AI Stage A1 — Independent Review R15 Evidence Update (October 12, 2026)
+## GitBack2Life AI Coding Command Center — Independent Review R15 Evidence Update (October 12, 2026)
 
-**Record type:** Documentation and continuity entry based on the private evidence compendium `GitBack2Life_AI_Story_Handoff_With_Review_Evidence_R15_GPT-6.zip`, especially the original `Claude_Review_Stage_A1_v3_1_GPT-6.md`. This is a record of the cited review—not a new audit of the owner's current Windows machine.
+**Record type:** Evidence-based continuity entry from the owner-supplied R15 evidence packet and Claude's original Stage A1 v3.1 review. The supplied archive contains historical artifact names; this public story uses the approved GitBack2Life AI product name rather than repeating the former label in filenames. This records the review results and is not a new audit of the owner's current Windows machine.
 
-**Project boundary:** GitBack2Life AI is the owner's separate local Windows AI Coding Command Center application. This story entry is a continuity cross-reference; it does not mean GitBack2Life AI and the GitBack2Life repository are the same codebase.
+**Project boundary:** GitBack2Life AI Coding Command Center is the local Windows/Python/PySide6 application within the wider GitBack2Life project. This story preserves its development history; the public GitBack2Life repository is the story and project home, not the local desktop application's source checkout.
 
 ### R15 verdict and exact scope
 
 Claude's read-only R15 review, dated October 12, 2026, returned **APPROVE** for the reviewed **Stage A1 model-free v3.1 candidate to become eligible for the owner's separate authorization of exactly one controlled run**. This is not approval to execute the run, install anything, or change production code.
 
-- Reviewed package: `GitBack2Life_AI_Stage_A1_Model_Free_v3_1_GPT-6.zip`
+- Reviewed candidate: Stage A1 model-free v3.1 package, identified by the outer SHA-256 below.
 - Outer ZIP SHA-256 reported and independently matched by Claude: `b021c032e02670591f3d17b6cee63f6a351fe29242bc2cb04aa9c5f6e569716c`
 - Claude's Windows doctor: **PASS**, exit code 0.
 - Portable tests in R15: **39/39 passed**.
@@ -841,7 +841,7 @@ These results are attributed to Claude's R15 review. The documentation session d
 
 1. **N1 — Python interpreter resolution:** Claude reported that the PowerShell-resolved Python executable matched the executable used by the interpreter probe, including the previously failing `py -3` launch case. Deliberately mismatched, empty, multiple-line, relative, and missing-path cases were reported as blocked.
 2. **N2 — Sandbox regression-gate integrity:** the real gate was transformed into sandbox-only bytes and the expected output SHA-256 was enforced. The reviewed transformed gate parsed in Windows PowerShell 5.1 with zero parse errors. This applies to the reviewed candidate; it is not evidence that the installed gate was modified or repaired.
-3. **N3 — GUI-running check:** a probe against the real, open GitBack2Life AI GUI correctly blocked before Git reads, inventory work, or scratch creation. The review reports fail-closed behavior for several malformed or ambiguous process-query results.
+3. **N3 — GUI-running check:** a probe against the real, open GitBack2Life AI Coding Command Center GUI correctly blocked before Git reads, inventory work, or scratch creation. The review reports fail-closed behavior for several malformed or ambiguous process-query results.
 
 Claude also reported that HEAD, both Git status outputs, controller/gate hashes, and the listed logs, backups, updates, diagnostics, and report inventories were unchanged by its read-only probes. Those are historical observations from that review, not a fresh check performed by this documentation session.
 
@@ -857,7 +857,7 @@ Claude also reported that HEAD, both Git status outputs, controller/gate hashes,
 
 ### Approval boundary and documented next step
 
-The R15 report says the owner **may separately authorize exactly one** controlled model-free Stage A1 run from a fresh extraction whose SHA-256 matches the value above. The report's stated prerequisites include the GUI being closed, the controller mutex being free, using the pinned validation-only controllers against a sandbox clone, and permitting only one synthetic wrong-location edit inside that clone.
+The R15 report says the owner **may separately authorize exactly one** controlled model-free Stage A1 run from a fresh extraction whose SHA-256 matches the reviewed package above. The report's stated prerequisites include the GUI being closed, the controller mutex being free, using the pinned validation-only controllers against a sandbox clone, and permitting only one synthetic wrong-location edit inside that clone.
 
 The report explicitly excludes Aider, Ollama, Qwen, repair/checkpoint options, installation, commits, merges, and deletion of the preserved scratch folder. A BLOCK ends that one run; no retry is authorized. After a permitted run, Claude is to review its report, preserved scratch evidence, and resulting live-state comparison. **Stage A2 remains a separate authorization.**
 
