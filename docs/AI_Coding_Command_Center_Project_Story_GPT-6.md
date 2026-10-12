@@ -67,7 +67,7 @@ These checkpoint descriptions and chronology are transcribed from Big Brother's 
 
 The older status text in this location described checkpoint `a463917` and an intentional pause pending owner authorization. It is retained here as historical context, but **it is not the latest recorded status**. The newer R15 evidence entry above records the reported checkpoint `672e6914512fa476606b2ccbe605d7ff86bdc949`, the review's limited APPROVE verdict for eligibility for one separately owner-authorized model-free Stage A1 run, and the explicit fact that no full Stage A1 run has yet occurred.
 
-The R15 entry and the approval boundary in **Verified Milestones — Current Summary** take precedence for the latest recorded project state. All R15 results remain attributed to the supplied review materials; this story file does not independently inspect the owner's local Windows worktree or rerun tests.
+The R15 entry and the approval boundary in **Reported Milestones — Current Summary** take precedence for the latest recorded project state. All R15 results remain attributed to the supplied review materials; this story file does not independently inspect the owner's local Windows worktree or rerun tests.
 
 ## Operating Rules
 
@@ -134,7 +134,7 @@ def __init__(self, stacked_widget=None):
 
 The existing MainWindow supplies the navigation reference after constructing the Sidebar.
 
-### 3. Actual Test Results
+### 3. Reported Test Results
 
 Reported verified: automated window initialization and navigation tests passed after the constructor repair.
 
@@ -186,7 +186,7 @@ The handoff explicitly said the following values were hardcoded placeholders, no
 
 The application had not yet been connected to existing harness reports at that point.
 
-### 6. New Verified Git Checkpoint
+### 6. Reported Git Checkpoint
 
 After successful navigation and visual testing, the following command reportedly created the checkpoint:
 
@@ -408,7 +408,7 @@ The controller's repair functionality still requires real-world verification. No
 **Date:** October 10, 2026  
 **Status:** Desktop application functional; automated validation and Aider timeout protection verified; autonomous coding workflow still being hardened.
 
-### 1. Latest Verified Checkpoint
+### 1. Reported Latest Checkpoint
 
 **Reported Git commit:** `5cae623`  
 **Branch:** `ai/task-001-desktop-foundation`
@@ -635,7 +635,7 @@ The desktop foundation and real report integration were working. The automated r
 **Project:** Local AI Coding Command Center  
 **Status:** Development paused at a successful Git checkpoint.
 
-### 1. Latest Verified Checkpoint
+### 1. Reported Latest Checkpoint
 
 **Reported latest verified Git commit:** `a463917`  
 **Commit message:** `Feature: persistent Coding Tasks dashboard`  
