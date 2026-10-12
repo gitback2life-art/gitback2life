@@ -20,7 +20,7 @@ Signature line: Rebuilding a life, one line of code at a time.
 
 This snapshot records project direction, not a technical verification of the local GitBack2Life AI source. The dedicated GitBack2Life AI story log records the R15 review boundary. Claude's R15 approval covered a candidate eligible for the owner's separate authorization of one controlled model-free Stage A1 run; it did not authorize that run or Stage A2. Baby Brother's role remains documentation and continuity, not taking over Big Brother's engineering work.
 
-Source of latest GitBack2Life AI review summary: [AI Coding Command Center Project Story GPT-6](https://github.com/gitback2life-art/gitback2life/blob/main/docs/AI_Coding_Command_Center_Project_Story_GPT-6.md).
+Source of latest GitBack2Life AI review summary: [GitBack2Life AI Coding Command Center Project Story GPT-6](https://github.com/gitback2life-art/gitback2life/blob/main/docs/AI_Coding_Command_Center_Project_Story_GPT-6.md).
 
 ---
 
