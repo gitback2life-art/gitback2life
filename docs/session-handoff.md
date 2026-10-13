@@ -1231,3 +1231,47 @@ For the worthy-cause path, review Code Your Future's current contribution guide 
 - Tracker status changed to **Inactive — owner said work was done**; dedicated research note now warns **do not submit**; Opportunity Tracker index and historical volunteer research were updated.
 - The aggregate CSV/JSON prototype was practice work only, not a delivered contribution. It has not been submitted upstream, no real health database was read, and synthetic tests do not establish suitability for that app. Keep that distinction clear in any future case study.
 - Next step: find a different community request that is narrow enough to build and test, and verify from the latest owner comment / issue activity that help is still wanted before investing in implementation.
+
+## 67. Mandatory Fresh-Session Handoff Procedure — 2026-10-12
+
+This procedure is mandatory whenever preparing a new ChatGPT/AI session for gitback2life. It exists to make continuity easy for the operator and prevent repeated, incomplete handoffs.
+
+### Operator-facing handoff: one link and one paste-ready block
+
+- Give the operator **one canonical starting URL**: https://github.com/gitback2life-art/gitback2life/blob/main/docs/session-handoff.md
+- Provide **one complete, ready-to-copy instruction block** for the new session in the same response.
+- Do not make the operator collect, copy, or paste a list of project-document links. The new session must follow links from this canonical handoff and inspect the relevant files itself.
+- Do not respond with a link list in place of the actual paste-ready instructions.
+- Keep the operator-facing explanation concise and direct. Do not turn a simple handoff into a questionnaire or an elaborate workflow for the operator.
+
+### Required actions for the receiving session
+
+1. Read this canonical cross-project handoff first.
+2. Follow its links and inspect the current relevant project-specific handoffs, story files, progress records, and supporting documents before asking the operator to repeat context.
+3. Preserve the **whole documented gitback2life story**, not only the currently active subproject. Include the mission, pseudonymous personal story and storytelling preferences, cross-project priorities, side projects, and documented work involving Big Brother ChatGPT and Claude AI.
+4. Identify the active priority, paused projects, current checkpoint, decisions, outstanding issues, and next authorized step. Keep separately named projects distinct.
+5. Verify current repository facts and file state when repository access is available. Clearly distinguish operator-reported information, information documented in project records, independently verified current facts, historical evidence, inference, and unknowns.
+6. Do not claim that every file, local change, or historical detail is complete or correct unless it has actually been checked. Local-machine work and AI-session history may not be fully represented in GitHub; state that limitation and identify only material gaps.
+7. Respect the operator's role boundaries and every project-specific safety gate. A handoff documents authorization boundaries; it does not grant permission to code, run tests or tools, inspect live targets, contact outside parties, or modify repositories.
+8. Report a concise understanding of the current state and important verification gaps, then wait for the operator's next instruction.
+
+### Role and safety boundaries to carry forward
+
+- Baby Brother's primary role is documentation, continuity, accurate recording of information supplied from the operator's other working sessions, ghostwriting, and storytelling—not taking over Big Brother's engineering work.
+- The AI Coding Command Center is the active development focus only as described in its current dedicated handoff. Follow its specific authorization gates.
+- The 911 GetBack2Life Toolbox remains paused by the operator because of potential safety risks. Do not operate it, inspect live targets, or make changes without explicit, task-specific authorization.
+- The operator's principle is to do the right thing rather than take the easy road, including stopping work when it could harm another person's system.
+- Preserve the operator's pseudonym and represent their story truthfully, including disability and complicated health issues where relevant, without framing them only as "recovering." Difficulties with memory and focus are part of why AI is used as a practical tool.
+- The operator retains final authority over project decisions. Research and recommendations do not become approved policy without the operator's decision.
+
+### End-of-session maintenance
+
+When meaningful work changes durable project context, update this canonical handoff and the relevant project-specific document(s) during the same session when repository access and authorization allow it. Record exact paths changed and verify the resulting repository state. If unable to write or verify, say so plainly; never imply that an update happened when it did not.
+
+For a new-session handoff, use this minimum operator-facing format:
+
+1. One canonical starting URL (plain copyable text).
+2. One complete paste-ready instruction block.
+3. A brief, truthful note about any material gaps that the next session must verify.
+
+This section governs how handoffs are prepared. Project-specific technical status and authorization must still be taken from the latest relevant project documents.
