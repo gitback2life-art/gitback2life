@@ -180,3 +180,30 @@ On opening a fresh session:
 7. Only resume coding / automation engineering when the user explicitly authorizes it.
 
 **Current status (October 12, 2026): GitBack2Life AI is the sole active engineering focus in Big Brother's workstream; its next Stage A1 controlled run still awaits separate explicit authorization. The 911 Toolbox and Task Command Center are paused. Baby Brother's role is story and documentation continuity.**
+
+
+---
+
+## Current-State Addendum — R16–R29 (October 12, 2026)
+
+This addendum supersedes earlier handoff statements that described the R15 checkpoint and a possible Stage A1 run as the latest status. Those statements remain as historical context; use this newer R16–R29 status for current continuity.
+
+### Current engineering checkpoint
+- **Stage A1 is complete:** R19's owner-authorized model-free run completed `PASS_A1_MODEL_FREE_NO_QWEN`, with independent review of the result and unchanged live state.
+- **The one-shot Stage A2 authorization is spent.** The R26 campaign ran three trials out of 16 planned and was stopped after A202 made a real wrong-location edit in the disposable clone. The candidate was disqualified.
+- Runner D1's Git porcelain parsing bug was corrected and independently checked against Windows Git.
+- R27–R29 refined the pre-write guard and Aider adapter. Claude's R29 targeted review returned PASS with **83/83 offline tests**, including the correct A202 golden using Aider 0.86.2's real Windows parser/edit class.
+- **Full in-process Aider integration is still untested.** The R29 review did not initialize a full Aider coder, run the actual app controller, invoke Ollama, or exercise the complete `apply_updates()`/`prepare_to_edit()` path.
+- **NO DEPLOYMENT remains in effect.** No app installation, code promotion, controller run, or new A2 campaign is authorized by this handoff.
+- Proposed next experiment: a no-inference Windows integration harness with recorded responses and pinned Aider 0.86.2 in a fresh disposable clone. It requires the owner's fresh, explicit authorization.
+
+### Safety and evidence rules
+A controller PASS or ordinary regression pass is not sufficient if an independent location check says an edit landed in the wrong method. The R26 wrong-location edit is a genuine failure even though it was confined to a disposable clone and live source was reported unchanged. Preserve the distinction between an offline proof-of-mechanism, targeted acceptance, full integration, and deployment approval.
+
+The user's long-term aim is to automate routine development and reduce wasted GPU/session resources, with human intervention focused on exceptional permissions and consequential decisions. This is a design goal, not a deployed capability. Worktrees and disposable clones are not complete security sandboxes; a dedicated Windows account/ACL boundary remains proposed.
+
+### Personal social post — separate from official project channels
+The user locked a post intended for personal social media accounts that are **not connected to GitBack2Life**. It introduces GitBack2Life as something the poster came across, without disclosing that the user is behind it. This is a personal-account discovery-style post, not an official GitBack2Life announcement or marketing post. Preserve its wording and context; do not edit or repurpose it unless asked. The user's next step is to observe actual responses and any available website metrics, distinguishing observed evidence from assumed causation.
+
+### Role reminder
+Baby Brother is the story writer, documentation partner, and continuity keeper. Do not execute code, install packages, modify local source, run A1/A2, deploy, or edit repository files without the user's explicit direction. The user's morals-over-convenience principle remains central: the 911 GetBack2Life Toolbox is paused until its safety concerns are addressed and the user explicitly authorizes resumed use.
