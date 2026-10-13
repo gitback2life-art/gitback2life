@@ -853,3 +853,75 @@ The R15 report says the owner **may separately authorize exactly one** controlle
 The report explicitly excludes Aider, Ollama, Qwen, repair/checkpoint options, installation, commits, merges, and deletion of the preserved scratch folder. A BLOCK ends that one run; no retry is authorized. After a permitted run, Claude is to review its report, preserved scratch evidence, and resulting live-state comparison. **Stage A2 remains a separate authorization.**
 
 **Story accuracy rule:** R15 approves a specific review candidate for possible one-run authorization. It does not mean the full workflow passed, the live isolation defect is permanently fixed in the installed application, a Qwen/Aider winner exists, or GitBack2Life AI is complete.
+
+
+---
+
+## R16–R29 Story Update — Guarded Aider Editing, Windows Review, and Current Limits
+**Update recorded:** October 12, 2026  
+**Source:** User-supplied *GitBack2Life — Story Progress Update for Baby Brother (GPT-6), R16–R29*. This is a documentation update, not authorization to execute or deploy.
+
+### Why this chapter matters
+The work moved from validating a model-free test setup to a bounded live-model experiment, which exposed a serious distinction: a controller can report PASS and ordinary tests can pass even when an AI editor changes the wrong occurrence of repeated text. The team stopped deployment, preserved the evidence, and worked toward a guard that uses trusted structural context to constrain edits to the intended method.
+
+### R16–R19 — Stage A1 model-free foundation
+- R16's run safely blocked because the isolated copy did not have the controller at the path expected by the regression system.
+- R17 corrected staging and clarified raw-hash comparisons for LF/CRLF differences while preserving byte-level hashes for audit.
+- R18 cleared another review round.
+- At R19, an owner-authorized model-free Stage A1 run completed as `PASS_A1_MODEL_FREE_NO_QWEN`; Claude independently verified the result and unchanged live state.
+- **Stage A1 is complete.** This validates the model-free test plumbing/isolation path, not the accuracy of local-model edits.
+
+### R20–R25 — A traceable A2 campaign
+- An eight-case A2 catalog was built using full-file goldens derived from verified Git objects. Cases included repeated source text, exact historic prompts, newline/BOM handling, and false-positive resistance.
+- The runner was strengthened to preserve intermediate edits and rollbacks so an incorrect edit could not disappear from the final diff after restoration.
+- After further runner/launcher and Windows PowerShell process-reporting review, the owner authorized one bounded A2 campaign. That authorization was one-shot, not blanket permission for repeated trials.
+
+### R26 — The campaign exposed a wrong-location edit
+The forensic record showed only three trials ran: A201 baseline, A201 candidate, and A202 candidate. The remaining 13 of 16 planned trials never started.
+
+Two separate defects were identified:
+1. **Runner D1:** a helper used `.strip()` on Git porcelain output, removing the leading status-space in `' M target.py'`. The runner misread a legitimate unstaged tracked change in the disposable clone as unexpected. This was a status-parsing defect, not evidence that the live application was edited.
+2. **A202 wrong-location edit:** Aider was asked to insert one line into `CodingTasksPage.save_checkpoint`, but the SEARCH text appeared in three locations. Aider selected the earlier occurrence in `__init__` near line 186 instead of `save_checkpoint` near line 640. The controller reported PASS, while an independent location scorer returned `FAIL_WRONG_LOCATION_OR_EXTRA_EDITS`.
+
+The agreed rule required zero wrong-location edits, so the candidate was disqualified and **NO DEPLOYMENT** remained the decision. The incorrect edit was confined to a disposable clone; the live source was reported unchanged and evidence was preserved.
+
+Ollama logs showed 17 actual inference requests even though the runner reported model-call counts as unknown (`null`). Missing measurements must not be interpreted as zero calls. The A201 retries returned identical deterministic replies with no valid exact SEARCH match, demonstrating a way to waste GPU time without gaining information.
+
+### R27–R28 — Guarded, method-scoped editing
+- R27 added a review-only offline pre-write edit guard, an experimental Aider adapter, a correction for runner D1, and a one-command evidence verifier.
+- The design borrowed mechanisms from the separate Contextual SFT dataset project: centralized admission checks, content-bound hashes, a transactional SQLite registry, deliberate recovery, and explicit held/rejected reasons. The coding app is not meant to inherit that dataset project's manual approval of every routine item.
+- Claude's R27 Windows review approved continued isolated testing, verified the D1 correction against real Git, and found additional issues involving physical line counting, file-wide SEARCH uniqueness, configuration assertions, and avoidable retries.
+- R27 recorded 54 passing offline tests.
+- R28 aligned line counting with physical newline boundaries, improved rejection reasons and configuration assertions, and used trusted method-scoped uniqueness to apply the original A202 SEARCH only within `CodingTasksPage.save_checkpoint`. The resulting bytes matched the reviewed A202 golden.
+- R28 recorded 71 passing offline tests, but Claude blocked integration because the adapter rejected Windows backslash paths. The review also noted that post-inference duplicate-hash suppression cannot save inference cost and could discard a legitimate later edit.
+
+### R29 — Targeted Windows acceptance PASS
+R29 addressed the Windows path and file-identity issues:
+- Resolve incoming paths using Aider's own path resolver, verify the resolved file is the one authorized target, and pass only the canonical permitted path to the strict guard.
+- At adapter attachment, verify Aider's root and visible files match the approved isolated clone so the model cannot read one file while the guard edits another.
+- Remove ineffective post-inference response-hash suppression and default to `max_reflections=0` before inference.
+- Use the same `EditRejected` exception identity expected by the coordinator.
+- Defend against task text being interpreted as an Aider slash command by using `coder.run(..., preproc=False)` for future model-backed execution.
+
+Claude's R29 targeted acceptance returned **PASS, no corrections required**. Using Aider 0.86.2's actual Windows parser and real edit class—not a fully initialized Aider process—the review verified that the original A202 response with native Windows paths produced the approved golden, invalid A201 SEARCH and unauthorized-file edits were rejected without target-byte changes, wrong Aider roots and unexpected visible-file sets were rejected at attachment, R28 files stayed unchanged, and the offline verifier passed **83/83 tests** under both long and short TEMP path representations.
+
+### Current evidence and boundaries
+| Area | Current status |
+|---|---|
+| Stage A1 | Complete; R19 model-free run independently verified |
+| Original Stage A2 campaign | Stopped after 3 of 16 planned trials; candidate disqualified; one-shot authorization spent |
+| Runner D1 | Corrected in isolated runner and independently checked against Windows Git |
+| Guard/adapter | Offline proof of mechanism; correct A202 golden demonstrated in R29 targeted parser/class test |
+| R29 review | Targeted PASS; 83/83 offline tests |
+| Full in-process Aider integration | Not tested |
+| Dedicated Windows OS-account/ACL boundary | Proposed, not implemented |
+| Autonomous coordinator and SQLite recovery ledger | Architecture/roadmap, not complete |
+| Measured GPU savings | Not established |
+| Deployment, promotion, or another A2 campaign | Not authorized; **NO DEPLOYMENT remains** |
+
+The R29 result does not mean the full Aider coder, the application's real controller, Ollama, or Aider's full `apply_updates()`/`prepare_to_edit()` path was exercised. The earlier one-shot A2 authorization is spent. The proposed next experiment is a **no-inference Windows integration harness**: initialize pinned Aider 0.86.2 in a fresh disposable clone, attach the guard, feed canned recorded responses into `apply_updates()`, and inspect clone hashes, Git index/status, ignored files, external Aider cache effects, and live-source integrity without making Ollama inference calls. It requires fresh, explicit owner authorization.
+
+### Broader story and operating philosophy
+The intended destination is to automate routine development while conserving GPU and expensive AI-session resources, leaving human involvement mainly for exceptional permissions and consequential decisions. This is a target, not a capability already delivered. The safe sequence is to reject invalid proposals before inference or writes, validate method/path/source identity, apply only within a protected disposable clone, independently verify diffs and results, preserve machine-readable evidence, and avoid repeated deterministic retries. A worktree or disposable clone is not by itself a security sandbox, and an in-process guard is not a complete security boundary.
+
+The project's central lesson remains: **“edit applied” and “tests pass” do not prove that the intended code location changed.** The responsible response to the R26 failure was to stop, preserve evidence, refine the guard, and keep deployment prohibited until stronger evidence exists.
