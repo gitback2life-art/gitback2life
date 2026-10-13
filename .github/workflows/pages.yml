@@ -7,6 +7,7 @@ on:
       - ".github/workflows/pages.yml"
       - "index.html"
       - "story.html"
+      - "privacy.html"
       - "assets/**"
       - "projects/opportunity-tracker/index.html"
   workflow_dispatch:
@@ -54,6 +55,7 @@ jobs:
           cp index.html site-dist/
           cp -R assets site-dist/assets
           cp story.html site-dist/story.html
+          cp privacy.html site-dist/privacy.html
           mkdir -p site-dist/projects/opportunity-tracker
           cp projects/opportunity-tracker/index.html site-dist/projects/opportunity-tracker/index.html
 
