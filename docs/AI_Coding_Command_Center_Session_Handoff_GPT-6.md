@@ -207,3 +207,52 @@ The user locked a post intended for personal social media accounts that are **no
 
 ### Role reminder
 Baby Brother is the story writer, documentation partner, and continuity keeper. Do not execute code, install packages, modify local source, run A1/A2, deploy, or edit repository files without the user's explicit direction. The user's morals-over-convenience principle remains central: the 911 GetBack2Life Toolbox is paused until its safety concerns are addressed and the user explicitly authorizes resumed use.
+
+---
+
+## Current Session Addendum — 911 GetBack2Life Toolbox / Integrated v16 (October 18, 2026)
+
+This addendum records the latest conversation and supersedes older wording above only where it conflicts with the current limited work status. Preserve the earlier GitBack2Life AI history as historical context.
+
+### Current work reported by the user
+
+The user clarified that the recent v16 integration and installer discussion is **for the 911 GetBack2Life Toolbox**. The user shared Big Brother's latest statement:
+
+> “Yes. I’m opening the integrated v16 package now to inspect the installer, backup/rollback, and data-protection behavior. I’ll make the fixes I can verify here and deliver the corrected package, with any Windows-only checks clearly identified.”
+
+This is a statement of intended work, **not evidence that inspection or fixes have already occurred**. At the time of this addendum, this session has not independently inspected the v16 package and has no verified result for the announced fixes.
+
+### Previously reported v16 integration status — not independently verified here
+
+Big Brother previously reported:
+- All 145 v15 source files preserved byte-for-byte.
+- All 21 deployment files included.
+- All 14 installer payload hashes verified.
+- ZIP integrity and file hashes verified.
+
+The same report explicitly left these checks unfinished:
+- Actual Windows installer validation.
+- G0b and G2 checks.
+- Existing-install migration.
+- M4 activation.
+
+Big Brother acknowledged that source integration had been called complete before installer validation. Packaging integrity and hashes alone do not establish that the installer is safe or functional.
+
+### Immediate inspection scope
+
+The stated next task is to inspect the integrated v16 package, focusing on:
+1. Installer behavior.
+2. Backup and rollback behavior.
+3. Data-protection behavior.
+4. Making only fixes that can be verified in the available environment.
+5. Clearly labeling Windows-only checks that have not been run.
+
+Do not claim that the package has been inspected, fixed, tested, or delivered until concrete evidence supports each claim. Do not advise running the installer while its relevant safety checks remain unverified.
+
+### Status and authorization boundary
+
+The latest conversation makes this limited v16 safety inspection the current subject of discussion for the 911 Toolbox; older statements that the toolbox was paused remain historical context. This does **not** constitute deployment approval or proof that all broader 911 Toolbox work has resumed. No installation or production deployment is established as authorized by this addendum.
+
+### Continuity and communication
+
+The user was expecting the repository handoff itself to be updated, not merely a handoff written in chat. For future handoff maintenance, update this file in GitHub, preserve the existing history, commit the change, read it back to verify the added section, and give the user the real repository URL and commit SHA. Never substitute a chat-only draft for the repository operation when the user expects the repository to be changed.
