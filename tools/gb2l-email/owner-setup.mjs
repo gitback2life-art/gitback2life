@@ -6,7 +6,7 @@ import {createServer} from 'node:http';
 import {randomBytes,createHash} from 'node:crypto';
 import {execFileSync,spawnSync} from 'node:child_process';
 import {assertMainOnlyDeployment,REPO} from './policy.mjs';
-import {assertOwner,assertSoloProtection,assertManualEnvironment,assertKeyPair} from './setup-checks.mjs';
+import {assertOwner,assertSoloMainRuleset,assertManualEnvironment,assertKeyPair} from './setup-checks.mjs';
 const args=process.argv.slice(2);
 const idx=args.indexOf('--credentials');
 const filename=idx>=0?args[idx+1]:null;
@@ -30,7 +30,9 @@ const ghApi=(endpoint)=>{
  try{return JSON.parse(r.stdout)}catch{throw new Error('Invalid GitHub protections response')}
 };
 assertOwner(ghApi('user'),ghApi(`repos/${repo}`));
-assertSoloProtection(ghApi(`repos/${repo}/branches/main/protection`));
+const listedRulesets=ghApi(`repos/${repo}/rulesets?includes_parents=true`);
+if(!Array.isArray(listedRulesets))throw Error('Cannot verify branch rulesets.');
+assertSoloMainRuleset(listedRulesets.map(item=>ghApi(`repos/${repo}/rulesets/${item.id}`)));
 const manualEnv=ghApi(`repos/${repo}/environments/gb2l-email-send`);
 assertManualEnvironment(manualEnv);
 assertMainOnlyDeployment(manualEnv,ghApi(`repos/${repo}/environments/gb2l-email-send/deployment-branch-policies?per_page=100`));
