@@ -37,7 +37,7 @@ if(mode==='disabled'){
   console.log('Approval-required mode set for',actor,'. Confirm gb2l-email-send requires owner review.');
 }else{
   const branch=JSON.parse(run(['api',`repos/${REPO}/branches/main/protection`]));
-  if(!branch?.required_pull_request_reviews?.require_code_owner_reviews||!(branch.required_pull_request_reviews.required_approving_review_count>=1))throw Error('Cannot enable autonomous sending without enforced main branch code-owner review');
+  if(!branch?.required_pull_request_reviews?.require_code_owner_reviews||!(branch?.required_pull_request_reviews?.required_approving_review_count>=1))throw Error('Cannot enable autonomous sending without enforced main branch code-owner review');
   const environ=JSON.parse(run(['api',`repos/${REPO}/environments/gb2l-email-auto`]));
   if(environ?.protection_rules?.some(x=>x.type==='required_reviewers'))throw Error('Autonomous environment incorrectly requires per-message approval');
   const existing=JSON.parse(run(['api',`repos/${REPO}/environments/gb2l-email-auto/secrets`]));
