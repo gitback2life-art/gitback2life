@@ -11,6 +11,36 @@ const GMAIL='https://gmail.googleapis.com/gmail/v1/users/me/messages/send';
 const API='https://api.github.com';
 const b64=s=>Buffer.from(s,'utf8').toString('base64');
 const encHeader=s=>/^[\x20-\x7e]*$/.test(s)?s:`=?UTF-8?B?${b64(s)}?=`;
+
+function safeDiagnosticToken(value){
+  return typeof value==='string'&&/^[A-Za-z0-9_.:-]{1,80}$/.test(value)?value:null;
+}
+function safeDiagnosticMessage(value){
+  if(typeof value!=='string')return null;
+  return value
+    .replace(/[\u0000-\u001f\u007f]+/g,' ')
+    .replace(/\b[\w.+-]+@[\w.-]+\.[A-Z]{2,}\b/gi,'[email redacted]')
+    .replace(/\bBearer\s+\S+/gi,'Bearer [redacted]')
+    .replace(/\bya29\.[A-Za-z0-9._-]+/g,'[token redacted]')
+    .replace(/\b1\/\/[A-Za-z0-9_-]+/g,'[token redacted]')
+    .replace(/\bAIza[0-9A-Za-z_-]{20,}\b/g,'[key redacted]')
+    .replace(/\bGOCSPX-[A-Za-z0-9_-]+\b/g,'[secret redacted]')
+    .slice(0,240);
+}
+export function summarizeGoogleError(payload){
+  const error=payload?.error;
+  const first=Array.isArray(error?.errors)?error.errors.find(item=>safeDiagnosticToken(item?.reason)):null;
+  const fields=[];
+  const reason=safeDiagnosticToken(first?.reason);
+  const domain=safeDiagnosticToken(first?.domain);
+  const status=safeDiagnosticToken(error?.status);
+  if(reason)fields.push('reason='+reason);
+  if(domain)fields.push('domain='+domain);
+  if(status)fields.push('status='+status);
+  const message=safeDiagnosticMessage(error?.message);
+  if(message)fields.push('message="'+message+'"');
+  return fields.length?'Google details: '+fields.join(', '):'Google details unavailable (no recognized safe error fields)';
+}
 export function mimeMessage(d){
   const body=Buffer.from(d.body.replace(/\r?\n/g,'\r\n'),'utf8').toString('base64').replace(/.{1,76}/g,'$&\r\n');
   return [`From: ${SENDER}`,`To: ${d.to}`,`Subject: ${encHeader(d.subject)}`,`Message-ID: <${d.id}@gmail.com>`,
@@ -95,7 +125,12 @@ export async function sendOnce({envelope,privateKey,oauth,github,mode,policy,req
   try{
     const raw=Buffer.from(mimeMessage(d),'utf8').toString('base64url');
     const r=await request(GMAIL,{method:'POST',headers:{Authorization:`Bearer ${access}`,'Content-Type':'application/json'},body:JSON.stringify({raw}),signal:AbortSignal.timeout(20000)});
-    if(!r.ok)return {status:'uncertain_delivery',draft_id:d.id,note:`Gmail HTTP ${r.status} after reserved attempt; no automatic retry.`};
+    if(!r.ok){
+      let payload=null;
+      try{payload=await r.json();}catch{}
+      const details=summarizeGoogleError(payload);
+      return {status:'uncertain_delivery',draft_id:d.id,note:\`Gmail HTTP \${r.status} after reserved attempt; \${details}; no automatic retry.\`};
+    }
     const result=await r.json();
     if(!result||typeof result.id!=='string'||!result.id)return {status:'uncertain_delivery',draft_id:d.id,note:'Gmail did not return a message identifier; no automatic retry.'};
     return {status:'provider_accepted',draft_id:d.id,note:'Gmail accepted email; recipient delivery/read status is not verified.'};
