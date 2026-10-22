@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // One-time owner-only setup. Use outside public AI chat. Never records refresh tokens on disk.
-import {readFileSync,writeFileSync} from 'node:fs';
+import {existsSync,readFileSync,writeFileSync} from 'node:fs';
 import {createServer} from 'node:http';
 import {generateKeyPairSync,randomBytes,createHash} from 'node:crypto';
 import {execFileSync,spawnSync} from 'node:child_process';
@@ -11,6 +11,9 @@ const ri=args.indexOf('--repo');const repo=ri>=0?args[ri+1]:'gitback2life-art/gi
 if(!filename||!/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(repo))throw new Error('Usage: node tools/gb2l-email/owner-setup.mjs --credentials C:\\path\\client_secret.json --repo owner/repo');
 const cfg=JSON.parse(readFileSync(filename,'utf8')).installed;
 if(!cfg||typeof cfg.client_id!=='string'||typeof cfg.client_secret!=='string')throw new Error('Only Google Desktop OAuth JSON supported. No credentials imported.');
+// This preflight MUST run before touching any GitHub secret, token, or mode setting.
+const publicKeyPath=new URL('./public-key.pem',import.meta.url);
+if(existsSync(publicKeyPath))throw new Error('Existing public-key.pem found. Refusing to rotate GitHub private-key secrets or modify mode during setup rerun. Use a separately reviewed key-rotation procedure.');
 // Refuse to proceed unless GitHub's official CLI is available and owner logged in.
 try{execFileSync('gh',['auth','status'],{stdio:'ignore'});}catch{throw new Error('Install free GitHub CLI from https://cli.github.com/ then run gh auth login with your REPOSITORY OWNER account; retry setup.');}
 const status=spawnSync('gh',['repo','view',repo,'--json','viewerPermission','--jq','.viewerPermission'],{encoding:'utf8'});
@@ -76,7 +79,7 @@ try{
  };
  setVar('GB2L_EMAIL_MODE','approval_required');
  setVar('GB2L_REQUEST_ACTOR','gitback2life-art');
- writeFileSync(new URL('./public-key.pem',import.meta.url),publicKey,{flag:'wx'});
+ writeFileSync(publicKeyPath,publicKey,{flag:'wx'});
  console.log('\nPrivate OAuth information stored as GitHub environment secrets. No refresh token or private key written to disk.');
  console.log('Now ask the AI to commit ONLY tools/gb2l-email/public-key.pem on a reviewable pull request.');
  console.log('Mode: approval_required. Autonomous credentials were staged in the separate gb2l-email-auto environment but autonomous policy is NOT configured and auto sending is disabled.');
