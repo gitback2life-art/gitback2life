@@ -70,8 +70,8 @@ export async function checkSenderReadiness({env=process.env,publicKeyPem,http=fe
     throw new Error('Private key does not match the published public key or is not a supported RSA private key. Key material was not displayed; no Google request made.');
   }
 
-  // Refreshes a short-lived OAuth access token and checks only the OpenID userinfo
-  // endpoint. It never calls Gmail message APIs and does not send email.
+  // Refreshes a short-lived OAuth token, inspects its actual granted scopes/audience,
+  // and checks OpenID identity. It never calls Gmail message APIs and does not send email.
   const accessToken=await refreshAccessToken({
     clientId:env.GMAIL_CLIENT_ID,
     clientSecret:env.GMAIL_CLIENT_SECRET,
@@ -87,7 +87,9 @@ export async function checkSenderReadiness({env=process.env,publicKeyPem,http=fe
     publicPrivateKeyMatch: true,
     oauthRefreshSucceeded: true,
     senderIdentityVerified: SENDER,
-    modeRemainsDisabled: true,
+    modeRemainsDisabled: env.GB2L_EMAIL_MODE==='disabled',
+    approvalRequiredModePreserved: env.GB2L_EMAIL_MODE==='approval_required',
+    sendingMode: env.GB2L_EMAIL_MODE,
     gmailSendAttempted: false
   };
 }
@@ -102,7 +104,7 @@ async function main() {
     console.log('Google OAuth: refresh succeeded; token audience matches configured Desktop client.');
     console.log('Gmail authorization: gmail.send scope is present in the actual access token.');
     console.log('Verified sender identity: '+result.senderIdentityVerified+'.');
-    console.log('Sending mode remains disabled. Gmail send endpoint was not contacted. No email was sent.');
+    console.log('Sending mode was not changed ('+result.sendingMode+'). Gmail send endpoint was not contacted. No email was sent.');
   } catch(error) {
     // Deliberately log only authored validation errors; never log env, request bodies, tokens or response bodies.
     console.error('Sender readiness check failed: '+error.message);
