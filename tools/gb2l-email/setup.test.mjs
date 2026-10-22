@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {generateKeyPairSync} from 'node:crypto';
-import {assertOwner,assertSoloProtection,assertManualEnvironment,assertKeyPair} from './setup-checks.mjs';
+import {assertOwner,assertSoloProtection,assertSoloMainRuleset,assertManualEnvironment,assertKeyPair} from './setup-checks.mjs';
 import {verifySenderIdentity} from './identity.mjs';
 import {assertOutsideRepository,securePrivateKeyFile} from './prepare-key.mjs';
 import {mkdtempSync,writeFileSync,statSync,lstatSync,symlinkSync,rmSync} from 'node:fs';
@@ -91,4 +91,30 @@ test('Windows private-key ACL routine removes inheritance and grants owner only'
   assert.deepEqual(calls[1][1],[file,'/reset']);
   assert.deepEqual(calls[2][1],[file,'/inheritance:r','/grant:r','*S-1-5-21-1-2-3-1001:F']);
  }finally{rmSync(dir,{recursive:true,force:true});}
+});
+
+const ruleset=()=>({
+  id:25633154,name:'Protect main — GitBack2Life',target:'branch',enforcement:'active',
+  conditions:{ref_name:{include:['refs/heads/main'],exclude:[]}},
+  bypass_actors:[],
+  rules:[
+    {type:'deletion'},
+    {type:'non_fast_forward'},
+    {type:'pull_request',parameters:{required_approving_review_count:0,require_code_owner_review:false,required_reviewers:[]}},
+    {type:'required_status_checks',parameters:{strict_required_status_checks_policy:true,do_not_enforce_on_create:false,required_status_checks:[{context:'email-tests',integration_id:15368}]}}
+  ]
+});
+test('actual repository ruleset format passes solo-owner setup checks',()=>assert.equal(assertSoloMainRuleset([ruleset()]),true));
+test('ruleset setup check rejects inactive, bypassed, wrong-target or missing-check rules',()=>{
+ const mutations=[
+  x=>x.enforcement='disabled',
+  x=>x.bypass_actors.push({actor_id:1,actor_type:'User',bypass_mode:'always'}),
+  x=>x.conditions.ref_name.include=['refs/heads/*'],
+  x=>x.rules.find(r=>r.type==='required_status_checks').parameters.strict_required_status_checks_policy=false,
+  x=>x.rules.find(r=>r.type==='required_status_checks').parameters.required_status_checks=[],
+  x=>x.rules=x.rules.filter(r=>r.type!=='non_fast_forward'),
+  x=>x.rules.find(r=>r.type==='pull_request').parameters.required_approving_review_count=1
+ ];
+ for(const mutate of mutations){const x=ruleset();mutate(x);assert.throws(()=>assertSoloMainRuleset([x]));}
+ assert.throws(()=>assertSoloMainRuleset([]));
 });
