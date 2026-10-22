@@ -1,0 +1,8 @@
+# Never commit any cleartext mail, Google credentials, key material, or tokens.
+*.draft.json
+*client_secret*.json
+*credentials*.json
+*refresh*.txt
+*.private.pem
+private-key.pem
+private*.key
