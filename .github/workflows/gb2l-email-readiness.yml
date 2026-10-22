@@ -1,0 +1,32 @@
+name: GitBack2Life sender readiness (no-send)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  sender-readiness:
+    if: ${{ github.ref == 'refs/heads/main' && github.actor == 'gitback2life-art' }}
+    runs-on: ubuntu-latest
+    environment: gb2l-email-send
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+      - name: Check secret presence and matching encryption key; never send email
+        env:
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_REF: ${{ github.ref }}
+          GITHUB_ACTOR: ${{ github.actor }}
+          GB2L_EMAIL_MODE: ${{ vars.GB2L_EMAIL_MODE }}
+          GB2L_REQUEST_ACTOR: ${{ vars.GB2L_REQUEST_ACTOR }}
+          GB2L_REQUEST_PR: ${{ vars.GB2L_REQUEST_PR }}
+          GB2L_CONTROL_TOKEN: ${{ secrets.GB2L_CONTROL_TOKEN }}
+          GB2L_EMAIL_POLICY: ${{ secrets.GB2L_EMAIL_POLICY }}
+          GB2L_MAIL_PRIVATE_KEY: ${{ secrets.GB2L_MAIL_PRIVATE_KEY }}
+          GMAIL_CLIENT_ID: ${{ secrets.GMAIL_CLIENT_ID }}
+          GMAIL_CLIENT_SECRET: ${{ secrets.GMAIL_CLIENT_SECRET }}
+          GMAIL_REFRESH_TOKEN: ${{ secrets.GMAIL_REFRESH_TOKEN }}
+        run: node tools/gb2l-email/readiness.mjs

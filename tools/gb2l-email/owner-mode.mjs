@@ -4,7 +4,7 @@ import {spawnSync} from 'node:child_process';
 import {createInterface} from 'node:readline/promises';
 import {stdin as input,stdout as output} from 'node:process';
 import {parsePolicy,assertMainOnlyDeployment,OWNER,REPO,SENDER} from './policy.mjs';
-import {assertOwner,assertSoloProtection,assertManualEnvironment} from './setup-checks.mjs';
+import {assertOwner,assertSoloMainRuleset,assertManualEnvironment} from './setup-checks.mjs';
 const [mode,...flags]=process.argv.slice(2);
 if(!['approval_required','auto_send','disabled'].includes(mode))throw Error('Usage: node tools/gb2l-email/owner-mode.mjs approval_required|auto_send|disabled [--daily=3] [--actor=gitback2life-art] [--domain=example.org]');
 const opts={};for(const f of flags){const m=/^--(daily|actor|domain|recipient)=([\w@.\-]+)$/.exec(f);if(!m)throw Error('Unknown mode setting');opts[m[1]]=m[2];}
@@ -12,6 +12,11 @@ const run=(args,data)=>{const p=spawnSync('gh',args,{input:data,encoding:'utf8',
 if(process.env.GH_TOKEN||process.env.GITHUB_TOKEN)throw Error('Remove token overrides and sign in with the owner account');
 assertOwner(JSON.parse(run(['api','user'])),JSON.parse(run(['api',`repos/${REPO}`])));
 const variable=(name,value)=>run(['variable','set',name,'--repo',REPO],value);
+function assertMainRulesetConfigured(){
+  const listed=JSON.parse(run(['api',`repos/${REPO}/rulesets?includes_parents=true`]));
+  if(!Array.isArray(listed))throw Error('Cannot verify branch rulesets');
+  assertSoloMainRuleset(listed.map(item=>JSON.parse(run(['api',`repos/${REPO}/rulesets/${item.id}`]))));
+}
 function audit(nextMode,actor){
   // A mode-change record contains only mode, owner identity, and timestamp. No mail content.
   const head=JSON.parse(run(['api',`repos/${REPO}/git/ref/heads/main`]));
@@ -30,7 +35,7 @@ if(mode==='disabled'){
   const environ=JSON.parse(run(['api',`repos/${REPO}/environments/gb2l-email-send`]));
   assertManualEnvironment(environ);
   assertMainOnlyDeployment(environ,JSON.parse(run(['api',`repos/${REPO}/environments/gb2l-email-send/deployment-branch-policies?per_page=100`])));
-  assertSoloProtection(JSON.parse(run(['api',`repos/${REPO}/branches/main/protection`])));
+  assertMainRulesetConfigured();
   const actor=opts.actor||OWNER;
   if(!/^[A-Za-z0-9-]{1,39}$/.test(actor))throw Error('Invalid authorized GitHub requester');
   const policy={version:1,mode:'approval_required',owner:OWNER,requester:actor,sender:SENDER,daily_limit:3};
@@ -41,8 +46,7 @@ if(mode==='disabled'){
   variable('GB2L_EMAIL_MODE','approval_required');
   console.log('Approval-required mode set for',actor,'. Confirm gb2l-email-send requires owner review.');
 }else{
-  const branch=JSON.parse(run(['api',`repos/${REPO}/branches/main/protection`]));
-  assertSoloProtection(branch);
+  assertMainRulesetConfigured();
   const environ=JSON.parse(run(['api',`repos/${REPO}/environments/gb2l-email-auto`]));
   if(environ?.protection_rules?.some(x=>x.type==='required_reviewers'))throw Error('Autonomous environment incorrectly requires per-message approval');
   assertMainOnlyDeployment(environ,JSON.parse(run(['api',`repos/${REPO}/environments/gb2l-email-auto/deployment-branch-policies?per_page=100`])));

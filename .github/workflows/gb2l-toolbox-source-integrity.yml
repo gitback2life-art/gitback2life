@@ -1,0 +1,35 @@
+name: 911 GitBack2Life Toolbox source integrity
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'toolbox/911_gitback2life/**'
+  push:
+    branches: [main]
+    paths:
+      - 'toolbox/911_gitback2life/**'
+permissions:
+  contents: read
+jobs:
+  source-integrity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Syntax-check the source importer
+        run: python -m py_compile toolbox/911_gitback2life/import_source_package.py
+      - name: Explain importer bootstrap-only changes
+        if: hashFiles('toolbox/911_gitback2life/distribution/BUILD_MANIFEST.json') == ''
+        run: echo "The source importer is being bootstrapped. Full distribution verification activates after the verified 14-tool source tree is imported."
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        if: hashFiles('toolbox/911_gitback2life/distribution/BUILD_MANIFEST.json') != ''
+        with:
+          node-version: '24'
+      - name: Verify both source manifests and expected 14-tool menu
+        if: hashFiles('toolbox/911_gitback2life/distribution/BUILD_MANIFEST.json') != ''
+        run: python toolbox/911_gitback2life/import_source_package.py --verify-only --destination toolbox/911_gitback2life/distribution --repo-root .
+      - name: Run the supplied offline Node regression suite
+        if: hashFiles('toolbox/911_gitback2life/distribution/BUILD_MANIFEST.json') != ''
+        working-directory: toolbox/911_gitback2life/distribution/source/911_gitback2life
+        run: npm test
