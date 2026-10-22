@@ -142,11 +142,16 @@ def unpack_and_import(payload_dir: Path, destination: Path, repo_root: Path) -> 
 
     expected_name = "911_GitBack2Life_Email_Communications_Review_Build_20261020.zip"
     payload_items = list(payload_dir.iterdir())
-    if len(payload_items) != 1 or payload_items[0].name != expected_name:
+    allowed_names = {expected_name, "UPLOAD_INSTRUCTIONS.md"}
+    payload_names = {item.name for item in payload_items}
+    if expected_name not in payload_names or payload_names - allowed_names:
         raise ValueError(
-            "Payload directory must contain only the exact reviewed ZIP file: " + expected_name
+            "Payload directory must contain the exact reviewed ZIP and, optionally, "
+            "UPLOAD_INSTRUCTIONS.md; found: " + ", ".join(sorted(payload_names))
         )
-    archive_path = payload_items[0]
+    if any(item.is_symlink() or not item.is_file() for item in payload_items):
+        raise ValueError("Payload entries must be regular files, not links or directories.")
+    archive_path = payload_dir / expected_name
     if archive_path.is_symlink() or not archive_path.is_file():
         raise ValueError("Source archive must be a regular file, not a link.")
     archive_bytes = archive_path.read_bytes()
