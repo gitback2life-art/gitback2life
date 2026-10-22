@@ -31,7 +31,7 @@ This directory is the repository-tracked source distribution for the 14-tool 911
 
 ## Email Communications has two distinct paths
 - Local Toolbox menu tool: distribution/source/911_gitback2life/email_communications/. This is a development implementation that expects an owner-protected HTTPS backend. The backend is not deployed or configured by the source package and must remain unavailable for real sending until the owner separately provisions and verifies it.
-- Repository-backed AI/GitHub email adapter: ../email_communications/github_actions_adapter/ and canonical source at tools/gb2l-email/, with workflow templates under its subdirectory. It sends outgoing messages only using protected GitHub Actions approval. It does not read a Gmail inbox or incoming replies. Its current no-send readiness blocker is the actual Google OAuth grant missing gmail.send; see the bundled AI guide and workflow run link there.
+- Repository-backed AI/GitHub email adapter: email_communications/github_actions_adapter/ and canonical source at tools/gb2l-email/, with workflow templates under its subdirectory. It sends outgoing messages only using protected GitHub Actions approval. It does not read a Gmail inbox or incoming replies. Its current no-send readiness blocker is the actual Google OAuth grant missing gmail.send; see the bundled AI guide and workflow run link there.
 
 Never put Google client JSON, OAuth tokens, refresh tokens, private keys, GitHub control tokens, real drafts, incident-private data, or private approval receipts in this public repository. The public encryption key is distributable; its private counterpart is not.
 
@@ -49,7 +49,7 @@ The imported snapshot is exactly build: 2026-10-20_14TOOLS_EMAIL_COMMUNICATIONS_
 
 ## Email status
 1. Local Toolbox Email Communications is present at distribution/source/911_gitback2life/email_communications/. Its protected HTTPS backend and credentials were not deployed by this package. Live local-tool sending must remain disabled/unconfigured.
-2. The separate repository-backed AI email adapter is present at ../email_communications/github_actions_adapter/ and canonical source remains at tools/gb2l-email/. It is a guarded outgoing-send path via encrypted request comments and GitHub environment approval; it does not read Gmail inboxes/replies.
+2. The separate repository-backed AI email adapter is present at email_communications/github_actions_adapter/ and canonical source remains at tools/gb2l-email/. It is a guarded outgoing-send path via encrypted request comments and GitHub environment approval; it does not read Gmail inboxes/replies.
 3. The current GitHub Actions sender readiness check is blocked because the actual Google OAuth access token grant lacks https://www.googleapis.com/auth/gmail.send. See https://github.com/gitback2life-art/gitback2life/actions/runs/39813519317. Mode must remain approval_required.
 4. The prior reserved email draft ID dbd4da02a28c5f2acd9e991b26005f0c had an uncertain HTTP 403 outcome and must never be retried or reused. A fresh email test requires a new ID and separate explicit owner authorization.
 
