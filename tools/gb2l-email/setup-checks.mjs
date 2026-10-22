@@ -27,3 +27,34 @@ export function assertKeyPair(publicPem, privatePem) {
      !createPublicKey(priv).export({type:'spki',format:'der'}).equals(pub.export({type:'spki',format:'der'})))
     throw Error('Private key does not match the published RSA public key');
 }
+
+export function assertSoloMainRuleset(rulesets) {
+  if (!Array.isArray(rulesets)) throw Error('Cannot verify GitHub main branch ruleset; expected a ruleset list.');
+  const matching = rulesets.filter(r =>
+    r?.target === 'branch' &&
+    r?.conditions?.ref_name?.include?.length === 1 &&
+    r.conditions.ref_name.include[0] === 'refs/heads/main' &&
+    Array.isArray(r.conditions.ref_name.exclude) &&
+    r.conditions.ref_name.exclude.length === 0
+  );
+  const valid = matching.filter(r => {
+    const rules = r.rules || [];
+    const types = new Set(rules.map(x => x.type));
+    const pr = rules.find(x => x.type === 'pull_request')?.parameters;
+    const status = rules.find(x => x.type === 'required_status_checks')?.parameters;
+    return r.enforcement === 'active' &&
+      Array.isArray(r.bypass_actors) && r.bypass_actors.length === 0 &&
+      types.has('deletion') && types.has('non_fast_forward') &&
+      pr?.required_approving_review_count === 0 &&
+      pr?.require_code_owner_review === false &&
+      Array.isArray(pr?.required_reviewers) && pr.required_reviewers.length === 0 &&
+      status?.strict_required_status_checks_policy === true &&
+      status?.do_not_enforce_on_create === false &&
+      Array.isArray(status?.required_status_checks) &&
+      status.required_status_checks.some(x => x?.context === 'email-tests');
+  });
+  if (valid.length === 0) {
+    throw Error('Solo-owner main ruleset missing or unsafe. Require an active exact-main rule, no bypass actors, PRs with zero required approvals, strict email-tests, no deletions and no force pushes.');
+  }
+  return true;
+}
