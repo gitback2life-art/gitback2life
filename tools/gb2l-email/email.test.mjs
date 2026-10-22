@@ -19,8 +19,9 @@ function stub({mode='approval_required',liveMode=mode,used=[],gmailStatus=200,ti
   const req=async(url,opts={})=>{
     seen.push({url,method:opts.method||'GET'});
     if(url.includes('/deployment-branch-policies'))return response(200,{total_count:branchTotal,branch_policies:[{name:branch,type:'branch'}]});
-    if(url.includes('/environments/'))return response(200,{deployment_branch_policy:{protected_branches:false,custom_branch_policies:true},protection_rules:envReview?[{type:'required_reviewers',reviewers:[{reviewer:{login:owner}}]}]:[]});
+    if(url.includes('/environments/'))return response(200,{can_admins_bypass:false,deployment_branch_policy:{protected_branches:false,custom_branch_policies:true},protection_rules:envReview?[{type:'required_reviewers',prevent_self_review:false,reviewers:[{type:'User',reviewer:{login:owner}}]}]:[]});
     if(url.includes('/actions/variables/GB2L_EMAIL_MODE'))return response(200,{value:liveMode});
+    if(url.includes('openidconnect.googleapis.com'))return response(200,{email:'gitback2life.ai@gmail.com',email_verified:true});
     if(url.includes('oauth2.googleapis.com'))return response(oauthStatus,{access_token:'mock-access'});
     if(url.includes('/matching-refs/'))return response(200,used.map(ref=>({ref})));
     if(url.endsWith('/git/refs'))return response(201,{});
@@ -110,30 +111,16 @@ test('owner mode query failure blocks send closed',async()=>{
  s.req=(u,o)=>u.includes('/actions/variables/GB2L_EMAIL_MODE')?response(403,{}):base(u,o);
  await assert.rejects(run(s,{mode:'auto_send'}),/Cannot read current owner email mode/);
 });
-test('quota and duplicate ledger scans beyond first 100 refs',async()=>{
+test('quota scans every item in unpaginated matching-refs response',async()=>{
  const used=Array.from({length:100},(_,i)=>`refs/tags/gb2l-email-attempt-20261001-${i.toString(16).padStart(32,'0')}`);
- const laterA=`refs/tags/gb2l-email-attempt-20261022-${'e'.repeat(32)}`;
- const laterB=`refs/tags/gb2l-email-attempt-20261022-${'f'.repeat(32)}`;
- const s=stub({mode:'auto_send',used});const base=s.req;const pageCalls=[];
- s.req=async(url,opts)=>{
-  if(url.includes('/matching-refs/')){
-   pageCalls.push(url);
-   const page=Number(new URL(url).searchParams.get('page'));
-   if(page===1)return response(200,used.map(ref=>({ref})));
-   if(page===2)return response(200,[{ref:laterA},{ref:laterB}]);
-   return response(200,[]);
-  }
-  return base(url,opts);
- };
+ used.push('refs/tags/gb2l-email-attempt-20261022-'+'e'.repeat(32),'refs/tags/gb2l-email-attempt-20261022-'+'f'.repeat(32));
+ const s=stub({mode:'auto_send',used});
  await assert.rejects(run(s,{mode:'auto_send'}),/quota exhausted/);
- assert.equal(pageCalls.length,2);
- assert.ok(pageCalls.some(x=>new URL(x).searchParams.get('page')==='2'));
+ const calls=s.seen.filter(x=>x.url.includes('/matching-refs/'));
+ assert.equal(calls.length,1);assert.ok(!calls[0].url.includes('?'));
  assert.equal(s.seen.some(x=>x.url.includes('gmail.googleapis.com')),false);
 });
-test('missing GitHub private permissions need real staging validation',()=>{
- // This intentionally documents the unproven external prerequisite; no mock proves real GitHub permissions.
- assert.ok(true);
-});
+
 test('actual inspection script can process a trusted encrypted GitHub comment without plaintext leak',async()=>{
  const {mkdtempSync,writeFileSync,readFileSync,rmSync}=await import('node:fs');
  const {tmpdir}=await import('node:os');
@@ -149,4 +136,25 @@ test('actual inspection script can process a trusted encrypted GitHub comment wi
   assert.match(output,/ready=yes/);assert.ok(!output.includes(draft.to));assert.ok(!output.includes(draft.body));
   const decoded=output.match(/envelope=([^\n]+)/)[1];assert.equal(JSON.parse(Buffer.from(decoded,'base64url').toString()).id,envelope.id);
  }finally{rmSync(dir,{recursive:true,force:true})}
+});
+
+test('manual environment also refuses non-main branch policy',async()=>{
+ const s=stub({branch:'feature'});await assert.rejects(run(s),/main only/);
+ assert.ok(!s.seen.some(x=>x.url.includes('oauth2.googleapis.com')));
+});
+test('ledger 404 fails closed rather than assuming no previous sends',async()=>{
+ const s=stub(),base=s.req;s.req=(u,o)=>u.includes('/matching-refs/')?response(404,{}):base(u,o);
+ await assert.rejects(run(s),/Cannot check duplicate/);
+ assert.ok(!s.seen.some(x=>x.url.includes('gmail.googleapis.com')));
+});
+test('separate read token is used for current owner settings',async()=>{
+ let authorization;
+ await verifyCurrentOwnerMode({...gh,controlToken:'read-only-settings'},'disabled',async(u,o)=>{authorization=o.headers.Authorization;return response(200,{value:'disabled'});});
+ assert.equal(authorization,'Bearer read-only-settings');
+});
+test('push authenticates sender, never spoofable pusher name',()=>{
+ const envelope=sealed(),path=`mail/outbox/${envelope.id}.sealed.json`;
+ const common={eventName:'push',actor:owner,repo,changedFiles:[path],loadFile:()=>JSON.stringify(envelope)};
+ assert.throws(()=>envelopeForEvent({...common,event:{ref:'refs/heads/main',pusher:{name:owner},sender:{login:'attacker'}}}),/Untrusted/);
+ assert.equal(envelopeForEvent({...common,event:{ref:'refs/heads/main',sender:{login:owner}}}).transport,'main_push');
 });

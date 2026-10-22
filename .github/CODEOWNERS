@@ -1,4 +1,4 @@
-# Enforce required CODEOWNER review via branch protection settings.
+# Ownership routing only. Solo-owner protection requires PRs and email-tests, zero approvals.
 /.github/CODEOWNERS @gitback2life-art
 /.github/workflows/ @gitback2life-art
 /tools/gb2l-email/ @gitback2life-art

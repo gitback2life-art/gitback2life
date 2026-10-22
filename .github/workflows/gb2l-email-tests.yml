@@ -1,0 +1,19 @@
+name: GitBack2Life email tests
+on:
+  pull_request:
+  push:
+    branches: [main, feat/gb2l-approved-email-sender-20261022]
+permissions:
+  contents: read
+jobs:
+  email-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+      - run: node --test tools/gb2l-email/*.test.mjs
+      - run: for file in tools/gb2l-email/*.mjs; do node --check "$file"; done

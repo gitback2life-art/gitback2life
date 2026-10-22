@@ -4,12 +4,13 @@ import {spawnSync} from 'node:child_process';
 import {createInterface} from 'node:readline/promises';
 import {stdin as input,stdout as output} from 'node:process';
 import {parsePolicy,assertMainOnlyDeployment,OWNER,REPO,SENDER} from './policy.mjs';
+import {assertOwner,assertSoloProtection,assertManualEnvironment} from './setup-checks.mjs';
 const [mode,...flags]=process.argv.slice(2);
 if(!['approval_required','auto_send','disabled'].includes(mode))throw Error('Usage: node tools/gb2l-email/owner-mode.mjs approval_required|auto_send|disabled [--daily=3] [--actor=gitback2life-art] [--domain=example.org]');
 const opts={};for(const f of flags){const m=/^--(daily|actor|domain|recipient)=([\w@.\-]+)$/.exec(f);if(!m)throw Error('Unknown mode setting');opts[m[1]]=m[2];}
 const run=(args,data)=>{const p=spawnSync('gh',args,{input:data,encoding:'utf8',stdio:['pipe','pipe','pipe']});if(p.status!==0)throw Error('GitHub owner permission/configuration check failed: '+args.slice(0,3).join(' '));return p.stdout.trim();};
-const permission=run(['repo','view',REPO,'--json','viewerPermission','--jq','.viewerPermission']);
-if(permission!=='ADMIN')throw Error('Only the GitBack2Life repository administrator may change sending mode');
+if(process.env.GH_TOKEN||process.env.GITHUB_TOKEN)throw Error('Remove token overrides and sign in with the owner account');
+assertOwner(JSON.parse(run(['api','user'])),JSON.parse(run(['api',`repos/${REPO}`])));
 const variable=(name,value)=>run(['variable','set',name,'--repo',REPO],value);
 function audit(nextMode,actor){
   // A mode-change record contains only mode, owner identity, and timestamp. No mail content.
@@ -26,6 +27,10 @@ if(mode==='disabled'){
   try{audit('disabled',OWNER)}catch{console.log('Warning: emergency stop was set; GitHub mode audit tag could not be created.')}
   console.log('NEW mail jobs disabled. IMMEDIATELY cancel any in-flight email Actions jobs as well; revoke the Gmail token for an emergency credential stop.');
 }else if(mode==='approval_required'){
+  const environ=JSON.parse(run(['api',`repos/${REPO}/environments/gb2l-email-send`]));
+  assertManualEnvironment(environ);
+  assertMainOnlyDeployment(environ,JSON.parse(run(['api',`repos/${REPO}/environments/gb2l-email-send/deployment-branch-policies?per_page=100`])));
+  assertSoloProtection(JSON.parse(run(['api',`repos/${REPO}/branches/main/protection`])));
   const actor=opts.actor||OWNER;
   if(!/^[A-Za-z0-9-]{1,39}$/.test(actor))throw Error('Invalid authorized GitHub requester');
   const policy={version:1,mode:'approval_required',owner:OWNER,requester:actor,sender:SENDER,daily_limit:3};
@@ -37,13 +42,13 @@ if(mode==='disabled'){
   console.log('Approval-required mode set for',actor,'. Confirm gb2l-email-send requires owner review.');
 }else{
   const branch=JSON.parse(run(['api',`repos/${REPO}/branches/main/protection`]));
-  if(!branch?.required_pull_request_reviews?.require_code_owner_reviews||!(branch?.required_pull_request_reviews?.required_approving_review_count>=1))throw Error('Cannot enable autonomous sending without enforced main branch code-owner review');
+  assertSoloProtection(branch);
   const environ=JSON.parse(run(['api',`repos/${REPO}/environments/gb2l-email-auto`]));
   if(environ?.protection_rules?.some(x=>x.type==='required_reviewers'))throw Error('Autonomous environment incorrectly requires per-message approval');
   assertMainOnlyDeployment(environ,JSON.parse(run(['api',`repos/${REPO}/environments/gb2l-email-auto/deployment-branch-policies?per_page=100`])));
   const existing=JSON.parse(run(['api',`repos/${REPO}/environments/gb2l-email-auto/secrets`]));
   const names=new Set((existing.secrets||[]).map(s=>s.name));
-  for(const name of ['GB2L_MAIL_PRIVATE_KEY','GMAIL_CLIENT_ID','GMAIL_CLIENT_SECRET','GMAIL_REFRESH_TOKEN'])if(!names.has(name))throw Error('Autonomous environment missing '+name+'; use owner setup before enabling');
+  for(const name of ['GB2L_MAIL_PRIVATE_KEY','GMAIL_CLIENT_ID','GMAIL_CLIENT_SECRET','GMAIL_REFRESH_TOKEN','GB2L_CONTROL_TOKEN'])if(!names.has(name))throw Error('Autonomous environment missing '+name+'; complete the separate autonomous provisioning procedure before enabling');
   if(!input.isTTY)throw Error('Autonomous enable requires an interactive owner confirmation');
   const rl=createInterface({input,output});
   let answer;try{answer=await rl.question('Autonomous Gmail sending permits approved GitHub requester actions without per-message review. Type ENABLE AUTO SENDING: ')}finally{rl.close()}

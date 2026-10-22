@@ -22,7 +22,7 @@ export function envelopeForEvent({eventName,event,actor,requestPr,repo,loadFile,
     return {envelope:parseComment(event.comment.body),transport:'owner_comment'};
   }
   if(eventName==='push'){
-    if(!event.ref||event.ref!=='refs/heads/main'||event.pusher?.name!==actor)throw new Error('Untrusted push event');
+    if(!event.ref||event.ref!=='refs/heads/main'||event.sender?.login!==actor)throw new Error('Untrusted push event');
     if(!Array.isArray(changedFiles)||changedFiles.length!==1||!/^mail\/outbox\/[a-f0-9]{32}\.sealed\.json$/.test(changedFiles[0]))throw new Error('One encrypted draft per push, no code/config changes');
     const path=changedFiles[0];const env=validateEnvelope(JSON.parse(loadFile(path)));
     if(path!==`mail/outbox/${env.id}.sealed.json`)throw new Error('Draft filename mismatch');
@@ -33,6 +33,9 @@ export function envelopeForEvent({eventName,event,actor,requestPr,repo,loadFile,
 export function fromRunnerEnvironment(env=process.env){
   const event=JSON.parse(readFileSync(env.GITHUB_EVENT_PATH,'utf8'));
   let changedFiles;
-  if(env.GITHUB_EVENT_NAME==='push')changedFiles=execFileSync('git',['diff','--name-only','HEAD^1','HEAD'],{encoding:'utf8'}).trim().split(/\r?\n/).filter(Boolean);
+  if(env.GITHUB_EVENT_NAME==='push'){
+    if(!/^[a-f0-9]{40}$/.test(event.before||'')||!/[1-9a-f]/.test(event.before)||event.after!==env.GITHUB_SHA||event.forced||event.deleted)throw Error('Invalid push range');
+    changedFiles=execFileSync('git',['diff','--name-only',event.before,event.after],{encoding:'utf8'}).trim().split(/\r?\n/).filter(Boolean);
+  }
   return envelopeForEvent({eventName:env.GITHUB_EVENT_NAME,event,actor:env.GB2L_REQUEST_ACTOR||OWNER,requestPr:env.GB2L_REQUEST_PR,repo:env.GITHUB_REPOSITORY,changedFiles,loadFile:(p)=>readFileSync(p,'utf8')});
 }

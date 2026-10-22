@@ -1,4 +1,7 @@
 #!/usr/bin/env node
+import {verifySenderIdentity} from './identity.mjs';
+import {pathToFileURL} from 'node:url';
+import {assertManualEnvironment} from './setup-checks.mjs';
 import {appendFileSync} from 'node:fs';
 import {unseal,validateEnvelope} from './crypto.mjs';
 import {assertSendContext,requestedMode,assertMainOnlyDeployment,REPO,SENDER} from './policy.mjs';
@@ -25,26 +28,22 @@ export async function refreshAccessToken({clientId,clientSecret,refreshToken},ht
 }
 // Environmental protection is checked by the GitHub runner BEFORE it releases secrets;
 // this independent runtime verification fails closed on inaccessible or wrong metadata.
-export async function verifyEnvironment({repo,githubToken},mode,http=fetch){
+export async function verifyEnvironment({repo,githubToken,controlToken=githubToken},mode,http=fetch){
   if(repo!==REPO||!githubToken)throw new Error('Invalid trusted GitHub sender context');
   const name=mode==='auto_send'?'gb2l-email-auto':'gb2l-email-send';
   const r=await http(`${API}/repos/${repo}/environments/${name}`,{headers:headers(githubToken),signal:AbortSignal.timeout(20000)});
   if(!r.ok)throw new Error('Cannot verify GitHub sending environment; refusing to send');
   const data=await r.json();
-  const ownerReview=Array.isArray(data.protection_rules)&&data.protection_rules.some(x=>x.type==='required_reviewers'&&x.reviewers?.some(y=>y.reviewer?.login==='gitback2life-art'));
-  const anyReview=Array.isArray(data.protection_rules)&&data.protection_rules.some(x=>x.type==='required_reviewers');
-  if(mode==='approval_required'&&!ownerReview)throw new Error('Owner approval gate missing; refusing to send');
-  if(mode==='auto_send'&&anyReview)throw new Error('Autonomous environment has per-message review gate; refusing to claim autonomy');
-  if(mode==='auto_send'){
-    const pol=await http(`${API}/repos/${repo}/environments/${name}/deployment-branch-policies?per_page=100`,{headers:headers(githubToken),signal:AbortSignal.timeout(20000)});
-    if(!pol.ok)throw new Error('Cannot verify autonomous main-only branch restriction');
-    assertMainOnlyDeployment(data,await pol.json());
-  }
+  if(mode==='approval_required')assertManualEnvironment(data);
+  if(mode==='auto_send'&&data.protection_rules?.some(x=>x.type==='required_reviewers'))throw Error('Autonomous environment has per-message review gate');
+  const pol=await http(`${API}/repos/${repo}/environments/${name}/deployment-branch-policies?per_page=100`,{headers:headers(githubToken),signal:AbortSignal.timeout(20000)});
+  if(!pol.ok)throw Error('Cannot verify main-only branch restriction');
+  assertMainOnlyDeployment(data,await pol.json());
   return true;
 }
-export async function verifyCurrentOwnerMode({repo,githubToken},expected,http=fetch){
+export async function verifyCurrentOwnerMode({repo,githubToken,controlToken=githubToken},expected,http=fetch){
   if(repo!==REPO||!githubToken)throw new Error('Unknown GitHub mode-check context');
-  const r=await http(`${API}/repos/${repo}/actions/variables/GB2L_EMAIL_MODE`,{headers:headers(githubToken),signal:AbortSignal.timeout(20000)});
+  const r=await http(`${API}/repos/${repo}/actions/variables/GB2L_EMAIL_MODE`,{headers:headers(controlToken),signal:AbortSignal.timeout(20000)});
   if(!r.ok)throw new Error('Cannot read current owner email mode; refusing to send');
   const live=await r.json();
   if(typeof live?.value!=='string'||live.value!==expected||requestedMode(live.value)!==expected)
@@ -55,23 +54,16 @@ export async function verifyCurrentOwnerMode({repo,githubToken},expected,http=fe
 // An already reserved attempt stays reserved on timeout, failed delivery or rerun.
 export async function reserveAttempt({repo,sha,githubToken,id,dailyLimit,utcDay},http=fetch){
   if(!repoOk({repo,sha,githubToken})||!/^[a-f0-9]{32}$/.test(id)||!Number.isSafeInteger(dailyLimit)||dailyLimit<1||dailyLimit>20||!/^[0-9]{8}$/.test(utcDay))throw new Error('Invalid send reservation context');
-  const matching=[];
-  // Enumerate ALL pages; a first-page-only lookup silently bypasses daily limits.
-  for(let page=1;page<=100;page++){
-    const url=`${API}/repos/${repo}/git/matching-refs/tags/gb2l-email-attempt-?per_page=100&page=${page}`;
-    const existing=await http(url,{headers:headers(githubToken),signal:AbortSignal.timeout(20000)});
-    if(existing.status===404)break;
-    if(!existing.ok)throw new Error('Cannot check duplicate/quota state; no message sent');
-    const batch=await existing.json();
-    if(!Array.isArray(batch)||batch.length>100)throw new Error('Invalid GitHub quota ledger page');
-    for(const item of batch){
-      const tag=item?.ref;
-      if(typeof tag!=='string'||!/^refs\/tags\/gb2l-email-attempt-(?:\d{8}-)?[a-f0-9]{32}$/.test(tag))throw new Error('Unexpected GitHub quota ledger record');
-      matching.push(tag);
-    }
-    if(batch.length<100)break;
-    if(page===100)throw new Error('Quota ledger exceeds safe pagination limit');
-  }
+  // This endpoint returns all matches; it has no documented page/per_page parameters.
+  const existing=await http(`${API}/repos/${repo}/git/matching-refs/tags/gb2l-email-attempt-`,{headers:headers(githubToken),signal:AbortSignal.timeout(20000)});
+  if(!existing.ok)throw Error('Cannot check duplicate/quota state; no message sent');
+  const batch=await existing.json();
+  if(!Array.isArray(batch)||batch.length>10000||existing.headers?.get('link'))throw Error('Invalid or incomplete GitHub quota ledger');
+  const matching=batch.map(item=>{
+    const tag=item?.ref;
+    if(typeof tag!=='string'||!/^refs\/tags\/gb2l-email-attempt-(?:\d{8}-)?[a-f0-9]{32}$/.test(tag))throw Error('Unexpected GitHub quota ledger record');
+    return tag;
+  });
   if(matching.some(x=>x.endsWith('-'+id)))throw new Error('Email attempt already reserved; will not resend');
   const used=matching.filter(x=>x.startsWith(`refs/tags/gb2l-email-attempt-${utcDay}-`)).length;
   if(used>=dailyLimit)throw new Error('Owner daily sending quota exhausted');
@@ -90,6 +82,7 @@ export async function sendOnce({envelope,privateKey,oauth,github,mode,policy,req
   await verifyEnvironment(github,effective,request);
   // OAuth must be valid before reserving an attempt so transient OAuth errors are retryable.
   const access=await refreshAccessToken(oauth,request);
+  await verifySenderIdentity(access,request);
   // Read owner-managed repository mode anew; runner start values may be stale.
   await verifyCurrentOwnerMode(github,effective,request);
   assertSendContext({mode:effective,actor:requestActor,policy,recipient:d.to});
@@ -113,13 +106,15 @@ async function main(){
   const {envelope}=fromRunnerEnvironment(env); // repeat trust check in privileged job
   const mode=requestedMode(env.GB2L_EMAIL_MODE);
   if(mode!==env.GB2L_EXPECTED_MODE)throw new Error('GitHub job mode mismatch');
+  if(env.GITHUB_REF!=='refs/heads/main'||env.GITHUB_RUN_ATTEMPT!=='1')throw Error('Only original main runs may send; reruns are blocked');
+  if(!env.GB2L_CONTROL_TOKEN)throw Error('Settings read token unavailable; run no-send preflight first');
   const privateKey=env.GB2L_MAIL_PRIVATE_KEY?.replace(/\\n/g,'\n');
   if(!privateKey)throw new Error('Decryption key unavailable; no send attempted');
   const oauth={clientId:env.GMAIL_CLIENT_ID,clientSecret:env.GMAIL_CLIENT_SECRET,refreshToken:env.GMAIL_REFRESH_TOKEN};
-  const github={repo:env.GITHUB_REPOSITORY,sha:env.GITHUB_SHA,githubToken:env.GITHUB_TOKEN};
+  const github={repo:env.GITHUB_REPOSITORY,sha:env.GITHUB_SHA,githubToken:env.GITHUB_TOKEN,controlToken:env.GB2L_CONTROL_TOKEN};
   const result=await sendOnce({envelope,privateKey,oauth,github,mode,policy:env.GB2L_EMAIL_POLICY,requestActor:env.GITHUB_ACTOR});
   console.log('Draft ID:',result.draft_id,'Result:',result.status,'-',result.note);
   if(env.GITHUB_STEP_SUMMARY)appendFileSync(env.GITHUB_STEP_SUMMARY,`\nEmail send: **${result.status}**, draft \`${result.draft_id}\`. ${result.note}\n`);
   if(result.status!=='provider_accepted')process.exitCode=1;
 }
-if(import.meta.url===`file://${process.argv[1]}`)main().catch(e=>{console.error('Mail sender refused: '+e.message);process.exitCode=1});
+if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href)main().catch(e=>{console.error('Mail sender refused: '+e.message);process.exitCode=1});
