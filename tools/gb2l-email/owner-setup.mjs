@@ -4,6 +4,7 @@ import {existsSync,readFileSync,writeFileSync} from 'node:fs';
 import {createServer} from 'node:http';
 import {generateKeyPairSync,randomBytes,createHash} from 'node:crypto';
 import {execFileSync,spawnSync} from 'node:child_process';
+import {assertMainOnlyDeployment} from './policy.mjs';
 const args=process.argv.slice(2);
 const idx=args.indexOf('--credentials');
 const filename=idx>=0?args[idx+1]:null;
@@ -16,8 +17,10 @@ const publicKeyPath=new URL('./public-key.pem',import.meta.url);
 if(existsSync(publicKeyPath))throw new Error('Existing public-key.pem found. Refusing to rotate GitHub private-key secrets or modify mode during setup rerun. Use a separately reviewed key-rotation procedure.');
 // Refuse to proceed unless GitHub's official CLI is available and owner logged in.
 try{execFileSync('gh',['auth','status'],{stdio:'ignore'});}catch{throw new Error('Install free GitHub CLI from https://cli.github.com/ then run gh auth login with your REPOSITORY OWNER account; retry setup.');}
+if(process.env.GH_TOKEN || process.env.GITHUB_TOKEN)throw new Error('GH_TOKEN/GITHUB_TOKEN overrides local browser sign-in. Remove it first; no Gmail authorization attempted.');
+const account=spawnSync('gh',['api','user','--jq','.login'],{encoding:'utf8'});
 const status=spawnSync('gh',['repo','view',repo,'--json','viewerPermission','--jq','.viewerPermission'],{encoding:'utf8'});
-if(status.status!==0||status.stdout.trim()!=='ADMIN')throw new Error('GitHub CLI must be authenticated as a repo administrator / maintainer.');
+if(status.status!==0||status.stdout.trim()!=='ADMIN')throw new Error('Active GitHub CLI account '+(account.stdout||'unknown').trim()+' has '+(status.stdout||'unavailable').trim()+' access; ADMIN is required. Use the provided one-click GitHub owner sign-in helper.');
 // Verify project safety controls BEFORE Google consent or secret provisioning.
 const ghApi=(endpoint)=>{
  const r=spawnSync('gh',['api',endpoint],{encoding:'utf8'});
@@ -30,6 +33,7 @@ const manualEnv=ghApi(`repos/${repo}/environments/gb2l-email-send`);
 if(!manualEnv.protection_rules?.some(x=>x.type==='required_reviewers'&&x.reviewers?.some(y=>y.reviewer?.login==='gitback2life-art')))throw new Error('gb2l-email-send must require GitBack2Life owner review.');
 const autoEnv=ghApi(`repos/${repo}/environments/gb2l-email-auto`);
 if(autoEnv.protection_rules?.some(x=>x.type==='required_reviewers'))throw new Error('gb2l-email-auto must not inherit a per-message reviewer gate. Keep it disabled using owner-controlled mode settings.');
+assertMainOnlyDeployment(autoEnv,ghApi(`repos/${repo}/environments/gb2l-email-auto/deployment-branch-policies?per_page=100`));
 
 const verifier=randomBytes(32).toString('base64url');
 const challenge=createHash('sha256').update(verifier).digest('base64url');

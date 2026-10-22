@@ -34,3 +34,17 @@ export function assertSendContext({mode,actor,policy,recipient}){
   permitRecipient(p,recipient);
   return p;
 }
+
+// GitHub environment custom deployment policy must allow exactly the main branch.
+// Do not accept protected_branches=true alone: it can cover additional branches.
+export function assertMainOnlyDeployment(environment, listing){
+  const cfg=environment?.deployment_branch_policy;
+  if(!cfg||cfg.protected_branches!==false||cfg.custom_branch_policies!==true)
+    throw new Error('Autonomous environment must use custom main-only deployment branch policy');
+  if(!listing||listing.total_count!==1||!Array.isArray(listing.branch_policies)||listing.branch_policies.length!==1)
+    throw new Error('Autonomous environment must have exactly one deployment branch policy');
+  const one=listing.branch_policies[0];
+  if(one?.name!=='main'||one.type==='tag'||(one.type!==undefined&&one.type!=='branch'))
+    throw new Error('Autonomous deployment branch policy must match main only');
+  return true;
+}

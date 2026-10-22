@@ -9,4 +9,5 @@ const pub=readFileSync(new URL('./public-key.pem',import.meta.url),'utf8');
 const draft=JSON.parse(readFileSync(resolve(process.argv[2]),'utf8'));
 const envelope=seal(draft,pub);
 console.log(makeComment(envelope));
-console.error('DRAFT ID: '+envelope.id+'  COMMITMENT: '+envelope.commitment+' (ciphertext only above)');
+console.error('PRIVATE OWNER RECEIPT — DO NOT POST THIS LINE TO GITHUB');
+console.error('DRAFT ID: '+envelope.id+'  COMMITMENT: '+envelope.commitment+'  PRIVATE NONCE: '+envelope.private_receipt.commitment_nonce);

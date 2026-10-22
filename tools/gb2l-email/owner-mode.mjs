@@ -3,7 +3,7 @@
 import {spawnSync} from 'node:child_process';
 import {createInterface} from 'node:readline/promises';
 import {stdin as input,stdout as output} from 'node:process';
-import {parsePolicy,OWNER,REPO,SENDER} from './policy.mjs';
+import {parsePolicy,assertMainOnlyDeployment,OWNER,REPO,SENDER} from './policy.mjs';
 const [mode,...flags]=process.argv.slice(2);
 if(!['approval_required','auto_send','disabled'].includes(mode))throw Error('Usage: node tools/gb2l-email/owner-mode.mjs approval_required|auto_send|disabled [--daily=3] [--actor=gitback2life-art] [--domain=example.org]');
 const opts={};for(const f of flags){const m=/^--(daily|actor|domain|recipient)=([\w@.\-]+)$/.exec(f);if(!m)throw Error('Unknown mode setting');opts[m[1]]=m[2];}
@@ -40,6 +40,7 @@ if(mode==='disabled'){
   if(!branch?.required_pull_request_reviews?.require_code_owner_reviews||!(branch?.required_pull_request_reviews?.required_approving_review_count>=1))throw Error('Cannot enable autonomous sending without enforced main branch code-owner review');
   const environ=JSON.parse(run(['api',`repos/${REPO}/environments/gb2l-email-auto`]));
   if(environ?.protection_rules?.some(x=>x.type==='required_reviewers'))throw Error('Autonomous environment incorrectly requires per-message approval');
+  assertMainOnlyDeployment(environ,JSON.parse(run(['api',`repos/${REPO}/environments/gb2l-email-auto/deployment-branch-policies?per_page=100`])));
   const existing=JSON.parse(run(['api',`repos/${REPO}/environments/gb2l-email-auto/secrets`]));
   const names=new Set((existing.secrets||[]).map(s=>s.name));
   for(const name of ['GB2L_MAIL_PRIVATE_KEY','GMAIL_CLIENT_ID','GMAIL_CLIENT_SECRET','GMAIL_REFRESH_TOKEN'])if(!names.has(name))throw Error('Autonomous environment missing '+name+'; use owner setup before enabling');

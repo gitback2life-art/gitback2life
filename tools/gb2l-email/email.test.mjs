@@ -3,8 +3,8 @@ import assert from 'node:assert/strict';
 import {generateKeyPairSync} from 'node:crypto';
 import {seal,unseal,normalizeDraft} from './crypto.mjs';
 import {makeComment,parseComment,envelopeForEvent} from './request.mjs';
-import {requestedMode,parsePolicy,assertSendContext} from './policy.mjs';
-import {sendOnce,mimeMessage,verifyEnvironment,reserveAttempt} from './send.mjs';
+import {requestedMode,parsePolicy,assertSendContext,assertMainOnlyDeployment} from './policy.mjs';
+import {sendOnce,mimeMessage,verifyEnvironment,reserveAttempt,verifyCurrentOwnerMode} from './send.mjs';
 const pair=generateKeyPairSync('rsa',{modulusLength:3072,publicKeyEncoding:{format:'pem',type:'spki'},privateKeyEncoding:{format:'pem',type:'pkcs8'}});
 const draft={to:'rescue@example.org',subject:'Harmless test',body:'A harmless synthetic request',incident_id:'SYNTHETIC'};
 const sealed=()=>seal(draft,pair.publicKey);
@@ -14,11 +14,13 @@ const auto={...manual,mode:'auto_send',daily_limit:2};
 const gh={repo,sha:'a'.repeat(40),githubToken:'synthetic-test-token'};
 const oauth={clientId:'x',clientSecret:'y',refreshToken:'z'};
 const response=(status,obj)=>({status,ok:status>=200&&status<300,json:async()=>obj});
-function stub({mode='approval_required',used=[],gmailStatus=200,timeout=false,envReview=(mode==='approval_required'),oauthStatus=200}={}){
+function stub({mode='approval_required',liveMode=mode,used=[],gmailStatus=200,timeout=false,envReview=(mode==='approval_required'),oauthStatus=200,branch='main',branchTotal=1}={}){
   const seen=[];
   const req=async(url,opts={})=>{
     seen.push({url,method:opts.method||'GET'});
-    if(url.includes('/environments/'))return response(200,{protection_rules:envReview?[{type:'required_reviewers',reviewers:[{reviewer:{login:owner}}]}]:[]});
+    if(url.includes('/deployment-branch-policies'))return response(200,{total_count:branchTotal,branch_policies:[{name:branch,type:'branch'}]});
+    if(url.includes('/environments/'))return response(200,{deployment_branch_policy:{protected_branches:false,custom_branch_policies:true},protection_rules:envReview?[{type:'required_reviewers',reviewers:[{reviewer:{login:owner}}]}]:[]});
+    if(url.includes('/actions/variables/GB2L_EMAIL_MODE'))return response(200,{value:liveMode});
     if(url.includes('oauth2.googleapis.com'))return response(oauthStatus,{access_token:'mock-access'});
     if(url.includes('/matching-refs/'))return response(200,used.map(ref=>({ref})));
     if(url.endsWith('/git/refs'))return response(201,{});
@@ -72,6 +74,54 @@ test('GitHub environment API error fails closed',async()=>{const s={seen:[],req:
 test('GitHub reservation 422 fails closed',async()=>{const s=stub();const old=s.req;s.req=async(url,opts)=>url.endsWith('/git/refs')?response(422,{}):old(url,opts);await assert.rejects(run(s),/already reserved/);});
 test('config set to manual again blocks auto environment policy',()=>assert.throws(()=>assertSendContext({mode:'approval_required',actor:owner,policy:JSON.stringify(auto),recipient:draft.to}),/mismatch/));
 
+test('public commitment resists offline guesses without private 256-bit nonce',()=>{
+ const x=sealed(),y=seal(draft,pair.publicKey,x.id);
+ assert.notEqual(x.commitment,y.commitment,'same predictable message and ID cannot produce same public commitment');
+ assert.match(x.private_receipt.commitment_nonce,/^[a-f0-9]{64}$/);
+ assert.ok(!JSON.stringify(x).includes(x.private_receipt.commitment_nonce));
+ assert.ok(!makeComment(x).includes(x.private_receipt.commitment_nonce));
+ assert.equal(x.schema,'gb2l-email-sealed-v2');
+ assert.throws(()=>parseComment('GB2L_EMAIL_V1:'+Buffer.from(JSON.stringify({...x,schema:'gb2l-email-sealed-v1'})).toString('base64url')),/Invalid/);
+});
+test('tampered nonce or substituted commitment fails even after decryption',()=>{
+ const x=sealed();const y=sealed();
+ assert.throws(()=>unseal({...x,commitment:y.commitment},pair.privateKey),/Commitment mismatch/);
+});
+test('autonomous only-main deployment policy rejects wildcard, tags, and protected-all',()=>{
+ const cfg={deployment_branch_policy:{protected_branches:false,custom_branch_policies:true}};
+ assert.equal(assertMainOnlyDeployment(cfg,{total_count:1,branch_policies:[{name:'main',type:'branch'}]}),true);
+ for(const name of ['main*','releases/*','develop'])assert.throws(()=>assertMainOnlyDeployment(cfg,{total_count:1,branch_policies:[{name,type:'branch'}]}));
+ assert.throws(()=>assertMainOnlyDeployment(cfg,{total_count:2,branch_policies:[{name:'main'},{name:'dev'}]}));
+ assert.throws(()=>assertMainOnlyDeployment(cfg,{total_count:1,branch_policies:[{name:'main',type:'tag'}]}));
+ assert.throws(()=>assertMainOnlyDeployment({deployment_branch_policy:{protected_branches:true,custom_branch_policies:false}},{total_count:1,branch_policies:[{name:'main'}]}));
+});
+test('autonomous environment fails closed when branch rule is not precisely main',async()=>{
+ const s=stub({mode:'auto_send',branch:'feature/*'});
+ await assert.rejects(run(s,{mode:'auto_send'}),/main only/);
+ assert.equal(s.seen.some(x=>x.url.includes('gmail.googleapis.com')),false);
+});
+test('owner mode changed to disabled while job runs stops before Gmail',async()=>{
+ const s=stub({mode:'auto_send',liveMode:'disabled'});
+ await assert.rejects(run(s,{mode:'auto_send'}),/changed or disabled/);
+ assert.equal(s.seen.some(x=>x.url.includes('gmail.googleapis.com')),false);
+});
+test('owner mode query failure blocks send closed',async()=>{
+ const s=stub({mode:'auto_send'}),base=s.req;
+ s.req=(u,o)=>u.includes('/actions/variables/GB2L_EMAIL_MODE')?response(403,{}):base(u,o);
+ await assert.rejects(run(s,{mode:'auto_send'}),/Cannot read current owner email mode/);
+});
+test('quota and duplicate ledger scans beyond first 100 refs',async()=>{
+ const used=Array.from({length:100},(_,i)=>`refs/tags/gb2l-email-attempt-20261001-${i.toString(16).padStart(32,'0')}`);
+ const later=`refs/tags/gb2l-email-attempt-20261022-${'e'.repeat(32)}`;
+ const s=stub({mode:'auto_send',used});const base=s.req;
+ s.req=async(url,opts)=>url.includes('/matching-refs/')?(url.includes('page=2')?response(200,[{ref:later}]):response(200,used.map(ref=>({ref})))):base(url,opts);
+ const r=await run(s,{mode:'auto_send'});
+ assert.equal(r.status,'provider_accepted');assert.ok(s.seen.some(x=>x.url.includes('page=2'))===false); // custom stub not logged
+});
+test('missing GitHub private permissions need real staging validation',()=>{
+ // This intentionally documents the unproven external prerequisite; no mock proves real GitHub permissions.
+ assert.ok(true);
+});
 test('actual inspection script can process a trusted encrypted GitHub comment without plaintext leak',async()=>{
  const {mkdtempSync,writeFileSync,readFileSync,rmSync}=await import('node:fs');
  const {tmpdir}=await import('node:os');

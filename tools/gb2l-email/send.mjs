@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import {appendFileSync} from 'node:fs';
 import {unseal,validateEnvelope} from './crypto.mjs';
-import {assertSendContext,requestedMode,REPO,SENDER} from './policy.mjs';
+import {assertSendContext,requestedMode,assertMainOnlyDeployment,REPO,SENDER} from './policy.mjs';
 import {fromRunnerEnvironment} from './request.mjs';
 const OAUTH='https://oauth2.googleapis.com/token';
 const GMAIL='https://gmail.googleapis.com/gmail/v1/users/me/messages/send';
@@ -35,19 +35,43 @@ export async function verifyEnvironment({repo,githubToken},mode,http=fetch){
   const anyReview=Array.isArray(data.protection_rules)&&data.protection_rules.some(x=>x.type==='required_reviewers');
   if(mode==='approval_required'&&!ownerReview)throw new Error('Owner approval gate missing; refusing to send');
   if(mode==='auto_send'&&anyReview)throw new Error('Autonomous environment has per-message review gate; refusing to claim autonomy');
+  if(mode==='auto_send'){
+    const pol=await http(`${API}/repos/${repo}/environments/${name}/deployment-branch-policies?per_page=100`,{headers:headers(githubToken),signal:AbortSignal.timeout(20000)});
+    if(!pol.ok)throw new Error('Cannot verify autonomous main-only branch restriction');
+    assertMainOnlyDeployment(data,await pol.json());
+  }
+  return true;
+}
+export async function verifyCurrentOwnerMode({repo,githubToken},expected,http=fetch){
+  if(repo!==REPO||!githubToken)throw new Error('Unknown GitHub mode-check context');
+  const r=await http(`${API}/repos/${repo}/actions/variables/GB2L_EMAIL_MODE`,{headers:headers(githubToken),signal:AbortSignal.timeout(20000)});
+  if(!r.ok)throw new Error('Cannot read current owner email mode; refusing to send');
+  const live=await r.json();
+  if(typeof live?.value!=='string'||live.value!==expected||requestedMode(live.value)!==expected)
+    throw new Error('Owner email mode was changed or disabled; refusing to send');
   return true;
 }
 // Quotas use Git refs; workflow concurrency serializes the count and reservation.
 // An already reserved attempt stays reserved on timeout, failed delivery or rerun.
 export async function reserveAttempt({repo,sha,githubToken,id,dailyLimit,utcDay},http=fetch){
   if(!repoOk({repo,sha,githubToken})||!/^[a-f0-9]{32}$/.test(id)||!Number.isSafeInteger(dailyLimit)||dailyLimit<1||dailyLimit>20||!/^[0-9]{8}$/.test(utcDay))throw new Error('Invalid send reservation context');
-  const url=`${API}/repos/${repo}/git/matching-refs/tags/gb2l-email-attempt-`;
-  const existing=await http(url,{headers:headers(githubToken),signal:AbortSignal.timeout(20000)});
-  if(!existing.ok && existing.status!==404)throw new Error('Cannot check duplicate/quota state; no message sent');
-  const all=existing.status===404?[]:await existing.json();
-  if(!Array.isArray(all))throw new Error('Invalid GitHub quota ledger');
-  if(all.length>10000)throw new Error('Quota ledger unexpectedly large; fail closed');
-  const matching=all.map(x=>x?.ref).filter(x=>typeof x==='string'&&/^refs\/tags\/gb2l-email-attempt-(?:\d{8}-)?[a-f0-9]{32}$/.test(x));
+  const matching=[];
+  // Enumerate ALL pages; a first-page-only lookup silently bypasses daily limits.
+  for(let page=1;page<=100;page++){
+    const url=`${API}/repos/${repo}/git/matching-refs/tags/gb2l-email-attempt-?per_page=100&page=${page}`;
+    const existing=await http(url,{headers:headers(githubToken),signal:AbortSignal.timeout(20000)});
+    if(existing.status===404)break;
+    if(!existing.ok)throw new Error('Cannot check duplicate/quota state; no message sent');
+    const batch=await existing.json();
+    if(!Array.isArray(batch)||batch.length>100)throw new Error('Invalid GitHub quota ledger page');
+    for(const item of batch){
+      const tag=item?.ref;
+      if(typeof tag!=='string'||!/^refs\/tags\/gb2l-email-attempt-(?:\d{8}-)?[a-f0-9]{32}$/.test(tag))throw new Error('Unexpected GitHub quota ledger record');
+      matching.push(tag);
+    }
+    if(batch.length<100)break;
+    if(page===100)throw new Error('Quota ledger exceeds safe pagination limit');
+  }
   if(matching.some(x=>x.endsWith('-'+id)))throw new Error('Email attempt already reserved; will not resend');
   const used=matching.filter(x=>x.startsWith(`refs/tags/gb2l-email-attempt-${utcDay}-`)).length;
   if(used>=dailyLimit)throw new Error('Owner daily sending quota exhausted');
@@ -66,10 +90,14 @@ export async function sendOnce({envelope,privateKey,oauth,github,mode,policy,req
   await verifyEnvironment(github,effective,request);
   // OAuth must be valid before reserving an attempt so transient OAuth errors are retryable.
   const access=await refreshAccessToken(oauth,request);
-  // Immediately preceding Gmail, recheck the owner-managed effective policy & mode.
+  // Read owner-managed repository mode anew; runner start values may be stale.
+  await verifyCurrentOwnerMode(github,effective,request);
   assertSendContext({mode:effective,actor:requestActor,policy,recipient:d.to});
   const utcDay=now().toISOString().slice(0,10).replaceAll('-','');
   await reserveAttempt({...github,id:d.id,dailyLimit:p.daily_limit,utcDay},request);
+  // A late emergency stop must also suppress an already queued job.
+  // The reservation remains conservative: do not reuse a draft after a stop.
+  await verifyCurrentOwnerMode(github,effective,request);
   // From this point on, NEVER automatically resend, even if network returns 500/timeout.
   try{
     const raw=Buffer.from(mimeMessage(d),'utf8').toString('base64url');

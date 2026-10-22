@@ -14,3 +14,6 @@ console.log('SEALED FILE: '+out);
 console.log('DRAFT ID: '+e.id);
 console.log('APPROVAL COMMITMENT: '+e.commitment);
 console.log('Only commit the SEALED FILE. Never commit the original draft.');
+
+// Private owner review receipt; DO NOT paste into a public GitHub issue/PR/log.
+console.log('PRIVATE OWNER REVIEW NONCE (keep out of GitHub): '+e.private_receipt.commitment_nonce);

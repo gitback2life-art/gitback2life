@@ -21,14 +21,18 @@ export function seal(draft, pubPem, providedId=null) {
   if(pub.asymmetricKeyType!=='rsa'||pub.asymmetricKeyDetails?.modulusLength<3072)throw new Error('RSA key must be >= 3072 bits');
   const key=randomBytes(32),iv=randomBytes(12);
   const c=createCipheriv('aes-256-gcm',key,iv);
-  const json=JSON.stringify({id,...plain});
+  const commitment_nonce=randomBytes(32).toString('hex');
+  const json=JSON.stringify({id,...plain,commitment_nonce});
   const cipher=Buffer.concat([c.update(json,'utf8'),c.final()]);
   const wrapped=publicEncrypt({key:pub,padding:constants.RSA_PKCS1_OAEP_PADDING,oaepHash:'sha256'},key);
   const commitment=digest(json);
-  return {schema:'gb2l-email-sealed-v1',id,commitment,key_fingerprint:digest(pub.export({format:'der',type:'spki'})),iv:iv.toString('base64'),tag:c.getAuthTag().toString('base64'),key:wrapped.toString('base64'),data:cipher.toString('base64')};
+  const envelope={schema:'gb2l-email-sealed-v2',id,commitment,key_fingerprint:digest(pub.export({format:'der',type:'spki'})),iv:iv.toString('base64'),tag:c.getAuthTag().toString('base64'),key:wrapped.toString('base64'),data:cipher.toString('base64')};
+  // Excluded from serialization: private owner receipt NEVER travels to public GitHub.
+  Object.defineProperty(envelope,'private_receipt',{value:{id,...plain,commitment_nonce},enumerable:false});
+  return envelope;
 }
 export function validateEnvelope(e) {
-  if(!e||typeof e!=='object'||e.schema!=='gb2l-email-sealed-v1'||!/^[a-f0-9]{32}$/.test(e.id)||!/^[a-f0-9]{64}$/.test(e.commitment)||!/^[a-f0-9]{64}$/.test(e.key_fingerprint))throw new Error('Invalid sealed draft metadata');
+  if(!e||typeof e!=='object'||e.schema!=='gb2l-email-sealed-v2'||!/^[a-f0-9]{32}$/.test(e.id)||!/^[a-f0-9]{64}$/.test(e.commitment)||!/^[a-f0-9]{64}$/.test(e.key_fingerprint))throw new Error('Invalid sealed draft metadata');
   for(const [k,max] of Object.entries({iv:32,tag:32,key:1024,data:50000})){
     if(typeof e[k]!=='string'||!e[k]||e[k].length>max||!/^[A-Za-z0-9+/]*={0,2}$/.test(e[k]))throw new Error('Invalid sealed draft '+k);
   }
@@ -40,8 +44,9 @@ export function unseal(envelope,privatePem){
   const decipher=createDecipheriv('aes-256-gcm',key,Buffer.from(e.iv,'base64'));
   decipher.setAuthTag(Buffer.from(e.tag,'base64'));
   const json=Buffer.concat([decipher.update(Buffer.from(e.data,'base64')),decipher.final()]).toString('utf8');
-  if(digest(json)!==e.commitment)throw new Error('Commitment mismatch');
   const data=JSON.parse(json);
+  if(typeof data.commitment_nonce!=='string'||!/^[a-f0-9]{64}$/.test(data.commitment_nonce))throw new Error('Private commitment nonce missing');
+  if(digest(json)!==e.commitment)throw new Error('Commitment mismatch');
   if(data.id!==e.id)throw new Error('ID mismatch');
   return {id:e.id,...normalizeDraft(data)};
 }
