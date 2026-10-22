@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Import and verify the exact 14-tool review distribution without trusting a ZIP blindly."""
+"""Import and verify the exact 14-tool review distribution without trusting an archive blindly."""
 from __future__ import annotations
-import argparse, base64, hashlib, json, os, re, shutil, stat, sys, tempfile, zipfile
+import argparse, base64, hashlib, io, json, os, re, shutil, sys, tarfile, tempfile
 from pathlib import Path, PurePosixPath
 
-EXPECTED_ZIP_SHA256 = "d91ef009c3d5a9e5fb335dd7eaeb8b8cbf91e05fb64f2afd6569bda6a832b9ee"
+EXPECTED_ARCHIVE_SHA256 = "2fe9f2710e780b8f937e335ab2b16e625be9cc24d6769136d9ca0da919d3d5e3"
 EXPECTED_BUILD = "2026-10-20_14TOOLS_EMAIL_COMMUNICATIONS_DRAFT"
 EXPECTED_SOURCE_FILES = 206
 EXPECTED_EMBEDDED_FILES = 205
@@ -35,7 +35,7 @@ This directory is the repository-tracked source distribution for the 14-tool 911
 
 Never put Google client JSON, OAuth tokens, refresh tokens, private keys, GitHub control tokens, real drafts, incident-private data, or private approval receipts in this public repository. The public encryption key is distributable; its private counterpart is not.
 
-The ZIP's hashes prove byte integrity of this source snapshot, not operational readiness. The review build reports 437 passing and 12 skipped Node tests at the supplied snapshot; native Windows GUI/staging acceptance and live Gmail/OAuth deployment were not verified. See BUILD_NOTES.md.
+The archive's hashes prove byte integrity of this source snapshot, not operational readiness. The review build reports 437 passing and 12 skipped Node tests at the supplied snapshot; native Windows GUI/staging acceptance and live Gmail/OAuth deployment were not verified. See BUILD_NOTES.md.
 """
 
 STATUS_README = """# 911 GitBack2Life Toolbox — source import and readiness status
@@ -54,7 +54,7 @@ The imported snapshot is exactly build: 2026-10-20_14TOOLS_EMAIL_COMMUNICATIONS_
 4. The prior reserved email draft ID dbd4da02a28c5f2acd9e991b26005f0c had an uncertain HTTP 403 outcome and must never be retried or reused. A fresh email test requires a new ID and separate explicit owner authorization.
 
 ## Verification limits
-- The source ZIP's embedded and outer SHA-256 manifests were verified before import.
+- The source archive's embedded and outer SHA-256 manifests were verified before import.
 - The Node offline test suite runs in CI under the package's network-denial harness.
 - Native Windows staging and menu acceptance were not run on the owner's computer as part of this import.
 - The legacy full Python test suite was not treated as passing; the build notes identify a Windows-only _winapi import and two existing deployment payload count expectations that fail in the Linux review environment.
@@ -152,39 +152,44 @@ def unpack_and_import(payload_dir: Path, destination: Path, repo_root: Path) -> 
         archive_bytes = base64.b64decode(encoded, validate=True)
     except Exception as exc:
         raise ValueError("Payload is not valid base64.") from exc
-    if digest(archive_bytes) != EXPECTED_ZIP_SHA256:
+    if digest(archive_bytes) != EXPECTED_ARCHIVE_SHA256:
         raise ValueError("Archive SHA-256 differs from the pinned review build; no files imported.")
 
     with tempfile.TemporaryDirectory(prefix="gb2l-source-import-") as temp_name:
         temp = Path(temp_name)
-        zip_path = temp / "source.zip"
-        zip_path.write_bytes(archive_bytes)
-        with zipfile.ZipFile(zip_path, "r") as zf:
-            bad = zf.testzip()
-            if bad:
-                raise ValueError("ZIP integrity check failed at: " + bad)
-            names = [n for n in zf.namelist() if not n.endswith("/")]
-            allowed = set(ROOT_FILES)
-            if set(n for n in names if "/" not in n) != allowed:
-                raise ValueError("ZIP root-file list differs from the reviewed package.")
-            for name in names:
+        unpack = temp / "unpack"
+        unpack.mkdir()
+        with tarfile.open(fileobj=io.BytesIO(archive_bytes), mode="r:gz") as tf:
+            members = tf.getmembers()
+            seen = set()
+            files = []
+            for member in members:
+                name = member.name
                 pp = PurePosixPath(name)
-                if pp.is_absolute() or "\\" in name or any(part in ("", ".", "..") for part in pp.parts):
-                    raise ValueError("Unsafe ZIP path.")
-                if name not in allowed and not name.startswith(PREFIX):
+                if not name or pp.is_absolute() or "\\\\" in name or any(part in ("", ".", "..") for part in pp.parts):
+                    raise ValueError("Unsafe archive path.")
+                if name in seen:
+                    raise ValueError("Duplicate archive path: " + name)
+                seen.add(name)
+                if member.isdir():
+                    continue
+                if not member.isfile():
+                    raise ValueError("Non-regular file in archive: " + name)
+                if name not in ROOT_FILES and not name.startswith(PREFIX):
                     raise ValueError("Unexpected file outside the source package: " + name)
-                info = zf.getinfo(name)
-                mode = (info.external_attr >> 16) & 0o170000
-                if mode == stat.S_IFLNK:
-                    raise ValueError("Symlink in ZIP is not allowed.")
+                files.append(member)
+            names = [m.name for m in files]
+            if set(n for n in names if "/" not in n) != ROOT_FILES:
+                raise ValueError("Archive root-file list differs from the reviewed package.")
             if len(names) != EXPECTED_SOURCE_FILES + len(ROOT_FILES):
-                raise ValueError("Unexpected ZIP file count.")
-            unpack = temp / "unpack"
-            unpack.mkdir()
-            for name in names:
-                out = unpack.joinpath(*PurePosixPath(name).parts)
+                raise ValueError("Unexpected archive file count.")
+            for member in files:
+                out = unpack.joinpath(*PurePosixPath(member.name).parts)
                 out.parent.mkdir(parents=True, exist_ok=True)
-                with zf.open(name, "r") as source, out.open("wb") as target:
+                source = tf.extractfile(member)
+                if source is None:
+                    raise ValueError("Archive file could not be read: " + member.name)
+                with source, out.open("xb") as target:
                     shutil.copyfileobj(source, target)
         source_root = unpack / "source" / "911_gitback2life"
         counts = validate_manifest(source_root, unpack / "BUILD_MANIFEST.json")
@@ -206,8 +211,8 @@ def unpack_and_import(payload_dir: Path, destination: Path, repo_root: Path) -> 
     (repo_root / "toolbox" / "911_gitback2life" / "TOOLBOX_SOURCE_IMPORT_STATUS.md").write_text(STATUS_README, encoding="utf-8")
     shutil.rmtree(payload_dir)
     result = verify_distribution(destination)
-    print("PASS: imported exact verified review ZIP; outer files=%d, inner files=%d, menu groups=14." % (result["outer_files"], result["inner_files"]))
-    print("Archive SHA-256: " + EXPECTED_ZIP_SHA256)
+    print("PASS: imported exact verified review archive; outer files=%d, inner files=%d, menu groups=14." % (result["outer_files"], result["inner_files"]))
+    print("Archive SHA-256: " + EXPECTED_ARCHIVE_SHA256)
     print("No live email operation or credential provisioning was performed.")
 
 def main() -> int:
