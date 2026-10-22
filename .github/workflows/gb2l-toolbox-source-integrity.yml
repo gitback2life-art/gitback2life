@@ -1,0 +1,27 @@
+name: 911 GitBack2Life Toolbox source integrity
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'toolbox/911_gitback2life/**'
+  push:
+    branches: [main]
+    paths:
+      - 'toolbox/911_gitback2life/**'
+permissions:
+  contents: read
+jobs:
+  source-integrity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+      - name: Verify both source manifests and expected 14-tool menu
+        run: python toolbox/911_gitback2life/import_source_package.py --verify-only --destination toolbox/911_gitback2life/distribution --repo-root .
+      - name: Run the supplied offline Node regression suite
+        working-directory: toolbox/911_gitback2life/distribution/source/911_gitback2life
+        run: npm test
