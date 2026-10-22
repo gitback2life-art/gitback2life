@@ -36,3 +36,7 @@ Use `owner-mode.mjs disabled`; immediately cancel queued/running email workflows
 - [Deployment branch policy permissions](https://docs.github.com/en/rest/deployments/branch-policies)
 - [Google OpenID Connect](https://developers.google.com/identity/openid-connect/openid-connect)
 - [Google refresh-token expiration](https://developers.google.com/identity/protocols/oauth2#expiration)
+
+
+## Branch ruleset compatibility fix
+The active `Protect main — GitBack2Life` repository ruleset is the canonical protection mechanism. The setup/mode scripts now verify the live ruleset endpoint and validate that it targets exactly `refs/heads/main`, is active, has no bypass actors, requires PRs with zero approvals, strict `email-tests`, and blocks deletions/force pushes. They no longer require the legacy `/branches/main/protection` API to return traditional branch-protection settings. This matters because the owner set up a ruleset, not legacy branch protection.
