@@ -5,10 +5,10 @@ This is a GitHub Actions adapter for ONE outgoing Gmail message at a time; it is
 ## Required repository setup (owner only)
 
 - Follow [OWNER_SETUP.md](OWNER_SETUP.md): solo owner reviews and merges code through PRs with strict `email-tests`, zero required approvals, enforced admins and no force pushes/deletions. CODEOWNERS routes ownership only.
-- Google Desktop OAuth was authorized by the OWNER as `gitback2life.ai@gmail.com` with `gmail.send` and `openid email` identity verification (no inbox access). GitHub environment secrets are owner configured; NEVER ask for them in chat.
+- Google Desktop OAuth is **not yet authorized** and no Gmail OAuth credentials have been provisioned. During the separately authorized setup stage, the OWNER must authorize `gitback2life.ai@gmail.com` with `gmail.send` and `openid email` identity verification (no inbox access). GitHub environment secrets are to be configured by the owner only; NEVER ask for them in chat.
 - `gb2l-email-send`: exactly the owner deployment reviewer, self-review allowed, admin bypass disabled, main-only. The optional `gb2l-email-auto` is not required or provisioned by manual setup.
 - Repository Actions variables are controlled by the owner: `GB2L_EMAIL_MODE` (`approval_required` by default, `auto_send`, or `disabled`), `GB2L_REQUEST_ACTOR` (one trusted GitHub identity; default `gitback2life-art`), `GB2L_REQUEST_PR` (numeric ID of the dedicated, open email-request pull request).
-- Public key is NOT bundled. Prepare it offline with `prepare-key.mjs` and publish only `public-key.pem` before Gmail setup. Never invent a placeholder. Private key stays outside the repository and is later provisioned as an environment secret.
+- The RSA public key has been published as `tools/gb2l-email/public-key.pem` on `main`. The matching private key stays outside the repository and must never be committed; it is provisioned only as a protected environment secret during the separately authorized owner setup.
 
 ## Direct AI-to-GitHub transport (no copying emails into Gmail)
 
