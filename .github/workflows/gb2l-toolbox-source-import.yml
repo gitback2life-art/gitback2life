@@ -20,7 +20,12 @@ jobs:
           token: ${{ github.token }}
           persist-credentials: true
           fetch-depth: 0
+      - name: Wait for the reviewed source ZIP upload
+        if: hashFiles('.toolbox-source-import-payload/*.zip') == ''
+        run: echo "Awaiting the single reviewed ZIP at .toolbox-source-import-payload/911_GitBack2Life_Email_Communications_Review_Build_20261020.zip."
+
       - name: Import only the pinned and manifest-verified 14-tool source archive
+        if: hashFiles('.toolbox-source-import-payload/*.zip') != ''
         run: |
           set -euo pipefail
           if [ ! -d .toolbox-source-import-payload ]; then
@@ -29,6 +34,7 @@ jobs:
           fi
           python toolbox/911_gitback2life/import_source_package.py --payload-dir .toolbox-source-import-payload --destination toolbox/911_gitback2life/distribution --repo-root .
       - name: Commit the verified source files to this pull request branch
+        if: hashFiles('toolbox/911_gitback2life/distribution/BUILD_MANIFEST.json') != ''
         env:
           SOURCE_BRANCH: ${{ github.event.pull_request.head.ref }}
         run: |
