@@ -4,7 +4,7 @@ import {generateKeyPairSync} from 'node:crypto';
 import {seal,unseal,normalizeDraft} from './crypto.mjs';
 import {makeComment,parseComment,envelopeForEvent} from './request.mjs';
 import {requestedMode,parsePolicy,assertSendContext,assertMainOnlyDeployment} from './policy.mjs';
-import {sendOnce,mimeMessage,verifyEnvironment,reserveAttempt,verifyCurrentOwnerMode} from './send.mjs';
+import {sendOnce,mimeMessage,verifyEnvironment,reserveAttempt,verifyCurrentOwnerMode,summarizeGoogleError} from './send.mjs';
 const pair=generateKeyPairSync('rsa',{modulusLength:3072,publicKeyEncoding:{format:'pem',type:'spki'},privateKeyEncoding:{format:'pem',type:'pkcs8'}});
 const draft={to:'rescue@example.org',subject:'Harmless test',body:'A harmless synthetic request',incident_id:'SYNTHETIC'};
 const sealed=()=>seal(draft,pair.publicKey);
@@ -14,7 +14,7 @@ const auto={...manual,mode:'auto_send',daily_limit:2};
 const gh={repo,sha:'a'.repeat(40),githubToken:'synthetic-test-token'};
 const oauth={clientId:'x',clientSecret:'y',refreshToken:'z'};
 const response=(status,obj)=>({status,ok:status>=200&&status<300,json:async()=>obj});
-function stub({mode='approval_required',liveMode=mode,used=[],gmailStatus=200,timeout=false,envReview=(mode==='approval_required'),oauthStatus=200,branch='main',branchTotal=1}={}){
+function stub({mode='approval_required',liveMode=mode,used=[],gmailStatus=200,gmailError=null,timeout=false,envReview=(mode==='approval_required'),oauthStatus=200,branch='main',branchTotal=1}={}){
   const seen=[];
   const req=async(url,opts={})=>{
     seen.push({url,method:opts.method||'GET'});
@@ -25,7 +25,7 @@ function stub({mode='approval_required',liveMode=mode,used=[],gmailStatus=200,ti
     if(url.includes('oauth2.googleapis.com'))return response(oauthStatus,{access_token:'mock-access'});
     if(url.includes('/matching-refs/'))return response(200,used.map(ref=>({ref})));
     if(url.endsWith('/git/refs'))return response(201,{});
-    if(url.includes('gmail.googleapis.com')){if(timeout)throw Error('network lost');return response(gmailStatus,{id:'gmail-test-id'});}
+    if(url.includes('gmail.googleapis.com')){if(timeout)throw Error('network lost');return response(gmailStatus,gmailError??{id:'gmail-test-id'});}
     throw Error('Unexpected HTTP call '+url);
   };
   return {seen,req};
@@ -70,6 +70,24 @@ test('auto_send refuses environment misconfigured with mandatory reviewer',async
 test('daily quota exhaustion fails before email',async()=>{const s=stub({mode:'auto_send',used:['refs/tags/gb2l-email-attempt-20261022-'+'a'.repeat(32),'refs/tags/gb2l-email-attempt-20261022-'+'b'.repeat(32)]});await assert.rejects(run(s,{mode:'auto_send'}),/quota exhausted/);assert.equal(s.seen.some(x=>x.url.includes('gmail.googleapis.com')),false);});
 test('a duplicate cannot be re-sent',async()=>{const env=sealed();const s=stub({mode:'auto_send',used:[`refs/tags/gb2l-email-attempt-20261022-${env.id}`]});await assert.rejects(sendOnce({envelope:env,privateKey:pair.privateKey,oauth,github:gh,mode:'auto_send',policy:JSON.stringify(auto),requestActor:owner,request:s.req,now:()=>new Date('2026-10-22T00:00:00Z')}),/already reserved/);assert.equal(s.seen.some(x=>x.url.includes('gmail.googleapis.com')),false);});
 test('Gmail timeout after reservation is uncertain and never automatically retried',async()=>{const s=stub({mode:'auto_send',timeout:true});const result=await run(s,{mode:'auto_send'});assert.equal(result.status,'uncertain_delivery');assert.equal(s.seen.filter(x=>x.url.includes('gmail.googleapis.com')).length,1);assert.equal(s.seen.filter(x=>x.url.endsWith('/git/refs')).length,1);});
+test('Gmail 403 reports safe Google error fields without exposing emails or tokens',async()=>{
+ const s=stub({gmailStatus:403,gmailError:{error:{code:403,status:'PERMISSION_DENIED',message:'Request rejected for test.user@example.org Bearer ya29.private-token GOCSPX-private-secret',errors:[{domain:'global',reason:'insufficientPermissions'}]}}});
+ const r=await run(s);
+ assert.equal(r.status,'uncertain_delivery');
+ assert.match(r.note,/Gmail HTTP 403/);
+ assert.match(r.note,/reason=insufficientPermissions/);
+ assert.match(r.note,/domain=global/);
+ assert.match(r.note,/status=PERMISSION_DENIED/);
+ assert.match(r.note,/\[email redacted\]/);
+ assert.doesNotMatch(r.note,/test.user@example.org|ya29.private-token|GOCSPX-private-secret/);
+ assert.match(r.note,/no automatic retry/);
+});
+test('Google diagnostic summary refuses arbitrary fields and redacts sensitive strings',()=>{
+ const details=summarizeGoogleError({error:{status:'PERMISSION_DENIED',message:'Denied to test.user@example.org; Bearer ya29.secret; GOCSPX-secret',errors:[{domain:'global',reason:'accessNotConfigured'}],refreshToken:'do-not-log'}});
+ assert.match(details,/reason=accessNotConfigured/);
+ assert.match(details,/\[email redacted\]/);
+ assert.doesNotMatch(details,/test.user@example.org|ya29.secret|GOCSPX-secret|do-not-log|refreshToken/);
+});
 test('OAuth failure never reserves an attempt',async()=>{const s=stub({oauthStatus:401});await assert.rejects(run(s),/authorization unavailable/);assert.ok(!s.seen.some(x=>x.url.endsWith('/git/refs')));});
 test('GitHub environment API error fails closed',async()=>{const s={seen:[],req:async()=>response(403,{})};await assert.rejects(run(s),/Cannot verify GitHub sending environment/);});
 test('GitHub reservation 422 fails closed',async()=>{const s=stub();const old=s.req;s.req=async(url,opts)=>url.endsWith('/git/refs')?response(422,{}):old(url,opts);await assert.rejects(run(s),/already reserved/);});
