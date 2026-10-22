@@ -1,0 +1,42 @@
+# Solo-owner setup and operations
+
+This is an engineering runbook for a later, expressly authorized setup stage. Do not perform it merely to review PR #16. Publishing the source does not authorize key generation, settings changes, Google consent, or any live email. During that later stage, the engineer should use the connected GitHub account only if it has the required permissions; if permissions are missing, request the minimum required access. The owner should never copy secrets into chat or edit source code manually.
+
+## Trust model
+
+The sole repository owner reviews code and merges PRs after `email-tests` passes. Zero independent approvals are required. CODEOWNERS routes ownership; it does not provide an independent reviewer. Require a PR, strict `email-tests`, enforce administrators, disable force pushes and deletion, and allow no PR bypass actors. This protects against accidental direct changes; it cannot protect against a compromised owner who can change settings. Keep repository write access limited to trusted code maintainers. Sending-request access is not authority to edit privileged code.
+
+The separate manual deployment gate requires exactly user `gitback2life-art`, allows self-review, disables administrator bypass, and permits only the custom branch rule `main` (type `branch`). The owner approves the exact encrypted request after checking its private receipt. This is compatible with an owner-authored PR: deployment approval and pull-request review are different GitHub controls.
+
+## Ordered setup (engineer executes; owner handles private consent)
+
+1. Finish code review and tests on PR #16. In a later authorized setup session, run `node tools/gb2l-email/prepare-key.mjs /PRIVATE/OUTSIDE-REPO/gb2l.private.pem`. It creates a durable private key outside the repo with restricted file permissions and writes only `public-key.pem` inside the repo. Windows ACL restriction occurs before writing key bytes. Keep the private file in an owner-only, non-shared directory and back it up privately. Repeating with the same file validates the pair; no silent rotation. Publish the public key with the reviewed code. Never commit the private file. No Google access is needed to prepare the key.
+2. After an explicitly authorized merge, configure the solo main protection above. The `email-tests` check must have run before selecting it as required. If old rules require an unavailable independent reviewer, the owner must update those rules during the authorized setup stage; do not fabricate an approval. Also inspect rulesets and collaborators. Existing stricter unrelated rules must be preserved or explicitly reconciled.
+3. Create only `gb2l-email-send` with the manual gate above. Set `GB2L_EMAIL_MODE=disabled`, `GB2L_REQUEST_ACTOR` to the intended connected GitHub login, and `GB2L_REQUEST_PR` to a dedicated open request PR (not implementation PR #16). The sender's code defaults to approval-required, but deliberate setup stays disabled. Missing live settings fail closed.
+4. Provision environment secret `GB2L_CONTROL_TOKEN` privately through GitHub's UI or `gh secret set` stdin. Use a fine-grained token limited to this repository with **Variables: read** and implicit Metadata read. It cannot update settings or write repository contents. Do not paste the token into chat. The job's short-lived `GITHUB_TOKEN` separately has Actions read and Contents write for environment/branch-policy metadata and durable attempt tags. `actions: read` alone does not grant Variables read. A GitHub App installation token with equivalent permissions is also suitable if refreshed securely; this implementation does not mint App tokens.
+5. Dispatch `GitBack2Life email no-send preflight` on current main and approve its deployment. It reads the real environment, branch policy, disabled mode, and ledger, and writes one `gb2l-email-preflight-*` probe tag. It has no Gmail secrets mapped and never contacts Google. Keep the successful run as evidence. It is required on the same main commit before Google setup. Do not count local mocks as this proof.
+6. Only after separate authorization, the owner privately supplies a Google Desktop OAuth client JSON file and runs `node tools/gb2l-email/owner-setup.mjs --credentials /PRIVATE/client_secret.json --private-key /PRIVATE/gb2l.private.pem`. The CLI must be signed in as `gitback2life-art` with ADMIN rights; MAINTAIN is insufficient. Token environment overrides are rejected. Setup verifies the matching public key already on main, protection, manual environment, disabled mode, and successful no-send preflight before opening consent. OAuth uses `gmail.send` plus `openid email` solely to verify the exact Google account; it does not request inbox access. A verified `gitback2life.ai@gmail.com` identity is checked both at setup and before sending. Credentials go only to the manual environment. Mode remains disabled on success or partial failure. Retry with the same private key; it never generates a replacement during consent.
+7. The engineer verifies the dedicated PR and exact connected actor, then the owner explicitly selects `owner-mode.mjs approval_required --actor=LOGIN`. Before any live test, privately prepare a harmless synthetic draft, seal it, compare the private nonce/commitment, and verify ciphertext-only transport. Sending the test requires separate authorization. Provider acceptance is not delivery confirmation.
+
+Google External consent in Testing can limit refresh tokens to seven days for Gmail scopes. Resolve publishing/audience requirements in the owner's Google project before relying on ongoing use. Reauthorization uses the same encryption key, disabled mode, and a fresh no-send check; never post credentials or Google callback URLs to chat.
+
+## Autonomous mode is optional and unprovisioned
+
+Manual setup never creates or fills `gb2l-email-auto`. Later explicit authorization must separately provision its matching key, Google credentials and settings-read token. It must have exactly custom branch `main`, no required reviewers, the same reviewed source, and an owner policy limiting actor/quota and preferably recipient/domain. `owner-mode.mjs auto_send` verifies solo protection, environment and secret names, requires an interactive exact confirmation, writes policy and audit tag, and switches mode last. Do not claim the mere presence of this command makes autonomy ready. Its live permissions and credentials must be staged and tested independently before enablement.
+
+## Emergency stop and recovery
+
+Use `owner-mode.mjs disabled`; immediately cancel queued/running email workflows. If credentials may be compromised, revoke the Google grant and GitHub read token. Runtime mode checks before and after reservation reduce the race but cannot recall an in-flight Gmail request. Never remove attempt tags, rerun sender jobs, or generate replacement IDs to retry an uncertain message. Reconcile privately first. GitHub concurrency serializes reservations, but only one pending run is retained; a burst can replace older pending requests. Verify each requested draft's actual run; this is not a durable bulk queue.
+
+## References
+
+- [Environment protections](https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/manage-environments)
+- [Git references API (matching refs has no pagination parameters)](https://docs.github.com/en/rest/git/refs#list-matching-references)
+- [Repository variables permissions](https://docs.github.com/en/rest/actions/variables#get-a-repository-variable)
+- [Deployment branch policy permissions](https://docs.github.com/en/rest/deployments/branch-policies)
+- [Google OpenID Connect](https://developers.google.com/identity/openid-connect/openid-connect)
+- [Google refresh-token expiration](https://developers.google.com/identity/protocols/oauth2#expiration)
+
+
+## Branch ruleset compatibility fix
+The active `Protect main — GitBack2Life` repository ruleset is the canonical protection mechanism. The setup/mode scripts now verify the live ruleset endpoint and validate that it targets exactly `refs/heads/main`, is active, has no bypass actors, requires PRs with zero approvals, strict `email-tests`, and blocks deletions/force pushes. They no longer require the legacy `/branches/main/protection` API to return traditional branch-protection settings. This matters because the owner set up a ruleset, not legacy branch protection.

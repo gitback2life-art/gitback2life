@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "purpose": "Email adapter source bundle mirrored into the 911 GitBack2Life Toolbox tree",
+  "source_repository": "gitback2life-art/gitback2life",
+  "source_commit": "b8148c7be873fa455008813eee95a86b52d96f0c",
+  "canonical_sources": {
+    "scripts": "tools/gb2l-email/",
+    "workflows": ".github/workflows/"
+  },
+  "bundle_paths": {
+    "scripts": "toolbox/911_gitback2life/email_communications/github_actions_adapter/",
+    "workflow_templates": "toolbox/911_gitback2life/email_communications/github_actions_adapter/workflow-templates/"
+  },
+  "contains": [
+    "source code",
+    "tests",
+    "public encryption key",
+    "workflow templates",
+    "AI and owner setup documentation"
+  ],
+  "excludes": [
+    "private RSA key",
+    "Google OAuth client JSON",
+    "refresh/access tokens",
+    "GitHub tokens",
+    "environment secret values",
+    "real message drafts",
+    "private review receipts and nonces"
+  ],
+  "capabilities": {
+    "outgoing_email": "guarded GitHub Actions Gmail API send; owner approval required",
+    "inbound_gmail_reading": false,
+    "request_transport": "encrypted comment on designated pull request"
+  },
+  "readiness": {
+    "intended_mode": "approval_required",
+    "status": "blocked",
+    "blocker": "actual Google OAuth access token grant lacks https://www.googleapis.com/auth/gmail.send",
+    "latest_no_send_run": "https://github.com/gitback2life-art/gitback2life/actions/runs/39813519317",
+    "previous_uncertain_attempt": "https://github.com/gitback2life-art/gitback2life/actions/runs/39798700833"
+  },
+  "scripts": [
+    ".gitignore",
+    "ASSISTANT_GUIDE.md",
+    "OWNER_SETUP.md",
+    "crypto.mjs",
+    "email.test.mjs",
+    "identity.mjs",
+    "inspect.mjs",
+    "owner-mode.mjs",
+    "owner-setup.mjs",
+    "policy.mjs",
+    "preflight.mjs",
+    "prepare-comment.mjs",
+    "prepare-key.mjs",
+    "public-key.pem",
+    "readiness.mjs",
+    "readiness.test.mjs",
+    "request.mjs",
+    "review-local.html",
+    "seal.mjs",
+    "send.mjs",
+    "setup-checks.mjs",
+    "setup.test.mjs"
+  ],
+  "workflow_templates": [
+    "gb2l-approved-email.yml",
+    "gb2l-email-preflight.yml",
+    "gb2l-email-readiness.yml",
+    "gb2l-email-tests.yml"
+  ]
+}

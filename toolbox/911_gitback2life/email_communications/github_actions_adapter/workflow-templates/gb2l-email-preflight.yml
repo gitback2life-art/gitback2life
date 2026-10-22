@@ -1,0 +1,28 @@
+name: GitBack2Life email no-send preflight
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: gb2l-email-sender
+  cancel-in-progress: false
+jobs:
+  preflight:
+    if: ${{ github.ref == 'refs/heads/main' && github.actor == 'gitback2life-art' }}
+    runs-on: ubuntu-latest
+    environment: gb2l-email-send
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+      - name: Verify actual runner permissions without Gmail
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GB2L_CONTROL_TOKEN: ${{ secrets.GB2L_CONTROL_TOKEN }}
+        run: node tools/gb2l-email/preflight.mjs
