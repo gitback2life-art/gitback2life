@@ -129,7 +129,7 @@ export async function sendOnce({envelope,privateKey,oauth,github,mode,policy,req
       let payload=null;
       try{payload=await r.json();}catch{}
       const details=summarizeGoogleError(payload);
-      return {status:'uncertain_delivery',draft_id:d.id,note:\`Gmail HTTP \${r.status} after reserved attempt; \${details}; no automatic retry.\`};
+      return {status:'uncertain_delivery',draft_id:d.id,note:'Gmail HTTP '+r.status+' after reserved attempt; '+details+'; no automatic retry.'};
     }
     const result=await r.json();
     if(!result||typeof result.id!=='string'||!result.id)return {status:'uncertain_delivery',draft_id:d.id,note:'Gmail did not return a message identifier; no automatic retry.'};
