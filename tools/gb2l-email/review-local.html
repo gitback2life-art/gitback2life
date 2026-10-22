@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>GitBack2Life Email Review</title>
+<style>body{font:16px system-ui;background:#111827;color:#f3f4f6;margin:30px auto;max-width:740px;padding:16px}textarea{width:100%;box-sizing:border-box;min-height:210px;background:#f9fafb;color:#111827;border-radius:7px;padding:12px;font:14px monospace}button{background:#2563eb;color:white;border:0;padding:12px 20px;border-radius:6px;cursor:pointer;font-size:17px;margin:12px 0}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#1f2937;padding:16px;border-radius:7px}strong{color:#93c5fd}small{color:#d1d5db}</style>
+<h1>Review an AI-prepared email</h1><p>This page runs locally in your browser. It does not send or upload anything. Copy the entire draft JSON shown to you by your AI Assistant, then press <b>Verify</b>.</p>
+<textarea id="data" aria-label="Draft JSON" placeholder='{"id":"32 lowercase hex characters","to":"someone@example.org","subject":"...","body":"...","incident_id":"...","commitment_nonce":"64 hex digits from private receipt"}'></textarea>
+<button id="go">Verify draft</button><pre id="output" aria-live="polite">No draft reviewed yet.</pre>
+<p><small>Approve the GitHub Actions job only when you have read the exact full message and its private-nonce commitment matches the GitHub Actions review summary. Never approve from an AI's assurances alone.</small></p>
+<script>
+const $=x=>document.getElementById(x);
+$('go').onclick=async()=>{try{
+  const d=JSON.parse($('data').value);
+  const id=d.id; if(typeof id!=='string'||!/^[a-f0-9]{32}$/.test(id))throw Error('Invalid ID');
+  const to=String(d.to||'').trim(), subject=String(d.subject||'').trim(),body=d.body,incident_id=d.incident_id===undefined?'':String(d.incident_id);
+  if(!to||!subject||typeof body!=='string'||!body)throw Error('Missing message details');
+  const commitment_nonce=d.commitment_nonce;
+  if(typeof commitment_nonce!=='string'||!/^[a-f0-9]{64}$/.test(commitment_nonce))throw Error('Private 256-bit review nonce is required; never post it to public GitHub');
+  const canonical=JSON.stringify({id,to,subject,body,incident_id,commitment_nonce});
+  const bytes=new TextEncoder().encode(canonical);
+  const hash=await crypto.subtle.digest('SHA-256',bytes);
+  const commitment=Array.from(new Uint8Array(hash),b=>b.toString(16).padStart(2,'0')).join('');
+  $('output').textContent=`Sender: gitback2life.ai@gmail.com\nRecipient: ${to}\nSubject: ${subject}\nIncident: ${incident_id||'(none)'}\n\nFULL MESSAGE:\n${body}\n\nDRAFT ID: ${id}\nPRIVATE-NONCE SHA-256 EXACT-CONTENT COMMITMENT:\n${commitment}\n\nCompare this hash with the GitHub Actions review summary before owner approval.`;
+}catch(e){$('output').textContent='Cannot verify: '+e.message;}};
+</script></html>

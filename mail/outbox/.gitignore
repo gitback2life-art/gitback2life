@@ -1,0 +1,4 @@
+# Only encrypted envelopes may be committed to this public repository.
+*
+!*.sealed.json
+!.gitignore
