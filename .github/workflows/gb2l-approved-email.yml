@@ -1,0 +1,43 @@
+name: GitBack2Life owner-approved email
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'mail/outbox/*.sealed.json'
+permissions:
+  contents: read
+concurrency:
+  group: gb2l-email-sender
+  cancel-in-progress: false
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    outputs:
+      file: ${{ steps.inspect.outputs.file }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 2
+      - name: Validate sealed draft only
+        id: inspect
+        run: node tools/gb2l-email/inspect.mjs
+  send:
+    needs: inspect
+    runs-on: ubuntu-latest
+    environment: gb2l-email-send
+    permissions:
+      actions: read
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Send only after owner review and one-time GitHub reservation
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GB2L_MAIL_PRIVATE_KEY: ${{ secrets.GB2L_MAIL_PRIVATE_KEY }}
+          GMAIL_CLIENT_ID: ${{ secrets.GMAIL_CLIENT_ID }}
+          GMAIL_CLIENT_SECRET: ${{ secrets.GMAIL_CLIENT_SECRET }}
+          GMAIL_REFRESH_TOKEN: ${{ secrets.GMAIL_REFRESH_TOKEN }}
+        run: node tools/gb2l-email/send.mjs '${{ needs.inspect.outputs.file }}'
