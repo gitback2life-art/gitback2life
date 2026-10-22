@@ -1,9 +1,11 @@
-name: GitBack2Life owner-approved email
+name: GitBack2Life owner-controlled email
 on:
   push:
     branches: [main]
     paths:
       - 'mail/outbox/*.sealed.json'
+  issue_comment:
+    types: [created]
 permissions:
   contents: read
 concurrency:
@@ -11,18 +13,25 @@ concurrency:
   cancel-in-progress: false
 jobs:
   inspect:
+    # A public comment by a third party can never start a privileged job.
+    if: ${{ github.event_name == 'push' || (github.event_name == 'issue_comment' && github.event.comment.user.login == vars.GB2L_REQUEST_ACTOR && github.event.issue.pull_request) }}
     runs-on: ubuntu-latest
     outputs:
-      file: ${{ steps.inspect.outputs.file }}
+      ready: ${{ steps.inspect.outputs.ready }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
           fetch-depth: 2
-      - name: Validate sealed draft only
+      - name: Inspect encrypted request; never print private mail
         id: inspect
+        env:
+          GB2L_EMAIL_MODE: ${{ vars.GB2L_EMAIL_MODE }}
+          GB2L_REQUEST_ACTOR: ${{ vars.GB2L_REQUEST_ACTOR }}
+          GB2L_REQUEST_PR: ${{ vars.GB2L_REQUEST_PR }}
         run: node tools/gb2l-email/inspect.mjs
-  send:
+  approval_required:
+    if: ${{ needs.inspect.outputs.ready == 'yes' && (vars.GB2L_EMAIL_MODE == '' || vars.GB2L_EMAIL_MODE == 'approval_required') }}
     needs: inspect
     runs-on: ubuntu-latest
     environment: gb2l-email-send
@@ -33,11 +42,45 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
-      - name: Send only after owner review and one-time GitHub reservation
+          fetch-depth: 2
+      - name: Send only after GitHub's owner environment approval
         env:
           GITHUB_TOKEN: ${{ github.token }}
+          GB2L_EXPECTED_MODE: approval_required
+          GB2L_EMAIL_MODE: ${{ vars.GB2L_EMAIL_MODE }}
+          GB2L_REQUEST_ACTOR: ${{ vars.GB2L_REQUEST_ACTOR }}
+          GB2L_REQUEST_PR: ${{ vars.GB2L_REQUEST_PR }}
+          GB2L_EMAIL_POLICY: ${{ secrets.GB2L_EMAIL_POLICY }}
           GB2L_MAIL_PRIVATE_KEY: ${{ secrets.GB2L_MAIL_PRIVATE_KEY }}
           GMAIL_CLIENT_ID: ${{ secrets.GMAIL_CLIENT_ID }}
           GMAIL_CLIENT_SECRET: ${{ secrets.GMAIL_CLIENT_SECRET }}
           GMAIL_REFRESH_TOKEN: ${{ secrets.GMAIL_REFRESH_TOKEN }}
-        run: node tools/gb2l-email/send.mjs '${{ needs.inspect.outputs.file }}'
+        run: node tools/gb2l-email/send.mjs
+  autonomous:
+    if: ${{ needs.inspect.outputs.ready == 'yes' && vars.GB2L_EMAIL_MODE == 'auto_send' }}
+    needs: inspect
+    runs-on: ubuntu-latest
+    # NO per-message environment reviewer on this path. Only the OWNER
+    # enables mode in Actions variables AND provisions this separate environment.
+    environment: gb2l-email-auto
+    permissions:
+      actions: read
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+          fetch-depth: 2
+      - name: Verify delegated owner policy and send within quota
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GB2L_EXPECTED_MODE: auto_send
+          GB2L_EMAIL_MODE: ${{ vars.GB2L_EMAIL_MODE }}
+          GB2L_REQUEST_ACTOR: ${{ vars.GB2L_REQUEST_ACTOR }}
+          GB2L_REQUEST_PR: ${{ vars.GB2L_REQUEST_PR }}
+          GB2L_EMAIL_POLICY: ${{ secrets.GB2L_EMAIL_POLICY }}
+          GB2L_MAIL_PRIVATE_KEY: ${{ secrets.GB2L_MAIL_PRIVATE_KEY }}
+          GMAIL_CLIENT_ID: ${{ secrets.GMAIL_CLIENT_ID }}
+          GMAIL_CLIENT_SECRET: ${{ secrets.GMAIL_CLIENT_SECRET }}
+          GMAIL_REFRESH_TOKEN: ${{ secrets.GMAIL_REFRESH_TOKEN }}
+        run: node tools/gb2l-email/send.mjs

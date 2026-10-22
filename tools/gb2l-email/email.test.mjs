@@ -1,50 +1,90 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {generateKeyPairSync} from 'node:crypto';
-import {seal,unseal,normalizeDraft,validateEnvelope} from './crypto.mjs';
-import {mimeMessage,sendOnce} from './send.mjs';
-const kp=generateKeyPairSync('rsa',{modulusLength:3072,publicKeyEncoding:{type:'spki',format:'pem'},privateKeyEncoding:{type:'pkcs8',format:'pem'}});
-const draft={to:'example@example.org',subject:'A test',body:'This is harmless test content',incident_id:'SYNTHETIC'};
-const good=()=>seal(draft,kp.publicKey);
-test('round trip without plaintext in public sealed envelope',()=>{const e=good();assert.deepEqual(unseal(e,kp.privateKey),{id:e.id,...draft});assert.ok(!JSON.stringify(e).includes(draft.body));});
-test('rejects invalid recipient, injected headers, empty body',()=>{
-  for(const x of [{...draft,to:'a@b\r\nBcc: c@d'},{...draft,subject:'hi\nBcc: bad'},{...draft,body:''}])assert.throws(()=>normalizeDraft(x));
+import {seal,unseal,normalizeDraft} from './crypto.mjs';
+import {makeComment,parseComment,envelopeForEvent} from './request.mjs';
+import {requestedMode,parsePolicy,assertSendContext} from './policy.mjs';
+import {sendOnce,mimeMessage,verifyEnvironment,reserveAttempt} from './send.mjs';
+const pair=generateKeyPairSync('rsa',{modulusLength:3072,publicKeyEncoding:{format:'pem',type:'spki'},privateKeyEncoding:{format:'pem',type:'pkcs8'}});
+const draft={to:'rescue@example.org',subject:'Harmless test',body:'A harmless synthetic request',incident_id:'SYNTHETIC'};
+const sealed=()=>seal(draft,pair.publicKey);
+const repo='gitback2life-art/gitback2life',owner='gitback2life-art';
+const manual={version:1,mode:'approval_required',owner,requester:owner,sender:'gitback2life.ai@gmail.com',daily_limit:3};
+const auto={...manual,mode:'auto_send',daily_limit:2};
+const gh={repo,sha:'a'.repeat(40),githubToken:'synthetic-test-token'};
+const oauth={clientId:'x',clientSecret:'y',refreshToken:'z'};
+const response=(status,obj)=>({status,ok:status>=200&&status<300,json:async()=>obj});
+function stub({mode='approval_required',used=[],gmailStatus=200,timeout=false,envReview=(mode==='approval_required'),oauthStatus=200}={}){
+  const seen=[];
+  const req=async(url,opts={})=>{
+    seen.push({url,method:opts.method||'GET'});
+    if(url.includes('/environments/'))return response(200,{protection_rules:envReview?[{type:'required_reviewers',reviewers:[{reviewer:{login:owner}}]}]:[]});
+    if(url.includes('oauth2.googleapis.com'))return response(oauthStatus,{access_token:'mock-access'});
+    if(url.includes('/matching-refs/'))return response(200,used.map(ref=>({ref})));
+    if(url.endsWith('/git/refs'))return response(201,{});
+    if(url.includes('gmail.googleapis.com')){if(timeout)throw Error('network lost');return response(gmailStatus,{id:'gmail-test-id'});}
+    throw Error('Unexpected HTTP call '+url);
+  };
+  return {seen,req};
+}
+const run=async(s,{mode='approval_required',p=mode==='auto_send'?auto:manual,...opts}={})=>sendOnce({envelope:sealed(),privateKey:pair.privateKey,oauth,github:gh,mode,policy:JSON.stringify(p),requestActor:owner,request:s.req,now:()=>new Date('2026-10-22T00:00:00Z'),...opts});
+test('sealed email contains no plaintext message or recipient',()=>{const e=sealed();assert.deepEqual(unseal(e,pair.privateKey),{id:e.id,...draft});assert.ok(!JSON.stringify(e).includes('rescue@example.org'));});
+test('comment round trip is ciphertext only',()=>{const x=sealed();const comment=makeComment(x);assert.deepEqual(parseComment(comment),x);assert.ok(!comment.includes(draft.subject));});
+test('comment cannot be arbitrary plaintext',()=>{assert.throws(()=>parseComment('Please send mail!'));});
+test('unsafe recipient and header injection rejected',()=>{for(const d of [{...draft,to:'x@x\nBcc: bad'},{...draft,subject:'X\rBcc: bad'},{...draft,body:''}])assert.throws(()=>normalizeDraft(d));});
+test('default is manual approval and unknown modes fail closed',()=>{assert.equal(requestedMode(''),'approval_required');assert.throws(()=>requestedMode('autonomous'));});
+test('public or untrusted comment cannot trigger send',()=>{
+ const comment=makeComment(sealed());
+ const base={action:'created',issue:{number:17,pull_request:{url:'https://x'}},comment:{body:comment,user:{login:'random'}},sender:{login:'random'}};
+ const common={eventName:'issue_comment',event:base,actor:owner,requestPr:'17',repo};
+ assert.throws(()=>envelopeForEvent(common),/Untrusted/);
+ assert.throws(()=>envelopeForEvent({...common,event:{...base,sender:{login:owner}}}),/Untrusted/);
+ assert.throws(()=>envelopeForEvent({...common,event:{...base,issue:{number:17}}}),/designated/);
 });
-test('reject ciphertext tampering',()=>{const e=good();e.data='AAAA'+e.data.slice(4);assert.throws(()=>unseal(e,kp.privateKey));});
-test('reject metadata tampering',()=>{const e=good();e.commitment='0'.repeat(64);assert.throws(()=>unseal(e,kp.privateKey));});
-test('validate schema refuses malformed envelope',()=>assert.throws(()=>validateEnvelope({schema:'bad'})));
-test('MIME includes explicit sender, single recipient, encoded message',()=>{
- const msg=mimeMessage({id:'a'.repeat(32),...draft});assert.match(msg,/From: gitback2life.ai@gmail.com/);assert.match(msg,/To: example@example.org/);assert.doesNotMatch(msg,/Bcc:/);
+test('trusted owner comment is accepted only for designated PR',()=>{
+ const comment=makeComment(sealed());const event={action:'created',issue:{number:17,pull_request:{}},comment:{body:comment,user:{login:owner}},sender:{login:owner}};
+ assert.throws(()=>envelopeForEvent({eventName:'issue_comment',event,actor:owner,requestPr:'18',repo}),/designated/);
+ assert.equal(envelopeForEvent({eventName:'issue_comment',event,actor:owner,requestPr:'17',repo}).transport,'owner_comment');
 });
-const github={repo:'gitback2life-art/gitback2life',sha:'f'.repeat(40),githubToken:'test-token'};
-const oauth={clientId:'client',clientSecret:'secret',refreshToken:'refresh'};
-const reply=(status,body)=>({ok:status>=200&&status<300,status,json:async()=>body,text:async()=>JSON.stringify(body)});
-test('approved send reserves once BEFORE Gmail POST',async()=>{
- const calls=[];const http=async(url,opts)=>{calls.push({url,opts});if(url.includes('/environments/'))return reply(200,{protection_rules:[{type:'required_reviewers',reviewers:[{reviewer:{login:'gitback2life-art'}}]}]});if(url.includes('oauth2'))return reply(200,{access_token:'access'});if(url.includes('/git/refs'))return reply(201,{});if(url.includes('gmail/v1'))return reply(200,{id:'msg-123'});throw Error('Unexpected URL')};
- const result=await sendOnce({envelope:good(),privateKey:kp.privateKey,oauth,github,request:http});
- assert.equal(result.status,'provider_accepted');assert.deepEqual(calls.map(x=>new URL(x.url).host),['api.github.com','oauth2.googleapis.com','api.github.com','gmail.googleapis.com']);
+test('changing a repository file or issue cannot enable mode by itself',()=>{
+ assert.throws(()=>assertSendContext({mode:'auto_send',actor:owner,policy:JSON.stringify(manual),recipient:draft.to}),/mismatch/);
+ assert.throws(()=>parsePolicy('', 'auto_send',owner));
+ assert.throws(()=>assertSendContext({mode:'disabled',actor:owner,policy:JSON.stringify(auto),recipient:draft.to}),/Emergency stop/);
 });
-test('existing durable marker blocks ALL Gmail attempts',async()=>{
- const urls=[];const http=async(url)=>{urls.push(url);if(url.includes('/environments/'))return reply(200,{protection_rules:[{type:'required_reviewers',reviewers:[{reviewer:{login:'gitback2life-art'}}]}]});if(url.includes('oauth2'))return reply(200,{access_token:'access'});return reply(422,{message:'already exists'})};
- await assert.rejects(sendOnce({envelope:good(),privateKey:kp.privateKey,oauth,github,request:http}),/already been attempted/);
- assert.equal(urls.some(x=>x.includes('gmail.googleapis.com')),false);
+test('wrong actor, owner or sender rejected even when sealed content valid',()=>{
+ for(const p of [{...auto,requester:'attacker'},{...auto,owner:'attacker'},{...auto,sender:'attacker@example.org'}])assert.throws(()=>parsePolicy(JSON.stringify(p),'auto_send',owner));
 });
-test('OAuth failure blocks reservation and Gmail call',async()=>{
- let count=0;await assert.rejects(sendOnce({envelope:good(),privateKey:kp.privateKey,oauth,github,request:async url=>{count++;return url.includes('/environments/')?reply(200,{protection_rules:[{type:'required_reviewers',reviewers:[{reviewer:{login:'gitback2life-art'}}]}]}):reply(401,{})}}),/authorization unavailable/);assert.equal(count,2);
+test('domain and recipient restrictions enforce owner scope',()=>{
+ assert.throws(()=>assertSendContext({mode:'auto_send',actor:owner,policy:JSON.stringify({...auto,domains:['restricted.example']}),recipient:draft.to}),/domain/);
+ assert.throws(()=>assertSendContext({mode:'auto_send',actor:owner,policy:JSON.stringify({...auto,recipients:['other@example.org']}),recipient:draft.to}),/Recipient/);
+ assert.ok(assertSendContext({mode:'auto_send',actor:owner,policy:JSON.stringify({...auto,domains:['example.org']}),recipient:draft.to}));
 });
-test('ambiguous Gmail timeout is not retried',async()=>{
- let sends=0;const http=async url=>{
-  if(url.includes('/environments/'))return reply(200,{protection_rules:[{type:'required_reviewers',reviewers:[{reviewer:{login:'gitback2life-art'}}]}]});if(url.includes('oauth2'))return reply(200,{access_token:'access'});if(url.includes('/git/refs'))return reply(201,{});sends++;throw Error('timeout');};
- const r=await sendOnce({envelope:good(),privateKey:kp.privateKey,oauth,github,request:http});assert.equal(r.status,'uncertain_delivery');assert.equal(sends,1);
-});
-test('non-success Gmail status is uncertain, not silently retried',async()=>{
- let sends=0;const http=async url=>{
-  if(url.includes('/environments/'))return reply(200,{protection_rules:[{type:'required_reviewers',reviewers:[{reviewer:{login:'gitback2life-art'}}]}]});if(url.includes('oauth2'))return reply(200,{access_token:'access'});if(url.includes('/git/refs'))return reply(201,{});sends++;return reply(500,{})};
- const r=await sendOnce({envelope:good(),privateKey:kp.privateKey,oauth,github,request:http});assert.equal(r.status,'uncertain_delivery');assert.equal(sends,1);
-});
+test('both modes produce correct MIME sender and single recipient',()=>{const m=mimeMessage({id:'a'.repeat(32),...draft});assert.match(m,/From: gitback2life.ai@gmail.com/);assert.match(m,/To: rescue@example.org/);assert.doesNotMatch(m,/Bcc:/);});
+test('approval_required uses genuine required-reviewer environment before Gmail',async()=>{const s=stub();const r=await run(s);assert.equal(r.status,'provider_accepted');assert.ok(s.seen.some(x=>x.url.includes('/gb2l-email-send')));assert.equal(s.seen.filter(x=>x.url.includes('gmail.googleapis.com')).length,1);});
+test('approval_required rejects missing owner review gate',async()=>{const s=stub({envReview:false});await assert.rejects(run(s),/approval gate/);assert.ok(!s.seen.some(x=>x.url.includes('gmail.googleapis.com')));});
+test('auto_send reaches Gmail WITHOUT required-reviewer gate when owner policy enabled',async()=>{const s=stub({mode:'auto_send'});const r=await run(s,{mode:'auto_send'});assert.equal(r.status,'provider_accepted');assert.ok(s.seen.some(x=>x.url.includes('/gb2l-email-auto')));assert.equal(s.seen.filter(x=>x.url.includes('gmail.googleapis.com')).length,1);});
+test('auto_send refuses environment misconfigured with mandatory reviewer',async()=>{const s=stub({mode:'auto_send',envReview:true});await assert.rejects(run(s,{mode:'auto_send'}),/per-message review gate/);assert.equal(s.seen.some(x=>x.url.includes('gmail.googleapis.com')),false);});
+test('daily quota exhaustion fails before email',async()=>{const s=stub({mode:'auto_send',used:['refs/tags/gb2l-email-attempt-20261022-'+'a'.repeat(32),'refs/tags/gb2l-email-attempt-20261022-'+'b'.repeat(32)]});await assert.rejects(run(s,{mode:'auto_send'}),/quota exhausted/);assert.equal(s.seen.some(x=>x.url.includes('gmail.googleapis.com')),false);});
+test('a duplicate cannot be re-sent',async()=>{const env=sealed();const s=stub({mode:'auto_send',used:[`refs/tags/gb2l-email-attempt-20261022-${env.id}`]});await assert.rejects(sendOnce({envelope:env,privateKey:pair.privateKey,oauth,github:gh,mode:'auto_send',policy:JSON.stringify(auto),requestActor:owner,request:s.req,now:()=>new Date('2026-10-22T00:00:00Z')}),/already reserved/);assert.equal(s.seen.some(x=>x.url.includes('gmail.googleapis.com')),false);});
+test('Gmail timeout after reservation is uncertain and never automatically retried',async()=>{const s=stub({mode:'auto_send',timeout:true});const result=await run(s,{mode:'auto_send'});assert.equal(result.status,'uncertain_delivery');assert.equal(s.seen.filter(x=>x.url.includes('gmail.googleapis.com')).length,1);assert.equal(s.seen.filter(x=>x.url.endsWith('/git/refs')).length,1);});
+test('OAuth failure never reserves an attempt',async()=>{const s=stub({oauthStatus:401});await assert.rejects(run(s),/authorization unavailable/);assert.ok(!s.seen.some(x=>x.url.endsWith('/git/refs')));});
+test('GitHub environment API error fails closed',async()=>{const s={seen:[],req:async()=>response(403,{})};await assert.rejects(run(s),/Cannot verify GitHub sending environment/);});
+test('GitHub reservation 422 fails closed',async()=>{const s=stub();const old=s.req;s.req=async(url,opts)=>url.endsWith('/git/refs')?response(422,{}):old(url,opts);await assert.rejects(run(s),/already reserved/);});
+test('config set to manual again blocks auto environment policy',()=>assert.throws(()=>assertSendContext({mode:'approval_required',actor:owner,policy:JSON.stringify(auto),recipient:draft.to}),/mismatch/));
 
-test('no environment required-reviewer fails closed before OAuth or Gmail',async()=>{
-  const visited=[];
-  await assert.rejects(sendOnce({envelope:good(),privateKey:kp.privateKey,oauth,github,request:async url=>{visited.push(url);return reply(200,{protection_rules:[]})}}),/required reviewer/);
-  assert.equal(visited.length,1);
+test('actual inspection script can process a trusted encrypted GitHub comment without plaintext leak',async()=>{
+ const {mkdtempSync,writeFileSync,readFileSync,rmSync}=await import('node:fs');
+ const {tmpdir}=await import('node:os');
+ const {join}=await import('node:path');
+ const {spawnSync}=await import('node:child_process');
+ const dir=mkdtempSync(join(tmpdir(),'gb2l-mail-test-'));
+ try{
+  const envelope=sealed();const event={action:'created',issue:{number:17,pull_request:{}},comment:{body:makeComment(envelope),user:{login:owner}},sender:{login:owner}};
+  writeFileSync(join(dir,'event.json'),JSON.stringify(event));
+  const res=spawnSync(process.execPath,['tools/gb2l-email/inspect.mjs'],{cwd:new URL('../..',import.meta.url),env:{...process.env,GITHUB_EVENT_PATH:join(dir,'event.json'),GITHUB_EVENT_NAME:'issue_comment',GITHUB_REPOSITORY:repo,GB2L_REQUEST_ACTOR:owner,GB2L_REQUEST_PR:'17',GB2L_EMAIL_MODE:'auto_send',GITHUB_OUTPUT:join(dir,'output'),GITHUB_STEP_SUMMARY:join(dir,'summary')},encoding:'utf8'});
+  assert.equal(res.status,0,res.stderr);
+  const output=readFileSync(join(dir,'output'),'utf8');
+  assert.match(output,/ready=yes/);assert.ok(!output.includes(draft.to));assert.ok(!output.includes(draft.body));
+  const decoded=output.match(/envelope=([^\n]+)/)[1];assert.equal(JSON.parse(Buffer.from(decoded,'base64url').toString()).id,envelope.id);
+ }finally{rmSync(dir,{recursive:true,force:true})}
 });

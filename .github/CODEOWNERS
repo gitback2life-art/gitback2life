@@ -1,3 +1,4 @@
-# Protect the privileged sender when branch protection / required code-owner review is enabled.
-/.github/workflows/gb2l-approved-email.yml @gitback2life-art
+# Enforce required CODEOWNER review via branch protection settings.
+/.github/CODEOWNERS @gitback2life-art
+/.github/workflows/ @gitback2life-art
 /tools/gb2l-email/ @gitback2life-art
