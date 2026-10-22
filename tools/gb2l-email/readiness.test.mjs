@@ -17,6 +17,7 @@ const baseEnv={...secrets,GITHUB_REPOSITORY:REPO,GITHUB_REF:'refs/heads/main',GI
 const response=(status,body)=>({ok:status>=200&&status<300,status,json:async()=>body});
 const goodHttp=async url=>{
  if(url==='https://oauth2.googleapis.com/token')return response(200,{access_token:'test-short-lived-access-token'});
+ if(url==='https://oauth2.googleapis.com/tokeninfo')return response(200,{aud:secrets.GMAIL_CLIENT_ID,scope:'openid email https://www.googleapis.com/auth/gmail.send'});
  if(url==='https://openidconnect.googleapis.com/v1/userinfo')return response(200,{email:SENDER,email_verified:true});
  throw Error('Unexpected endpoint '+url);
 };
@@ -30,7 +31,9 @@ test('readiness verifies configuration and existing Google identity without Gmai
  assert.equal(result.publicPrivateKeyMatch,true);
  assert.equal(result.oauthRefreshSucceeded,true);
  assert.equal(result.senderIdentityVerified,SENDER);
- assert.deepEqual(calls,['https://oauth2.googleapis.com/token','https://openidconnect.googleapis.com/v1/userinfo']);
+ assert.deepEqual(calls,['https://oauth2.googleapis.com/token','https://oauth2.googleapis.com/tokeninfo','https://openidconnect.googleapis.com/v1/userinfo']);
+ assert.equal(result.oauthAudienceMatchesClient,true);
+ assert.equal(result.gmailSendScopeGranted,true);
  assert.equal(JSON.stringify(result).includes('test-refresh-token-do-not-log'),false);
 });
 
@@ -40,9 +43,9 @@ test('missing secret reports names only and makes no network calls',async()=>{
  assert.equal(calls,0);
 });
 
-test('readiness refuses unless email sending is disabled',async()=>{
+test('readiness refuses autonomous mode but can diagnose safely in owner-approval mode',async()=>{
  let calls=0;
- await assert.rejects(checkSenderReadiness({env:{...baseEnv,GB2L_EMAIL_MODE:'approval_required'},publicKeyPem:pair.publicKey,http:async()=>{calls++;throw Error('should not call')}}),/must remain disabled/);
+ await assert.rejects(checkSenderReadiness({env:{...baseEnv,GB2L_EMAIL_MODE:'auto_send'},publicKeyPem:pair.publicKey,http:async()=>{calls++;throw Error('should not call')}}),/disabled or owner-approval mode/);
  assert.equal(calls,0);
 });
 
@@ -53,7 +56,28 @@ test('readiness fails before OAuth if the local private key does not match the p
  assert.equal(calls,0);
 });
 
+test('readiness fails clearly when the actual access token lacks gmail.send',async()=>{
+ const http=async url=>{
+  if(url==='https://oauth2.googleapis.com/token')return response(200,{access_token:'test-access'});
+  if(url==='https://oauth2.googleapis.com/tokeninfo')return response(200,{aud:secrets.GMAIL_CLIENT_ID,scope:'openid email'});
+  throw Error('Unexpected endpoint '+url);
+ };
+ await assert.rejects(checkSenderReadiness({env:baseEnv,publicKeyPem:pair.publicKey,http}),/current Google OAuth grant lacks gmail\.send/);
+});
+test('readiness fails clearly when access token belongs to another OAuth client',async()=>{
+ const http=async url=>{
+  if(url==='https://oauth2.googleapis.com/token')return response(200,{access_token:'test-access'});
+  if(url==='https://oauth2.googleapis.com/tokeninfo')return response(200,{aud:'another-client.apps.googleusercontent.com',scope:'openid email https://www.googleapis.com/auth/gmail.send'});
+  throw Error('Unexpected endpoint '+url);
+ };
+ await assert.rejects(checkSenderReadiness({env:baseEnv,publicKeyPem:pair.publicKey,http}),/audience does not match/);
+});
 test('readiness refuses unverified or wrong Google sender identity',async()=>{
- const http=async url=>url==='https://oauth2.googleapis.com/token'?response(200,{access_token:'test-access'}):response(200,{email:'wrong@example.com',email_verified:true});
+ const http=async url=>{
+  if(url==='https://oauth2.googleapis.com/token')return response(200,{access_token:'test-access'});
+  if(url==='https://oauth2.googleapis.com/tokeninfo')return response(200,{aud:secrets.GMAIL_CLIENT_ID,scope:'openid email https://www.googleapis.com/auth/gmail.send'});
+  if(url==='https://openidconnect.googleapis.com/v1/userinfo')return response(200,{email:'wrong@example.com',email_verified:true});
+  throw Error('Unexpected endpoint '+url);
+ };
  await assert.rejects(checkSenderReadiness({env:baseEnv,publicKeyPem:pair.publicKey,http}),/not the verified authorized sender/);
 });
