@@ -73,6 +73,11 @@ test('readiness fails clearly when access token belongs to another OAuth client'
  await assert.rejects(checkSenderReadiness({env:baseEnv,publicKeyPem:pair.publicKey,http}),/audience does not match/);
 });
 test('readiness refuses unverified or wrong Google sender identity',async()=>{
- const http=async url=>url==='https://oauth2.googleapis.com/token'?response(200,{access_token:'test-access'}):response(200,{email:'wrong@example.com',email_verified:true});
+ const http=async url=>{
+  if(url==='https://oauth2.googleapis.com/token')return response(200,{access_token:'test-access'});
+  if(url==='https://oauth2.googleapis.com/tokeninfo')return response(200,{aud:secrets.GMAIL_CLIENT_ID,scope:'openid email https://www.googleapis.com/auth/gmail.send'});
+  if(url==='https://openidconnect.googleapis.com/v1/userinfo')return response(200,{email:'wrong@example.com',email_verified:true});
+  throw Error('Unexpected endpoint '+url);
+ };
  await assert.rejects(checkSenderReadiness({env:baseEnv,publicKeyPem:pair.publicKey,http}),/not the verified authorized sender/);
 });
