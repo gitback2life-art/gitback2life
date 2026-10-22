@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Import and verify the exact 14-tool review distribution without trusting an archive blindly."""
 from __future__ import annotations
-import argparse, base64, hashlib, io, json, os, re, shutil, sys, tarfile, tempfile
+import argparse, hashlib, io, json, shutil, stat, sys, tempfile, zipfile
 from pathlib import Path, PurePosixPath
 
-EXPECTED_ARCHIVE_SHA256 = "2fe9f2710e780b8f937e335ab2b16e625be9cc24d6769136d9ca0da919d3d5e3"
+EXPECTED_ARCHIVE_SHA256 = "d91ef009c3d5a9e5fb335dd7eaeb8b8cbf91e05fb64f2afd6569bda6a832b9ee"
 EXPECTED_BUILD = "2026-10-20_14TOOLS_EMAIL_COMMUNICATIONS_DRAFT"
 EXPECTED_SOURCE_FILES = 206
 EXPECTED_EMBEDDED_FILES = 205
@@ -137,60 +137,74 @@ def verify_distribution(destination: Path) -> dict:
 def unpack_and_import(payload_dir: Path, destination: Path, repo_root: Path) -> None:
     if destination.exists():
         raise ValueError("Destination already exists; refusing to overwrite: " + str(destination))
-    parts = []
-    for p in sorted(payload_dir.glob("part-*.b64")):
-        m = re.fullmatch(r"part-(\d{3})\.b64", p.name)
-        if not m:
-            raise ValueError("Unexpected payload filename: " + p.name)
-        parts.append((int(m.group(1)), p.read_text(encoding="ascii").strip()))
-    if not parts:
-        raise ValueError("No archive payload chunks found.")
-    if [n for n, _ in parts] != list(range(len(parts))):
-        raise ValueError("Payload chunks have a missing or duplicate sequence number.")
-    encoded = "".join(s for _, s in parts)
-    try:
-        archive_bytes = base64.b64decode(encoded, validate=True)
-    except Exception as exc:
-        raise ValueError("Payload is not valid base64.") from exc
+    if not payload_dir.is_dir():
+        raise ValueError("The source payload directory is missing: " + str(payload_dir))
+
+    expected_name = "911_GitBack2Life_Email_Communications_Review_Build_20261020.zip"
+    payload_items = list(payload_dir.iterdir())
+    if len(payload_items) != 1 or payload_items[0].name != expected_name:
+        raise ValueError(
+            "Payload directory must contain only the exact reviewed ZIP file: " + expected_name
+        )
+    archive_path = payload_items[0]
+    if archive_path.is_symlink() or not archive_path.is_file():
+        raise ValueError("Source archive must be a regular file, not a link.")
+    archive_bytes = archive_path.read_bytes()
     if digest(archive_bytes) != EXPECTED_ARCHIVE_SHA256:
         raise ValueError("Archive SHA-256 differs from the pinned review build; no files imported.")
 
     with tempfile.TemporaryDirectory(prefix="gb2l-source-import-") as temp_name:
-        temp = Path(temp_name)
-        unpack = temp / "unpack"
+        unpack = Path(temp_name) / "unpack"
         unpack.mkdir()
-        with tarfile.open(fileobj=io.BytesIO(archive_bytes), mode="r:gz") as tf:
-            members = tf.getmembers()
+        with zipfile.ZipFile(io.BytesIO(archive_bytes), mode="r") as zf:
+            if zf.testzip() is not None:
+                raise ValueError("Source ZIP failed its CRC/integrity check.")
+            infos = zf.infolist()
             seen = set()
             files = []
-            for member in members:
-                name = member.name
+            for info in infos:
+                name = info.filename
                 pp = PurePosixPath(name)
-                if not name or pp.is_absolute() or "\\\\" in name or any(part in ("", ".", "..") for part in pp.parts):
+                if (
+                    not name
+                    or name.startswith("/")
+                    or "\\" in name
+                    or "\x00" in name
+                    or pp.is_absolute()
+                    or any(part in ("", ".", "..") for part in pp.parts)
+                ):
                     raise ValueError("Unsafe archive path.")
                 if name in seen:
                     raise ValueError("Duplicate archive path: " + name)
                 seen.add(name)
-                if member.isdir():
-                    continue
-                if not member.isfile():
-                    raise ValueError("Non-regular file in archive: " + name)
+                if info.is_dir():
+                    raise ValueError("Unexpected directory entry in reviewed archive: " + name)
+                if info.flag_bits & 0x1:
+                    raise ValueError("Encrypted ZIP entries are not allowed.")
+                unix_mode = (info.external_attr >> 16) & 0xFFFF
+                file_type = stat.S_IFMT(unix_mode)
+                if file_type not in (0, stat.S_IFREG):
+                    raise ValueError("Non-regular ZIP entry is not allowed: " + name)
                 if name not in ROOT_FILES and not name.startswith(PREFIX):
                     raise ValueError("Unexpected file outside the source package: " + name)
-                files.append(member)
-            names = [m.name for m in files]
-            if set(n for n in names if "/" not in n) != ROOT_FILES:
+                files.append(info)
+
+            names = [info.filename for info in files]
+            if {name for name in names if "/" not in name} != ROOT_FILES:
                 raise ValueError("Archive root-file list differs from the reviewed package.")
             if len(names) != EXPECTED_SOURCE_FILES + len(ROOT_FILES):
                 raise ValueError("Unexpected archive file count.")
-            for member in files:
-                out = unpack.joinpath(*PurePosixPath(member.name).parts)
+            if sum(name.startswith(PREFIX) for name in names) != EXPECTED_SOURCE_FILES:
+                raise ValueError("Unexpected source-tree file count.")
+
+            for info in files:
+                out = unpack.joinpath(*PurePosixPath(info.filename).parts)
                 out.parent.mkdir(parents=True, exist_ok=True)
-                source = tf.extractfile(member)
-                if source is None:
-                    raise ValueError("Archive file could not be read: " + member.name)
-                with source, out.open("xb") as target:
+                with zf.open(info, "r") as source, out.open("xb") as target:
                     shutil.copyfileobj(source, target)
+                if out.stat().st_size != info.file_size:
+                    raise ValueError("Extracted file size mismatch: " + info.filename)
+
         source_root = unpack / "source" / "911_gitback2life"
         counts = validate_manifest(source_root, unpack / "BUILD_MANIFEST.json")
         if counts != (EXPECTED_SOURCE_FILES, EXPECTED_EMBEDDED_FILES):
@@ -211,7 +225,7 @@ def unpack_and_import(payload_dir: Path, destination: Path, repo_root: Path) -> 
     (repo_root / "toolbox" / "911_gitback2life" / "TOOLBOX_SOURCE_IMPORT_STATUS.md").write_text(STATUS_README, encoding="utf-8")
     shutil.rmtree(payload_dir)
     result = verify_distribution(destination)
-    print("PASS: imported exact verified review archive; outer files=%d, inner files=%d, menu groups=14." % (result["outer_files"], result["inner_files"]))
+    print("PASS: imported exact verified review ZIP; outer files=%d, inner files=%d, menu groups=14." % (result["outer_files"], result["inner_files"]))
     print("Archive SHA-256: " + EXPECTED_ARCHIVE_SHA256)
     print("No live email operation or credential provisioning was performed.")
 
