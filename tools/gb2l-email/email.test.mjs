@@ -112,11 +112,23 @@ test('owner mode query failure blocks send closed',async()=>{
 });
 test('quota and duplicate ledger scans beyond first 100 refs',async()=>{
  const used=Array.from({length:100},(_,i)=>`refs/tags/gb2l-email-attempt-20261001-${i.toString(16).padStart(32,'0')}`);
- const later=`refs/tags/gb2l-email-attempt-20261022-${'e'.repeat(32)}`;
- const s=stub({mode:'auto_send',used});const base=s.req;
- s.req=async(url,opts)=>url.includes('/matching-refs/')?(url.includes('page=2')?response(200,[{ref:later}]):response(200,used.map(ref=>({ref})))):base(url,opts);
- const r=await run(s,{mode:'auto_send'});
- assert.equal(r.status,'provider_accepted');assert.ok(s.seen.some(x=>x.url.includes('page=2'))===false); // custom stub not logged
+ const laterA=`refs/tags/gb2l-email-attempt-20261022-${'e'.repeat(32)}`;
+ const laterB=`refs/tags/gb2l-email-attempt-20261022-${'f'.repeat(32)}`;
+ const s=stub({mode:'auto_send',used});const base=s.req;const pageCalls=[];
+ s.req=async(url,opts)=>{
+  if(url.includes('/matching-refs/')){
+   pageCalls.push(url);
+   const page=Number(new URL(url).searchParams.get('page'));
+   if(page===1)return response(200,used.map(ref=>({ref})));
+   if(page===2)return response(200,[{ref:laterA},{ref:laterB}]);
+   return response(200,[]);
+  }
+  return base(url,opts);
+ };
+ await assert.rejects(run(s,{mode:'auto_send'}),/quota exhausted/);
+ assert.equal(pageCalls.length,2);
+ assert.ok(pageCalls.some(x=>new URL(x).searchParams.get('page')==='2'));
+ assert.equal(s.seen.some(x=>x.url.includes('gmail.googleapis.com')),false);
 });
 test('missing GitHub private permissions need real staging validation',()=>{
  // This intentionally documents the unproven external prerequisite; no mock proves real GitHub permissions.
