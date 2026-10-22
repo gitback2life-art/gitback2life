@@ -44,7 +44,7 @@ export function assertMainOnlyDeployment(environment, listing){
   if(!listing||listing.total_count!==1||!Array.isArray(listing.branch_policies)||listing.branch_policies.length!==1)
     throw new Error('Autonomous environment must have exactly one deployment branch policy');
   const one=listing.branch_policies[0];
-  if(one?.name!=='main'||one.type==='tag'||(one.type!==undefined&&one.type!=='branch'))
+  if(one?.name!=='main'||one.type!=='branch')
     throw new Error('Autonomous deployment branch policy must match main only');
   return true;
 }
