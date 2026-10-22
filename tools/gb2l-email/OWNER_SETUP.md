@@ -1,6 +1,6 @@
 # Solo-owner setup and operations
 
-This is an engineering runbook for a later, expressly authorized setup stage. Do not perform it merely to review PR #16. No live setup has been completed. The owner's immediate task is only to provide repository write access to the engineering connection.
+This is an engineering runbook for a later, expressly authorized setup stage. Do not perform it merely to review PR #16. Publishing the source does not authorize key generation, settings changes, Google consent, or any live email. During that later stage, the engineer should use the connected GitHub account only if it has the required permissions; if permissions are missing, request the minimum required access. The owner should never copy secrets into chat or edit source code manually.
 
 ## Trust model
 
@@ -26,7 +26,7 @@ Manual setup never creates or fills `gb2l-email-auto`. Later explicit authorizat
 
 ## Emergency stop and recovery
 
-Use `owner-mode.mjs disabled`; immediately cancel queued/running email workflows. If credentials may be compromised, revoke the Google grant and GitHub read token. Runtime mode checks before and after reservation reduce the race but cannot recall an in-flight Gmail request. Never remove attempt tags, rerun sender jobs, or generate replacement IDs to retry an uncertain message. Reconcile privately first. GitHub concurrency serializes reservations, but only one pending run is retained; a burst can replace pending requests. Verify each requested draft's actual run; this is not a durable bulk queue.
+Use `owner-mode.mjs disabled`; immediately cancel queued/running email workflows. If credentials may be compromised, revoke the Google grant and GitHub read token. Runtime mode checks before and after reservation reduce the race but cannot recall an in-flight Gmail request. Never remove attempt tags, rerun sender jobs, or generate replacement IDs to retry an uncertain message. Reconcile privately first. GitHub concurrency serializes reservations, but only one pending run is retained; a burst can replace older pending requests. Verify each requested draft's actual run; this is not a durable bulk queue.
 
 ## References
 

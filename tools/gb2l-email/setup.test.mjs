@@ -3,6 +3,10 @@ import assert from 'node:assert/strict';
 import {generateKeyPairSync} from 'node:crypto';
 import {assertOwner,assertSoloProtection,assertManualEnvironment,assertKeyPair} from './setup-checks.mjs';
 import {verifySenderIdentity} from './identity.mjs';
+import {assertOutsideRepository,securePrivateKeyFile} from './prepare-key.mjs';
+import {mkdtempSync,writeFileSync,statSync,lstatSync,symlinkSync,rmSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import {join,sep} from 'node:path';
 import {spawnSync} from 'node:child_process';
 const owner='gitback2life-art';
 const manual=()=>({can_admins_bypass:false,deployment_branch_policy:{protected_branches:false,custom_branch_policies:true},protection_rules:[{type:'required_reviewers',prevent_self_review:false,reviewers:[{type:'User',reviewer:{login:owner}}]}]});
@@ -54,4 +58,37 @@ test('no-send preflight CLI exercises real control flow without Google or mail s
 test('sender CLI executes on Windows and fails without an event instead of silently succeeding',()=>{
  const res=spawnSync(process.execPath,['tools/gb2l-email/send.mjs'],{cwd:new URL('../..',import.meta.url),env:{...process.env,GITHUB_EVENT_PATH:'nonexistent-synthetic-event.json'},encoding:'utf8'});
  assert.notEqual(res.status,0);assert.match(res.stderr,/Mail sender refused/);
+});
+
+
+test('private key path rejects repository locations including names beginning with two dots',()=>{
+ assert.throws(()=>assertOutsideRepository('/repo','/repo/private.pem'),/outside the repository/);
+ assert.throws(()=>assertOutsideRepository('/repo',`/repo${sep}..private${sep}private.pem`),/outside the repository/);
+ assert.equal(assertOutsideRepository('/repo','/private/owner.pem'),true);
+});
+test('existing private key files are re-locked before reading',()=>{
+ const dir=mkdtempSync(join(tmpdir(),'gb2l-key-permissions-'));
+ try{
+  const file=join(dir,'owner.pem');writeFileSync(file,'synthetic private bytes',{mode:0o666});
+  securePrivateKeyFile(file);
+  if(process.platform!=='win32')assert.equal(statSync(file).mode&0o077,0);
+  assert.equal(lstatSync(file).isSymbolicLink(),false);
+ }finally{rmSync(dir,{recursive:true,force:true});}
+});
+test('private key hardening refuses symlinks',()=>{
+ const dir=mkdtempSync(join(tmpdir(),'gb2l-key-symlink-'));
+ try{
+  const actual=join(dir,'actual.pem'),link=join(dir,'link.pem');writeFileSync(actual,'synthetic');
+  try{symlinkSync(actual,link);assert.throws(()=>securePrivateKeyFile(link),/non-symlink/)}catch(err){if(err.code!=='EPERM'&&err.code!=='EACCES')throw err;}
+ }finally{rmSync(dir,{recursive:true,force:true});}
+});
+test('Windows private-key ACL routine removes inheritance and grants owner only',()=>{
+ const dir=mkdtempSync(join(tmpdir(),'gb2l-key-acl-'));
+ try{
+  const file=join(dir,'owner.pem');writeFileSync(file,'synthetic');const calls=[];
+  securePrivateKeyFile(file,{platform:'win32',run:(bin,args)=>{calls.push([bin,args]);return bin==='whoami'?'OWNER,S-1-5-21-1-2-3-1001\n':'';}});
+  assert.deepEqual(calls.map(c=>c[0]),['whoami','icacls','icacls']);
+  assert.deepEqual(calls[1][1],[file,'/reset']);
+  assert.deepEqual(calls[2][1],[file,'/inheritance:r','/grant:r','*S-1-5-21-1-2-3-1001:F']);
+ }finally{rmSync(dir,{recursive:true,force:true});}
 });
