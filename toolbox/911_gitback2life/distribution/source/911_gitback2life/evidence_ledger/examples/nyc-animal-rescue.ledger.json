@@ -1,0 +1,96 @@
+{
+  "schema": 1,
+  "incident_id": "nyc-animal-rescue-weekly-check-2026-10",
+  "created_at": "2026-10-08T00:00:00Z",
+  "checked": [],
+  "not_checked": [
+    "Issue #1 text and comments have not been re-fetched in this session",
+    "Workflow runs 36438667140 and 37332890503 have not been re-fetched; their logs need a read-only token",
+    "Current weekly.ts / fetch.ts / rules.ts / agent.test.ts have not been re-read at a pinned commit",
+    "No hop-by-hop redirect chain for www.kittensandbarbells.org has been documented",
+    "No current RDAP, DNS, certificate or archive lookups for either domain"
+  ],
+  "items": [
+    {
+      "id": "E1",
+      "label": "source_report",
+      "text": "Sept 28, 2026 weekly check flagged 65 of 311 records; tests and scan completed, then the safety-valve threshold failed the job and blocked rebuild/commit steps.",
+      "source_url": "https://github.com/maintainer-handle-redacted/nyc-animal-rescue/actions/runs/36438667140",
+      "signal": "none"
+    },
+    {
+      "id": "E2",
+      "label": "source_report",
+      "text": "Oct 5, 2026 weekly check flagged 58 of 311 records; same protective stop. Issue reports no resource changes were applied, only last_checked bookkeeping.",
+      "source_url": "https://github.com/maintainer-handle-redacted/nyc-animal-rescue/actions/runs/37332890503",
+      "signal": "none"
+    },
+    {
+      "id": "E3",
+      "label": "source_report",
+      "org": "Kittens and Barbells Rescue, Inc.",
+      "page_role": "primary",
+      "requested_url": "https://www.kittensandbarbells.org",
+      "final_url": "https://www.talesofhazaribagh.com/",
+      "text": "Issue #1 (Oct 5 report) lists this requested URL and final destination. Page role shown as reported; which page actually redirected, and the hop chain, are unverified.",
+      "source_url": "https://github.com/maintainer-handle-redacted/nyc-animal-rescue/issues/1",
+      "signal": "redirect_off_domain",
+      "confidence": "low"
+    },
+    {
+      "id": "E4",
+      "label": "inference",
+      "text": "From a prior session's reading of rules.ts: any page with offDomain (intake, source or contact, not only the primary site) can raise the domain-moved warning. Needs re-reading at a pinned commit.",
+      "confidence": "medium"
+    },
+    {
+      "id": "E5",
+      "label": "source_report",
+      "org": "Kittens and Barbells Rescue, Inc.",
+      "text": "Earlier passive search associated talesofhazaribagh.com with a travel-writing project, and surfaced a possible alternative Squarespace-hosted Kittens and Barbells site. Leads only; ownership, timing and mechanism unknown.",
+      "source_ref": "handoff brief 2026-10-08 (prior session notes)",
+      "signal": "none",
+      "confidence": "low"
+    }
+  ],
+  "hypotheses": [
+    {
+      "id": "H1",
+      "statement": "Checker defect: redirects from secondary pages are counted as primary-domain moves, inflating flag counts.",
+      "status": "open",
+      "supporting": ["E4"],
+      "against": [],
+      "discriminating_evidence": "rules.ts at a pinned commit; an offline test with a healthy primary site and an off-domain intake redirect."
+    },
+    {
+      "id": "H2",
+      "statement": "The primary website www.kittensandbarbells.org itself currently redirects to talesofhazaribagh.com.",
+      "status": "open",
+      "supporting": ["E3"],
+      "against": [],
+      "discriminating_evidence": "Which page role produced the observation in the run log; Wayback 3xx captures; an authorized isolated HEAD chain."
+    },
+    {
+      "id": "H3",
+      "statement": "Domain explanation: expired or repurposed domain, DNS/hosting misconfiguration, legitimate migration, or stale directory data.",
+      "status": "open",
+      "supporting": ["E5"],
+      "against": [],
+      "discriminating_evidence": "RDAP registration/expiry dates and registrar changes, NS/A record history, certificate issuance timeline, archive captures, the organization's own announcements."
+    },
+    {
+      "id": "H4",
+      "statement": "Actual compromise of the organization's site, DNS or accounts.",
+      "status": "open",
+      "supporting": [],
+      "against": [],
+      "discriminating_evidence": "Independent threat-intelligence verdicts (existing lookups only), confirmed unauthorized DNS/registrar change, harmful content shown by an independent source."
+    }
+  ],
+  "verdicts": {},
+  "risk": "Directory users following the Kittens and Barbells entry may reach an unrelated site. Separately, a checker defect could produce many unnecessary review flags and block legitimate weekly updates. Neither is established yet.",
+  "next_step": {
+    "action": "Re-fetch issue #1, both runs and the four source files at a pinned commit; run passive lookups on both domains.",
+    "permission_needed": "None beyond the scope file (read_public_github, passive_lookup, save_local are permitted)."
+  }
+}

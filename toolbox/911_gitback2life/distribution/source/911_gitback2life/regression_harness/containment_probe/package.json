@@ -1,0 +1,10 @@
+{
+  "name": "gitback2life-containment-probe",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Synthetic project for checking run_offline containment INSIDE the tests-mode Windows Sandbox only. Never run on a normal computer.",
+  "scripts": {
+    "pretest": "node -e \"require('fs').writeFileSync('PRETEST_RAN.txt', 'npm ran the pretest lifecycle script')\"",
+    "test": "node --test --test-reporter=spec"
+  }
+}

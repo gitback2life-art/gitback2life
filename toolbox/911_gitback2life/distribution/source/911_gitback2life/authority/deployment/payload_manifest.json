@@ -1,0 +1,90 @@
+{
+  "schema": "gb2l-predeploy-v1",
+  "files": [
+    {
+      "path": "authority.cmd",
+      "sha256": "665ef25c25cf987893456a43e3f582c641a98dd7a933d60376405fb577cc5b9e",
+      "bytes": 4290
+    },
+    {
+      "path": "bootstrap.mjs",
+      "sha256": "26af4705f258996aa8ecf769bea7c58b8134ad4e218f593875c9aa0614600c66",
+      "bytes": 2041
+    },
+    {
+      "path": "g0a/exclusive_lock.mjs",
+      "sha256": "e99886b4424cbba3ad9bd8c19ec2e2c2732fc38b49511fbc4ec1380387f14b22",
+      "bytes": 2944
+    },
+    {
+      "path": "g0a/request_pipe.mjs",
+      "sha256": "e9e68a1cb4039937fa55f288903580f98ccb0c9686ca97f3f7569c2886c18463",
+      "bytes": 11319
+    },
+    {
+      "path": "m1/engine.mjs",
+      "sha256": "0566d0cc895260f8f5a1302d11ac668571b5be6d37c78d1f516f6207832d23bf",
+      "bytes": 36680
+    },
+    {
+      "path": "m1/ledger.mjs",
+      "sha256": "28d1465031ab762d128269847520aaebbb95fc69e4a47bde226973ba87e200e2",
+      "bytes": 4209
+    },
+    {
+      "path": "m2/commands.mjs",
+      "sha256": "386541bb6cb893123595b58afd5871c46de3b7def1e83465845373d85e758543",
+      "bytes": 11569
+    },
+    {
+      "path": "m2/masking.mjs",
+      "sha256": "7941ce7f0bef833390423493a4c4d31048dc9b9183e3870b3167f3e7d2255a63",
+      "bytes": 3990
+    },
+    {
+      "path": "m2/register_rules.mjs",
+      "sha256": "8e3a1db73dc0d9081471d1f766f7195b823d157d4eb8228bc79804ab621d845c",
+      "bytes": 6372
+    },
+    {
+      "path": "m2/renderer.mjs",
+      "sha256": "4d00feffa1561f33df80b423c50d4948934f4c936770a58fad9e7d88757905aa",
+      "bytes": 3674
+    },
+    {
+      "path": "m3/cli.mjs",
+      "sha256": "8eef557fa80301a5478db3a07c5edd499d92e8e164426fb9b844b93e57e5fcb1",
+      "bytes": 9169
+    },
+    {
+      "path": "m3/exporter.mjs",
+      "sha256": "f58d4b97bb20fea5ba696cd0091cba0cbce5c1d8247f35179b53aaf608cdaa92",
+      "bytes": 5966
+    },
+    {
+      "path": "m3/fs_backend.mjs",
+      "sha256": "30628f4f792453f839456097ee7c6095230a17ad21136a211448302065417e96",
+      "bytes": 16666
+    },
+    {
+      "path": "m3/offline_readiness.mjs",
+      "sha256": "fd986add418269bd52bb65d7af10704862f7ca39879e4a77efbcc916cf8682f4",
+      "bytes": 4029
+    },
+    {
+      "path": "m3/owner_console.mjs",
+      "sha256": "a8556b760fd8b4e0077db71349f2e4f2aea2c530849b664cb8d4f8a42bafc3f6",
+      "bytes": 2248
+    },
+    {
+      "path": "m3/signer.mjs",
+      "sha256": "6d175731c78890d6f2c813b52064661deb34470439ad218de5e43f7aeef48241",
+      "bytes": 2734
+    },
+    {
+      "path": "m3/tree.mjs",
+      "sha256": "3b733f1ceb1b54eecb93475aaa41d620683c1294d90d3446e7c29723ee9dc925",
+      "bytes": 5842
+    }
+  ]
+}

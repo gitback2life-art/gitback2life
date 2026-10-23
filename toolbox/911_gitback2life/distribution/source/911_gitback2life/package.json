@@ -1,0 +1,10 @@
+{
+  "name": "911_gitback2life",
+  "private": true,
+  "description": "Local-first emergency toolbox for public-interest technical incidents. No dependencies.",
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "test": "node --import ./regression_harness/network_guard.mjs --test \"*/*.test.mjs\""
+  }
+}

@@ -1,0 +1,1025 @@
+--- /dev/null
++++ b/EMAIL_COMMUNICATIONS_REVIEW.md
+@@ -0,0 +1,15 @@
++# Email Communications — handoff and release recommendation
++
++**Source basis:** owner's latest available 13-tool `911_GitBack2Life_13_Tool_All_Workflows_Reliability_20261020.zip`, not the historical public GitHub website. Source archive was inspected and extended in a separate working copy; protected authority source was not installed or activated.
++
++**Files added:** `email_communications/email_service.mjs`, `email_communications/protected_backend.mjs`, `email_communications/email_client.mjs`, `email_communications/email_service.test.mjs`, `email_communications/README.md`, this note. Existing registry, WinForms navigation, scope service list, relevant tests, original README note and the acceptance script updated for the dedicated owner-requested tool.
++
++**Control boundaries:** Gmail OAuth web client secret/token stored only in protected backend configuration/encrypted backend store; `gmail.send` scope only; fixed sender; one recipient and plain text only; exact-content approval; no unattended sends; lock and in-flight checkpoint before sending; ambiguous result never retried; metadata-only timeline. For the backend to send, a separate protected authority installation and explicit owner deployment/approval are mandatory. OAuth connections remain unconfigured in this patch.
++
++**Integration caveat:** The existing protected authority subsystem is intentionally inactive, so automated offline tests prove failure/success behavior of the new engine with mocked authorization and Gmail, **not** that real sending is deployable from this staging ZIP. The Web OAuth callback and the connected Gmail identity also require a real protected HTTPS service and consent flow. Ensure operator ACLs and deployed backend network boundaries receive human review.
++
++**Review recommendation:** Keep as a **draft / review-only code change**. Do not merge, deploy, enable sending or claim production readiness until the real source repository and working branch are identified; a maintainer reviews this change; native Windows installation and GUI are verified; the authenticated Google account and protected owner-authorization chain are tested; and the owner explicitly authorizes a designated harmless test recipient.
++
++## Verification evidence (this build)
++
++Node.js full offline suite: 437 passed, 12 skipped, zero failed. Python regression suite could not be certified on this Linux environment: a Windows-only `_winapi` import and two older deployment-payload count assertions failed. The new email service tests use synthetic, non-delivering transports only. See top-level BUILD_NOTES.md. No Gmail connection or send, Windows GUI interaction, backend HTTPS integration or GitHub PR was performed.
+--- a/README_13_TOOLS.md
++++ b/README_13_TOOLS.md
+@@ -57,4 +57,8 @@
+ 
+ This is a shared behavior rule, not a new tool, menu or permission. For **every** existing workflow, failed execution, missing client-provided evidence or an unavailable data source is **not a finding** about the person being helped. The Toolbox retains completed results in its action output, distinguishes an incomplete check from a verified negative result, and records actionable errors in its existing local support logs. A live scope refusal or request-limit stop stays enforced.
+ 
+ The tools that actually use external lookups apply this rule to DNS/email protection, registration monitoring, typo-domain checks, GitHub log retrieval and redirect inspection, alongside Domain Research. Local-only tools (incident/evidence/report management, imported email headers, account recovery guides, registers, directories, code, dependencies, backups, metadata and client ZIP analysis) keep their offline behavior: they **never** invent external verification or silently fetch a client's data. They report errors or unknowns when supplied evidence is absent/incomplete. No automatic resolver fallback, broader target permissions, extra remote-control capability or production writes were added.
++
++## Owner-approved addition: Email Communications
++
++The owner separately authorized a dedicated Email Communications tool after the thirteen-tool consolidation. It is an additional top-level capability. Gmail sending is disabled until a protected backend is configured and the owner explicitly authorizes a controlled test. See `email_communications/README.md`.
+--- a/_shared/scope_schema.json
++++ b/_shared/scope_schema.json
+@@ -19,8 +19,9 @@
+     "publish": "Publish findings anywhere"
+   },
+   "services": {
+     "github": "GitHub (api.github.com, codeload.github.com)",
++    "gmail": "Google Gmail API (outgoing approved message and destination email address)",
+     "rdap": "registration data services (rdap.org and domain registries)",
+     "dns": "the DNS resolver (and, through it, the domain's own DNS servers)",
+     "doh": "DNS-over-HTTPS providers (Cloudflare, Google)",
+     "certificate_logs": "certificate transparency search (crt.sh)",
+--- a/_shared/toolkit_rules.test.mjs
++++ b/_shared/toolkit_rules.test.mjs
+@@ -20,9 +20,10 @@
+ }
+ 
+ // The only files allowed to import network-capable Node modules, and which ones.
+ const NETWORK_MODULE_ALLOWLIST = {
+-  '_shared/safe_http.mjs': ['dns', 'http', 'https'], // the ONLY HTTP transport in the toolkit
++  '_shared/safe_http.mjs': ['dns', 'http', 'https'], // existing public-evidence HTTP transport
++  'email_communications/protected_backend.mjs': ['https'], // separately authorized, TLS-only outgoing-mail service
+   '_shared/guards.mjs': ['net'], // address math only (BlockList, isIP)
+   '_shared/isolation.mjs': ['net'], // address math only (isIP, validating firewall rule addresses)
+   'regression_harness/network_guard.mjs': ['dgram', 'dns', 'net'], // it blocks them
+   // V4-06 OS egress probe: deliberately ATTEMPTS a connection to TEST-NET-1 (192.0.2.1, no real host) and a .invalid
+@@ -58,11 +59,11 @@
+     for (const m of imported) assert.ok(allowed.includes(m), `${rel} imports node:${m} without being on the network allowlist`);
+   }
+ });
+ 
+-test('nothing calls the built-in fetch; only the offline guard (which blocks it) mentions it', () => {
+-  for (const { rel, text } of toolFiles()) {
+-    if (!rel.endsWith('.mjs') || rel === 'regression_harness/network_guard.mjs') continue;
++test('only the protected Email Communications client uses built-in fetch; other tools use politeFetch', () => {
++  for (const { rel, text } of toolFiles()) {
++    if (!rel.endsWith('.mjs') || rel === 'regression_harness/network_guard.mjs' || rel === 'email_communications/email_client.mjs') continue;
+     assert.doesNotMatch(text, /globalThis\.fetch|(?<![\w.])fetch\s*\(/, `${rel} calls fetch directly; use politeFetch`);
+   }
+ });
+ 
+@@ -80,13 +81,13 @@
+   assert.match(fn('fetchRobotsPolicy'), /offLimits\(`robots\.txt redirected more than/, 'too many robots.txt redirects must fail closed');
+   assert.doesNotMatch(polite, /\bALLOW_ALL\b/, 'no allow-all fallback in the shared network code');
+ });
+ 
+-test('only the shared transport makes HTTP requests, and only checked callers use it', () => {
++test('shared read-only transport and isolated protected email HTTPS service are the only Node transports', () => {
+   const CALLERS = ['_shared/polite.mjs', 'redirect_inspector/redirect_inspector.mjs'];
+   for (const { rel, text } of toolFiles()) {
+     if (!rel.endsWith('.mjs')) continue;
+-    if (/from ['"]node:https?['"]/.test(text)) assert.equal(rel, '_shared/safe_http.mjs', `${rel} imports node:http(s); use the shared transport`);
++    if (/from ['"]node:https?['"]/.test(text)) assert.ok(['_shared/safe_http.mjs','email_communications/protected_backend.mjs'].includes(rel), `${rel} imports node:http(s) without an approved transport purpose`);
+     if (/safe_http\.mjs['"]/.test(text)) assert.ok(CALLERS.includes(rel), `${rel} uses the raw transport; use politeFetch`);
+   }
+   const inspector = readFileSync(join(TOOLBOX_ROOT, 'redirect_inspector', 'redirect_inspector.mjs'), 'utf8');
+   assert.match(inspector, /robots = makeRobotsCheck\(\)/, 'redirect_inspector must check robots.txt by default');
+--- /dev/null
++++ b/email_communications/README.md
+@@ -0,0 +1,68 @@
++# Email Communications — owner-authorized development patch
++
++**Status: development implementation, not deployed, not connected, not approved for real sending.**
++
++The project owner specifically requested an additional dedicated **Email Communications** tool following the earlier 13-tool consolidation. Original tools remain available; there are now 14 top-level choices by explicit later direction. This is not a new remote-access capability: it offers HTTPS **email-only** operations and cannot control a client's computer.
++
++## Workflow
++
++1. An operator opens **Email Communications** in the existing mouse/numeric-key Toolbox (tool 14, keyboard `0` then `5`).
++2. The Toolbox requests the protected HTTPS backend URL and operator access configuration from its environment. Without these, the tool states **not configured**. It never silently uses personal Gmail accounts.
++3. The operator chooses an existing incident, one recipient, plain-text subject/message, and optionally an evidence-based suggestion from the existing Notice Drafter. Direct observations, reports, hypotheses, unknowns and requested action must remain distinguishable. The operator reviews or edits every line.
++4. The encrypted backend saves the draft and returns an opaque ID. The operator fetches the complete draft to review *From, To, Cc, Bcc, subject, full text and attachments* (the latter three are disabled/empty in the first release).
++5. A role-authorized person **explicitly approves the SHA-256 of that exact draft**. Any edit invalidates approval. A separate send action requires another explicit confirmation and an independent protected role check. No AI or UI text can bypass the backend checks.
++6. When activated, Gmail returns a message ID for an accepted send. Failed or ambiguous outcomes are recorded separately. An attempted message cannot be automatically retried, even after a timeout, service restart or double click. The protected audit record retains the result. The case timeline records only a nonprivate email ID and outcome.
++7. The owner can connect and disconnect the approved Gmail account. The service never reads inboxes or creates bulk jobs or attachments.
++
++## Configuring a protected backend (owner/admin task, *not* done by this development package)
++
++Requires Node.js 22+, an existing protected server with HTTPS certificate and key, a protected administrative operator credential file, and Google Cloud **Web application** OAuth credentials with an exact HTTPS redirect URI. Do **not** run the protected backend from a volunteer-accessible filesystem or expose its environment to the Toolbox UI. No local HTTP fallback for deployed Gmail OAuth.
++
++Required backend environment-variable **names** (never commit values):
++
++| Name | Purpose |
++|---|---|
++| `GB2L_EMAIL_BACKEND_MODE` | Must be `protected` to start the server |
++| `GB2L_EMAIL_STATE_DIR` | Dedicated access-controlled backend data directory, not in the repository/ZIP or volunteer PC |
++| `GB2L_EMAIL_KEY_B64` | Independent 32-byte random AES-GCM secret encoded with base64, stored in server secrets manager |
++| `GB2L_EMAIL_TLS_CERT` | Existing TLS public certificate file path |
++| `GB2L_EMAIL_TLS_KEY` | Existing private TLS key file path (restricted permissions) |
++| `GB2L_EMAIL_OPERATORS_FILE` | Private JSON operator config with `operators` array of `{actor,tokenSha256,roles,incidents}`; distinct random bearer token per operator; never store plaintext tokens here |
++| `GB2L_GMAIL_CLIENT_ID` | Google OAuth web client ID |
++| `GB2L_GMAIL_CLIENT_SECRET` | Google OAuth web client secret, backend only |
++| `GB2L_GMAIL_REDIRECT_URI` | Exact registered `https://.../oauth/callback` URI routed to this protected backend |
++| `GB2L_EMAIL_PORT` | Optional HTTPS service port (default 8443) |
++| `GB2L_EMAIL_BIND_HOST` | Optional listener address; default `127.0.0.1`, do not publicly expose without network controls |
++| `GB2L_EMAIL_LIVE_SEND_ENABLED` | Must be the literal `1` **and** protected authorizations must all succeed for sending; default is off |
++| `GB2L_EMAIL_VERIFIED_SENDER` | Must match `gitback2life.ai@gmail.com` after an owner-controlled account-identity confirmation; otherwise live sending remains off. This is an owner's attestation, not cryptographic proof |
++
++Required **Toolbox operator** settings:
++
++| Name | Purpose |
++|---|---|
++| `GB2L_EMAIL_API_URL` | Exact protected HTTPS backend origin (for example `https://email.internal.example:8443/`) |
++| `GB2L_EMAIL_OPERATOR_TOKEN_FILE` | Restrictive-permissions file containing only this operator's random bearer token (outside the Toolbox and repository) |
++
++Operator config roles: `draft`, `review`, `approve`, `send`, `connect`. `incidents` may be an approved list of case IDs or `*`; avoid broad access in production. The protected server matches hashes with constant-time comparison and never logs bearer tokens. The backend directory must have OS ACLs restricting files, keys and secrets to the dedicated service identity. File permissions alone should **not** be assumed to enforce Windows ACLs. Certificate trust and permitted ports must be configured by the server administrator.
++
++**Owner provisioning:** Enable Gmail API in Google Cloud, set the consent screen, configure Web application OAuth, register the exact HTTPS redirect URI, and request **only** `https://www.googleapis.com/auth/gmail.send`. Use the Toolbox connection workflow to open Google's consent page. The owner must verify on Google's screen that the signed-in Google account is `gitback2life.ai@gmail.com` before consenting. `gmail.send` does **not** permit the API to independently read account/profile identity; therefore the connected identity must also be checked by an owner in a controlled live test. This patch does not claim that check has occurred. Google testing-mode, test-user and app-verification requirements may apply before wider use.
++
++## Scope and authorization for live email
++
++The operator must have verified backend role permissions, and an existing active incident. Before each send, the backend demands:
++- Existing incident scope with `save_local` permission.
++- `contact_third_party` permission for the recipient **domain** (listed among scope targets), a current exact-target attestation, and `gmail` listed in scope disclosures.
++- The **installed, valid protected signed owner authority** (`checkAuthority().required && .valid`). Without this, send is refused even when someone typed an attestation into a JSON scope file.
++- The current encrypted draft's unmodified approved hash, a configured Gmail OAuth token and the explicit send action. An attempt record is committed *before* the first provider call.
++
++These are new, deliberately stringent constraints. **This developer package does not activate the protected authority or owner Gmail service**. There is no equivalent of `--unsafe` or a local admin bypass.
++
++Only the sender's authorized email service communicates with Google. The client does not read donor lists, Gmail inboxes, client-machine files, or remote desktops. The original incident data and protected approval records are not modified by this patch. Only the live-protected backend, when separately deployed, may create encrypted mail records and append metadata-only case timeline revisions.
++
++## Testing / release status
++
++Run `node --test email_communications/email_service.test.mjs` for synthetic offline unit tests. Integration with the existing Toolbox menu is checked by `toolbox/gui_ui.test.mjs` and `toolbox/13_tool_interface.test.mjs` (the latter retains its historical filename). The complete offline suite and manifest verification are also included in the delivery package.
++
++**Still required**: provision an actual protected backend and verified operator identities; independent security review (including OAuth handling, ACL enforcement, exact-case scope, recipient authorization and privacy); controlled end-to-end testing of HTTPS callback and Gmail token refresh; owner-designated test-recipient send and message-ID verification; native Windows GUI and staging testing; owner's review/approval of deployment and publication. No test should contact an actual animal rescue.
++
++The current GitHub connectors did not expose the authoritative Toolbox source repository or its working branch. This patch is therefore based on the owner's most recent supplied source ZIP, packaged for review. **No GitHub branch, PR, merge or deployment was performed.** Do not put private incident material, tokens, operator configs or test messages into any public repository.
+--- /dev/null
++++ b/email_communications/email_client.mjs
+@@ -0,0 +1,100 @@
++// User-facing Email Communications client. HTTPS to the dedicated protected
++// email-only backend; it never stores drafts or Gmail tokens on volunteer PCs.
++import {readFileSync,lstatSync} from 'node:fs';
++
++function settings() {
++  const root=process.env.GB2L_EMAIL_API_URL;
++  const tokenPath=process.env.GB2L_EMAIL_OPERATOR_TOKEN_FILE;
++  if(!root||!tokenPath||!/^https:\/\//.test(root)||/[@?#]/.test(new URL(root).origin))
++    throw new Error('Email Communications backend not configured: see email_communications/README.md');
++  if(new URL(root).username||new URL(root).password||new URL(root).pathname!=='/' ||new URL(root).search)
++    throw new Error('Email backend URL must be an HTTPS origin only');
++  if(!lstatSync(tokenPath).isFile()||lstatSync(tokenPath).isSymbolicLink())throw new Error('operator token must be a protected ordinary file');
++  const token=readFileSync(tokenPath,'utf8').trim();
++  if(!/^[\w.-]{32,256}$/.test(token))throw new Error('protected operator token not configured');
++  return {root:new URL(root).origin,token};
++}
++export async function emailRequest(path,method='GET',body) {
++  const {root,token}=settings();
++  if(!/^\/v1\/email\/[a-z0-9\/-]+$/.test(path))throw new Error('unapproved email endpoint');
++  const res=await fetch(root+path,{method,headers:{authorization:`Bearer ${token}`,'content-type':'application/json'},
++    ...(body===undefined?{}:{body:JSON.stringify(body)}),signal:AbortSignal.timeout(20000),redirect:'error'});
++  if(!res.ok)throw new Error(`Protected email backend declined the request (${res.status}). No email is assumed sent.`);
++  return res.json();
++}
++export function configured(){try{settings();return true;}catch{return false;}}
++// The caller supplies the existing Toolbox's guided ask/chooseCase functions;
++// nothing here elevates permissions or silently calls Send.
++export async function emailMenu({ask,chooseCase,suggest}) {
++  if(!configured()){
++    console.log('Email Communications is not yet connected to an owner-protected backend. Sending remains disabled.');
++    console.log('See email_communications/README.md for owner setup. No credentials are requested in this Toolbox window.');
++    return;
++  }
++  console.log('Email Communications — personal Gmail accounts, inbox reading, bulk email and attachments are NOT supported.');
++  const menu= ['Compose email for an incident','Review exact draft','Edit draft','Approve exact reviewed draft','Send approved message',
++    'Connection status','Begin owner Google connection','Disconnect owner Google account'];
++  while(true){
++    menu.forEach((v,i)=>console.log(`  ${i+1}  ${v}`));console.log('  0  Back');
++    const command=await ask('Email action: ');
++    if(command==='0'||!command)return;
++    if(!/^[1-8]$/.test(command)){console.log('Choose an action 1-8, or 0 to return.');continue;}
++    try{
++      if(command==='1'){
++        const incidentId=await chooseCase();
++        const to=await ask('Exact To address (one recipient only): ');
++        let suggestion=null;
++        if(suggest && (await ask('Use evidence-based notice text from this case? (yes/no): ')).toLowerCase()==='yes') {
++          const audience=await ask('Audience organization/maintainer/registrar/host: ');
++          suggestion=suggest(incidentId,audience);
++          console.log('Suggested draft (review every line, no automatic sending):',suggestion.subject,'\n',suggestion.body);
++        }
++        const subject=(await ask('Subject (blank uses suggested subject): '))||suggestion?.subject||'';
++        console.log('Paste the plain-text message. End on a line containing only .END');
++        const lines=[];
++        while(lines.join('\n').length<15000){const line=await ask('> ');if(line==='.END')break;lines.push(line);}
++        const refs=(await ask('Evidence reference IDs, comma separated (optional): ')).split(',').map(x=>x.trim()).filter(Boolean);
++        const created=await emailRequest('/v1/email/drafts','POST',{incidentId,to,subject,body:lines.length?lines.join('\n'):suggestion?.body||'',evidenceRefs:refs});
++        console.log(`Draft created: ${created.id}. Status: ${created.status}. Not sent.`);
++      } else if(['2','3','4','5'].includes(command)) {
++        const id=await ask('Draft ID (UUID shown when composed): ');
++        if(!/^[a-f0-9-]{36}$/.test(id)){console.log('Invalid draft ID.');continue;}
++        const path=`/v1/email/drafts/${id}`;
++        const r=await emailRequest(path);
++        console.log('\nREVIEW — unsent unless status explicitly says sent');
++        console.log(`Incident: ${r.draft.incidentId}\nFrom: ${r.draft.from}\nTo: ${r.draft.to}\nCc: (disabled)\nBcc: (disabled)`);
++        console.log(`Subject: ${r.draft.subject}\nAttachments: (disabled)\nMessage:\n${r.draft.body}`);
++        console.log(`Status: ${r.status}\nExact draft SHA-256: ${r.digest}`);
++        if(command==='3'){
++          console.log('Editing invalidates any prior approval.');
++          const subject=await ask('New subject (leave blank to retain): ');
++          const to=await ask('New recipient (leave blank to retain): ');
++          const msg=await ask('New complete plain-text message (leave blank to retain): ');
++          if(await ask('Type EDIT to save your changes: ')==='EDIT')console.log(await emailRequest(path,'PUT',
++            {...(subject?{subject}:{}),...(to?{to}:{}),...(msg?{body:msg}:{})}));
++        }
++        if(command==='4'){
++          console.log('Approval binds to the exact displayed contents.');
++          if(await ask('Type APPROVE followed by the first 12 SHA-256 characters: ')===`APPROVE ${r.digest.slice(0,12)}`)
++            console.log(await emailRequest(path+'/approve','POST',{digest:r.digest}));
++          else console.log('Not approved.');
++        }
++        if(command==='5'){
++          if(r.status!=='awaiting_send'){console.log('Not approved or previously attempted. Cannot send.');continue;}
++          if(await ask('Type SEND followed by the first 12 SHA-256 characters: ')===`SEND ${r.digest.slice(0,12)}`)
++            console.log('Provider result:',await emailRequest(path+'/send','POST',{}));
++          else console.log('Not sent.');
++        }
++      } else if(command==='6')console.log(await emailRequest('/v1/email/connection'));
++      else if(command==='7'){
++        const r=await emailRequest('/v1/email/connect','POST',{});
++        console.log('Open this Google authorization link in your browser to connect only the approved sender account:');
++        console.log(r.url);console.log('Google will redirect back to the protected backend after consent.');
++      } else if(command==='8'){
++        if(await ask('Type DISCONNECT to remove the protected Gmail connection: ')==='DISCONNECT')
++          console.log(await emailRequest('/v1/email/disconnect','POST',{}));
++        else console.log('Connection unchanged.');
++      }
++    } catch(e) {console.log('Email action refused:',e.message);}
++  }
++}
+--- /dev/null
++++ b/email_communications/email_service.mjs
+@@ -0,0 +1,238 @@
++// Email Communications: isolated backend engine. Never sends without protected human approval.
++// Operator-facing source must not contain OAuth credentials, tokens or signing keys.
++import { randomUUID, createHash, randomBytes, createCipheriv, createDecipheriv, timingSafeEqual } from 'node:crypto';
++import { existsSync, mkdirSync, openSync, closeSync, readFileSync, writeFileSync, renameSync, unlinkSync, lstatSync } from 'node:fs';
++import { join, resolve } from 'node:path';
++
++export const SENDER = 'gitback2life.ai@gmail.com';
++export const SEND_SCOPE = 'https://www.googleapis.com/auth/gmail.send';
++const EMAIL = /^[A-Za-z0-9.!#$%&'*+\/=?^_`{|}~-]+@[A-Za-z0-9](?:[A-Za-z0-9.-]{0,251}[A-Za-z0-9])?\.[A-Za-z]{2,}$/;
++const CASE_ID = /^[A-Za-z0-9_-]{1,60}$/;
++const SAFE_LABEL = /^[A-Za-z0-9_. -]{1,96}$/;
++const sha = x => createHash('sha256').update(x).digest('hex');
++function fail(message) { throw new Error(message); }
++function addresses(text) {
++  if (typeof text !== 'string' || text.length > 900 || !text.trim()) fail('one recipient address is required');
++  const items = text.split(',').map(s => s.trim()).filter(Boolean);
++  if (items.length !== 1 || !EMAIL.test(items[0]) || /\.\.|\r|\n/.test(items[0])) fail('first release permits exactly one valid recipient');
++  return items[0];
++}
++export function normalizeDraft(input) {
++  if (!input || typeof input !== 'object' || !CASE_ID.test(input.incidentId ?? '')) fail('valid incident required');
++  const to = addresses(input.to);
++  if ((input.cc?.length ?? 0) || (input.bcc?.length ?? 0) || (input.attachments?.length ?? 0)) fail('Cc/Bcc/attachments are disabled in first release');
++  const subject = input.subject, body = input.body;
++  if (typeof subject !== 'string' || !subject.trim() || subject.length > 200 || /[\r\n\u0000-\u001f]/.test(subject)) fail('subject must be plain single-line text');
++  if (typeof body !== 'string' || !body.trim() || body.length > 15000 || /\u0000/.test(body)) fail('plain-text body required (max 15000 characters)');
++  const refs = input.evidenceRefs ?? [];
++  if (!Array.isArray(refs) || refs.length > 20 || !refs.every(x => typeof x === 'string' && /^[A-Za-z0-9_:./#-]{1,120}$/.test(x))) fail('invalid evidence references');
++  return { incidentId: input.incidentId, from: SENDER, to, cc:[], bcc:[], subject:subject.trim(), body, evidenceRefs:refs, attachments:[] };
++}
++export function draftDigest(draft) {
++  return sha(JSON.stringify({incidentId:draft.incidentId, from:draft.from, to:draft.to, cc:draft.cc, bcc:draft.bcc,
++    subject:draft.subject, body:draft.body, attachments:draft.attachments, evidenceRefs:draft.evidenceRefs}));
++}
++function encodeRFC822(draft) {
++  // Strip header newlines above; RFC 2047 encoded subject prevents header injection.
++  const subject = `=?UTF-8?B?${Buffer.from(draft.subject,'utf8').toString('base64')}?=`;
++  const msg = [`From: ${SENDER}`,`To: ${draft.to}`,`Subject: ${subject}`, 'MIME-Version: 1.0',
++    'Content-Type: text/plain; charset=UTF-8','Content-Transfer-Encoding: base64','',
++    Buffer.from(draft.body,'utf8').toString('base64')].join('\r\n');
++  return Buffer.from(msg,'utf8').toString('base64url');
++}
++// Storage is a protected backend-only folder. The AES key must be supplied from
++// protected backend configuration, outside the repository; do not log it.
++export class EncryptedStore {
++  constructor(directory, key) {
++    if (typeof directory !== 'string' || !directory.trim()) fail('protected backend directory required');
++    const buf = Buffer.isBuffer(key) ? key : Buffer.from(key ?? '', 'base64');
++    if (buf.length !== 32) fail('32-byte backend encryption key required');
++    this.key = buf;
++    this.dir = resolve(directory);
++    mkdirSync(this.dir,{recursive:true,mode:0o700});
++    if (!lstatSync(this.dir).isDirectory() || lstatSync(this.dir).isSymbolicLink()) fail('backend store must be a real directory');
++  }
++  file(id) { if (!/^[a-f0-9-]{36}$/.test(id)) fail('invalid record ID'); return join(this.dir,`${id}.vault`); }
++  encrypt(record) { const nonce=randomBytes(12); const cipher=createCipheriv('aes-256-gcm',this.key,nonce);
++    const bytes=Buffer.concat([cipher.update(JSON.stringify(record),'utf8'),cipher.final()]);
++    return Buffer.concat([nonce,cipher.getAuthTag(),bytes]); }
++  decrypt(buf) { if (buf.length<29 || buf.length>128*1024) fail('invalid protected record');
++    const decipher=createDecipheriv('aes-256-gcm',this.key,buf.subarray(0,12));
++    decipher.setAuthTag(buf.subarray(12,28));return JSON.parse(Buffer.concat([decipher.update(buf.subarray(28)),decipher.final()]).toString('utf8')); }
++  read(id) { const f=this.file(id); if (!existsSync(f)) fail('record not found');
++    if (!lstatSync(f).isFile() || lstatSync(f).isSymbolicLink()) fail('invalid record');
++    return this.decrypt(readFileSync(f)); }
++  write(id, record) { const f=this.file(id), temp=join(this.dir,`${id}.${randomUUID()}.tmp`);
++    const fd=openSync(temp,'wx',0o600);try { writeFileSync(fd,this.encrypt(record)); } finally { closeSync(fd); }
++    try { renameSync(temp,f); } catch(e) { try { unlinkSync(temp); } catch {} throw e; } }
++  lock(id) { const p=join(this.dir,`${id}.lock`); const fd=openSync(p,'wx',0o600);
++    return () => { closeSync(fd);unlinkSync(p); }; }
++}
++export class EmailService {
++  constructor({store, authorize, provider, onOutcome, clock=()=>new Date().toISOString(), liveEnabled=false}) {
++    if (!store || typeof authorize !== 'function') fail('encrypted store and protected role authorizer required');
++    this.store=store; this.authorize=authorize; this.provider=provider;this.onOutcome=onOutcome;
++    this.clock=clock;this.liveEnabled=liveEnabled;
++  }
++  async check(role, actor, incidentId, recipient) {
++    if (!actor || !SAFE_LABEL.test(actor) || await this.authorize({role,actor,incidentId,recipient}) !== true)
++      fail(`verified ${role} permission required`);
++  }
++  async compose(input, actor) {
++    const draft=normalizeDraft(input); await this.check('draft',actor,draft.incidentId);
++    const id=randomUUID(), record={id,draft,digest:draftDigest(draft),status:'draft_created',createdAt:this.clock(),createdBy:actor,approval:null,attempt:null};
++    this.store.write(id,record);return {id,status:record.status,digest:record.digest};
++  }
++  async review(id, actor) {
++    const release=this.store.lock(id);
++    try {const r=this.store.read(id);await this.check('review',actor,r.draft.incidentId);
++      if(r.status==='draft_created'){r.status='awaiting_approval';this.store.write(id,r);}
++      return {id,draft:r.draft,digest:r.digest,status:r.status,approval:r.approval && {actor:r.approval.actor,at:r.approval.at},
++        attempt:r.attempt && {at:r.attempt.at,result:r.attempt.result,messageId:r.attempt.messageId ?? null}};
++    }finally{release();}
++  }
++  async edit(id, changes, actor) {
++    const release=this.store.lock(id);
++    try {const r=this.store.read(id);await this.check('draft',actor,r.draft.incidentId);
++      if (r.attempt) fail('an attempted message is immutable; compose a new draft');
++      const next=normalizeDraft({...r.draft,...changes,incidentId:r.draft.incidentId});
++      r.draft=next;r.digest=draftDigest(next);r.approval=null;r.status='draft_created';this.store.write(id,r);
++      return {id,status:r.status,digest:r.digest};
++    } finally {release();}
++  }
++  async approve(id, digest, actor) {
++    const release=this.store.lock(id);
++    try {const r=this.store.read(id);await this.check('approve',actor,r.draft.incidentId);
++      if (r.attempt) fail('cannot approve an attempted message');
++      if (typeof digest!=='string' || digest.length!==64 || !/^[a-f0-9]{64}$/.test(digest) || !timingSafeEqual(Buffer.from(digest),Buffer.from(r.digest)))
++        fail('draft changed since review: approval refused');
++      if(r.status!=='awaiting_approval')fail('exact current draft must be reviewed before approval');
++      r.approval={actor,at:this.clock(),digest:r.digest};r.status='awaiting_send';this.store.write(id,r);
++      return {id,status:r.status,approvedDigest:r.digest};
++    } finally {release();}
++  }
++  async send(id, actor) {
++    // The lock spans the remote request; a crash leaves `sending/uncertain` on disk.
++    // NEVER automatically retry once an attempt is marked in-flight.
++    const release=this.store.lock(id);
++    try {const r=this.store.read(id);await this.check('send',actor,r.draft.incidentId,r.draft.to);
++      if (!this.liveEnabled) fail('live email sending is disabled until owner-controlled deployment');
++      if (!this.provider?.send || !this.provider?.ready) fail('protected Gmail provider is not configured');
++      if (r.status!=='awaiting_send'||r.attempt) fail('message already attempted or not approved');
++      if (!r.approval || r.approval.digest!==draftDigest(r.draft) || r.approval.digest!==r.digest) fail('exact current draft approval missing');
++      await this.provider.ready(); // token preflight before an irreversible send attempt
++      r.status='sending';r.attempt={at:this.clock(),result:'uncertain',by:actor};this.store.write(id,r);
++      try {
++        const response=await this.provider.send({raw:encodeRFC822(r.draft),sender:SENDER});
++        if (!response || typeof response.id!=='string' || !/^[\w-]{1,180}$/.test(response.id)) fail('provider response missing message identifier');
++        r.status='sent';r.attempt.result='sent';r.attempt.messageId=response.id;
++      } catch(e) {
++        // Includes timeouts and ambiguous connection failures. No blind re-send.
++        r.status=e?.code==='PROVIDER_REJECTED' || e?.code==='AUTH_REQUIRED'?'failed':'uncertain_delivery';
++        r.attempt.result=r.status;r.attempt.errorKind=e?.code==='AUTH_REQUIRED'?'authorization':'provider_or_transport';
++      }
++      r.timelineStatus='pending';this.store.write(id,r);
++      if(this.onOutcome){
++        try {await this.onOutcome(this.outcome(r));r.timelineStatus='recorded';}
++        catch {r.timelineStatus='pending';} // Never resend to repair an audit problem.
++        this.store.write(id,r);
++      }
++      return {id,status:r.status,messageId:r.attempt.messageId??null,timelineStatus:r.timelineStatus};
++    } finally {release();}
++  }
++  outcome(r) {return {incidentId:r.draft.incidentId,id:r.id,status:r.status,sender:SENDER,
++    recipient:r.draft.to,subject:r.draft.subject,approvedBy:r.approval.actor,approvedAt:r.approval.at,
++    attemptAt:r.attempt.at,providerMessageId:r.attempt.messageId??null};}
++  async reconcileTimeline(id,actor) {
++    const release=this.store.lock(id);
++    try {const r=this.store.read(id);await this.check('review',actor,r.draft.incidentId);
++      if(!r.attempt)fail('no send outcome exists to record');
++      if(r.timelineStatus==='recorded')return {id,timelineStatus:'recorded'};
++      if(!this.onOutcome)fail('timeline writer not configured');
++      try{await this.onOutcome(this.outcome(r));r.timelineStatus='recorded';}
++      catch{r.timelineStatus='pending';}
++      this.store.write(id,r);return {id,timelineStatus:r.timelineStatus};
++    }finally{release();}
++  }
++  status(id) {const r=this.store.read(id);return {id,status:r.status,at:r.attempt?.at??r.createdAt,timelineStatus:r.timelineStatus??'not_applicable'};}
++}
++
++export function gmailProvider(accessToken, fetcher=fetch) {
++  if (typeof accessToken !== 'string' || !accessToken) fail('protected OAuth token required');
++  return { async send({raw,sender}) {
++    if (sender!==SENDER) fail('unapproved sender identity');
++    const response=await fetcher('https://gmail.googleapis.com/gmail/v1/users/me/messages/send',{method:'POST',
++      headers:{authorization:`Bearer ${accessToken}`,'content-type':'application/json'},body:JSON.stringify({raw}),
++      signal:AbortSignal.timeout(20000),redirect:'error'});
++    if (!response.ok) {const err=new Error('Gmail did not confirm a successful send');err.code=response.status===401||response.status===403?'AUTH_REQUIRED':response.status>=400&&response.status<500&&response.status!==408&&response.status!==429?'PROVIDER_REJECTED':'AMBIGUOUS_FAILURE';throw err;}
++    return await response.json();
++  }};
++}
++// Web-application OAuth support; callbacks must be hosted on a protected backend.
++// Deployed redirect URIs require HTTPS. Localhost exceptions are only for local testing.
++export function oauthAuthorizationUrl({clientId,redirectUri,state,codeChallenge}) {
++  if (!clientId || !/^https:\/\//.test(redirectUri) || !/^[A-Za-z0-9_-]{32,128}$/.test(state) || !/^[A-Za-z0-9_-]{43,128}$/.test(codeChallenge))
++    fail('protected HTTPS OAuth configuration, state and PKCE challenge required');
++  const url=new URL('https://accounts.google.com/o/oauth2/v2/auth');
++  for(const [k,v] of Object.entries({client_id:clientId,redirect_uri:redirectUri,response_type:'code',scope:SEND_SCOPE,
++    state,code_challenge:codeChallenge,code_challenge_method:'S256',access_type:'offline',prompt:'consent',login_hint:SENDER})) url.searchParams.set(k,v);
++  return url.toString();
++}
++export async function exchangeOAuthCode({clientId,clientSecret,redirectUri,code,verifier,fetcher=fetch}) {
++  if (!clientId||!clientSecret||!/^https:\/\//.test(redirectUri)||!code||!/^[A-Za-z0-9._~-]{43,128}$/.test(verifier)) fail('invalid protected OAuth exchange');
++  const res=await fetcher('https://oauth2.googleapis.com/token',{method:'POST',
++    headers:{'content-type':'application/x-www-form-urlencoded'},body:new URLSearchParams({code,client_id:clientId,
++      client_secret:clientSecret,redirect_uri:redirectUri,grant_type:'authorization_code',code_verifier:verifier}).toString(),
++    signal:AbortSignal.timeout(20000),redirect:'error'});
++  if (!res.ok) fail('OAuth authorization failed; reconnect through Google');
++  const t=await res.json();if(!t.access_token || !t.refresh_token || t.scope?.trim()!==SEND_SCOPE) fail('Gmail send-only token/scope not returned');
++  return {accessToken:t.access_token,refreshToken:t.refresh_token,expiresAt:Date.now()+Math.max(1,Number(t.expires_in)||3600)*1000};
++}
++
++const CONNECTION_ID = '00000000-0000-0000-0000-000000000001';
++const OAUTH_PENDING_ID = '00000000-0000-0000-0000-000000000002';
++export class OAuthConnection {
++  constructor({store,authorize,clientId,clientSecret,redirectUri,fetcher=fetch,clock=()=>Date.now()}) {
++    this.store=store;this.authorize=authorize;this.clientId=clientId;this.clientSecret=clientSecret;
++    this.redirectUri=redirectUri;this.fetcher=fetcher;this.clock=clock;
++  }
++  async owner(actor) {if(!actor || await this.authorize({role:'connect',actor,incidentId:null})!==true) fail('protected owner authorization required');}
++  status() {try {const c=this.store.read(CONNECTION_ID);return {connected:!!c.refreshToken,sender:SENDER,verifiedSenderIdentity:false,
++    note:'Send-only OAuth cannot independently retrieve the connected account identity; owner must verify the selected Google account.'};}
++    catch {return {connected:false,sender:SENDER,verifiedSenderIdentity:false};}}
++  async begin(actor) {await this.owner(actor);const state=randomBytes(32).toString('base64url');const verifier=randomBytes(48).toString('base64url');
++    const challenge=createHash('sha256').update(verifier).digest('base64url');
++    this.store.write(OAUTH_PENDING_ID,{state,verifier,actor,expires:this.clock()+300000});
++    return {url:oauthAuthorizationUrl({clientId:this.clientId,redirectUri:this.redirectUri,state,codeChallenge:challenge}),expiresInSeconds:300}; }
++  async complete({state,code},actor) {await this.owner(actor);const pending=this.store.read(OAUTH_PENDING_ID);
++    if (this.clock()>pending.expires || typeof state!=='string'|| state.length!==pending.state.length ||
++      !timingSafeEqual(Buffer.from(state),Buffer.from(pending.state))) fail('OAuth state expired or mismatched');
++    // Consume one-time state before exchanging code, including if provider rejects.
++    this.store.write(OAUTH_PENDING_ID,{state:'consumed',expires:0});
++    const token=await exchangeOAuthCode({clientId:this.clientId,clientSecret:this.clientSecret,redirectUri:this.redirectUri,code,verifier:pending.verifier,fetcher:this.fetcher});
++    this.store.write(CONNECTION_ID,{refreshToken:token.refreshToken,accessToken:token.accessToken,expiresAt:token.expiresAt});
++    return this.status(); }
++  async token() {const c=this.store.read(CONNECTION_ID);
++    if(!c.refreshToken) fail('Gmail not connected');
++    if(c.expiresAt>this.clock()+120000 && c.accessToken) return c.accessToken;
++    const response=await this.fetcher('https://oauth2.googleapis.com/token',{method:'POST',
++      headers:{'content-type':'application/x-www-form-urlencoded'},body:new URLSearchParams({client_id:this.clientId,client_secret:this.clientSecret,
++        refresh_token:c.refreshToken,grant_type:'refresh_token'}).toString(),signal:AbortSignal.timeout(20000),redirect:'error'});
++    if(!response.ok) fail('Gmail token renewal failed; account must reconnect');
++    const t=await response.json();if(!t.access_token) fail('Gmail token renewal did not return access');
++    if(t.refresh_token)c.refreshToken=t.refresh_token;
++    c.accessToken=t.access_token;c.expiresAt=this.clock()+(Number(t.expires_in)||3600)*1000;
++    this.store.write(CONNECTION_ID,c);return c.accessToken; }
++  async disconnect(actor) {await this.owner(actor);let token=null;
++    try{const c=this.store.read(CONNECTION_ID);token=c.refreshToken||c.accessToken;}catch{}
++    // Revoke best-effort. Always make locally disconnected first.
++    this.store.write(CONNECTION_ID,{refreshToken:null,accessToken:null,expiresAt:0});
++    this.store.write(OAUTH_PENDING_ID,{state:'consumed',expires:0});
++    if(token) {try {await this.fetcher('https://oauth2.googleapis.com/revoke',{method:'POST',
++      headers:{'content-type':'application/x-www-form-urlencoded'},body:new URLSearchParams({token}).toString(),signal:AbortSignal.timeout(10000),redirect:'error'});}catch{}}
++    return {connected:false,note:'Local connection removed. Confirm revocation in the Google Account permissions page if needed.'}; }
++  provider() {return {
++    ready:async()=>{await this.token();},
++    send:async ({raw,sender})=>gmailProvider(await this.token(),this.fetcher).send({raw,sender})
++  };}
++}
+--- /dev/null
++++ b/email_communications/email_service.test.mjs
+@@ -0,0 +1,136 @@
++import {test} from 'node:test';
++import assert from 'node:assert/strict';
++import {mkdtempSync,rmSync,readFileSync,readdirSync} from 'node:fs';
++import {tmpdir} from 'node:os';
++import {join} from 'node:path';
++import {randomBytes} from 'node:crypto';
++import {EncryptedStore,EmailService,oauthAuthorizationUrl,exchangeOAuthCode,OAuthConnection,gmailProvider,SENDER,SEND_SCOPE} from './email_service.mjs';
++const specimen={incidentId:'test_001',to:'test-recipient@example.org',subject:'Request for review',
++  body:'Direct observation: one public webpage did not load. This does not establish why.',evidenceRefs:['E1']};
++function sample({liveEnabled=false,provider,onOutcome}={}){
++ const dir=mkdtempSync(join(tmpdir(),'gb2l-email-'));const key=randomBytes(32);
++ const store=new EncryptedStore(dir,key);const roles=[];
++ const authorize=async query=>{roles.push(query);return ['draft','review','approve','send','connect'].includes(query.role)};
++ const service=new EmailService({store,authorize,provider,liveEnabled,onOutcome});
++ return {dir,store,service,roles,close:()=>rmSync(dir,{recursive:true,force:true})};
++}
++test('drafts are encrypted; full review includes exact sender, recipient, subject and message',async()=>{
++ const x=sample();try{
++ const d=await x.service.compose(specimen,'operator');const review=await x.service.review(d.id,'operator');
++ assert.deepEqual(review.draft.from,SENDER);assert.equal(review.draft.to,specimen.to);
++ assert.equal(review.draft.subject,specimen.subject);assert.equal(review.draft.body,specimen.body);
++ const bytes=readFileSync(x.store.file(d.id)).toString('utf8');
++ assert.ok(!bytes.includes(specimen.to)&&!bytes.includes(specimen.body));
++ assert.match(JSON.stringify(review),/awaiting_approval/);
++ }finally{x.close();}
++});
++test('first release rejects cc bcc, attachments, bulk recipients and header injection',()=>{
++ const x=sample();try{
++ for(const bad of [{to:'a@b.org,c@d.org'}, {cc:['copied@b.org']}, {bcc:['blind@b.org']},
++   {attachments:['file.txt']},{subject:'Hi\r\nBcc: victim@example.org'}, {to:'invalid'}])
++   assert.rejects(x.service.compose({...specimen,...bad},'owner'));
++ }finally{x.close();}
++});
++test('no approval, no send; live deployment switch is independent of human approval',async()=>{
++ const x=sample({provider:{ready:async()=>{},send:async()=>({id:'x'})}});try{
++ const d=await x.service.compose(specimen,'operator');await assert.rejects(x.service.send(d.id,'operator'),/disabled/);
++ await x.service.review(d.id,'operator');
++ await x.service.approve(d.id,d.digest,'operator');
++ await assert.rejects(x.service.send(d.id,'operator'),/disabled/);
++ }finally{x.close();}
++});
++test('editing after approval invalidates it; old digest rejected',async()=>{
++ let sends=0;const x=sample({liveEnabled:true,provider:{ready:async()=>{},send:async()=>{sends++;return{id:'message1'};}}});
++ try{const d=await x.service.compose(specimen,'operator');await x.service.review(d.id,'operator');await x.service.approve(d.id,d.digest,'operator');
++ await x.service.edit(d.id,{subject:'Revised subject'},'operator');
++ await assert.rejects(x.service.send(d.id,'operator'),/not approved/);
++ await assert.rejects(x.service.approve(d.id,d.digest,'operator'),/changed since review/);
++ const r=await x.service.review(d.id,'operator');await x.service.approve(d.id,r.digest,'operator');
++ const result=await x.service.send(d.id,'operator');assert.equal(result.status,'sent');assert.equal(sends,1);
++ await assert.rejects(x.service.send(d.id,'operator'),/already attempted/);
++ }finally{x.close();}
++});
++test('provider timeout remains uncertain and is never retried automatically',async()=>{
++ let calls=0;const outcomes=[];
++ const x=sample({liveEnabled:true,provider:{ready:async()=>{},send:async()=>{calls++;throw Object.assign(new Error('timeout'),{code:'ETIMEDOUT'});}},
++ onOutcome:async r=>outcomes.push(r)});
++ try{const d=await x.service.compose(specimen,'operator');await x.service.review(d.id,'operator');await x.service.approve(d.id,d.digest,'operator');
++ const result=await x.service.send(d.id,'operator');assert.equal(result.status,'uncertain_delivery');
++ assert.equal(outcomes.length,1);assert.ok(!JSON.stringify(outcomes[0]).includes(specimen.body));
++ await assert.rejects(x.service.send(d.id,'operator'));assert.equal(calls,1);
++ }finally{x.close();}
++});
++test('explicit provider refusal gives failed without a retry',async()=>{
++ const x=sample({liveEnabled:true,provider:{ready:async()=>{},send:async()=>{throw Object.assign(new Error('rejected'),{code:'PROVIDER_REJECTED'});}}});
++ try{const d=await x.service.compose(specimen,'operator');await x.service.review(d.id,'operator');await x.service.approve(d.id,d.digest,'operator');
++ assert.equal((await x.service.send(d.id,'operator')).status,'failed');
++ await assert.rejects(x.service.send(d.id,'operator'));
++ }finally{x.close();}
++});
++test('unauthorized actor denied for draft, review, approval and send',async()=>{
++ const x=sample();x.service.authorize=async({role})=>role==='draft';
++ try{const d=await x.service.compose(specimen,'author');
++ await assert.rejects(x.service.review(d.id,'intruder'));
++ await assert.rejects(x.service.approve(d.id,d.digest,'intruder'));
++ await assert.rejects(x.service.send(d.id,'intruder'));
++ }finally{x.close();}
++});
++test('Gmail sender endpoint and Authorization are scoped and raw RFC822 encoded',async()=>{
++ let requested;
++ const provider=gmailProvider('synthetic-access-token',async(url,options)=>{
++   requested={url,options};return {ok:true,json:async()=>({id:'gmail-1'})};
++ });
++ assert.deepEqual(await provider.send({sender:SENDER,raw:'encoded-message'}),{id:'gmail-1'});
++ assert.equal(requested.url,'https://gmail.googleapis.com/gmail/v1/users/me/messages/send');
++ assert.equal(requested.options.method,'POST');
++ assert.deepEqual(JSON.parse(requested.options.body),{raw:'encoded-message'});
++ await assert.rejects(provider.send({sender:'other@example.org',raw:'x'}));
++});
++test('OAuth requests only gmail.send, PKCE and state; rejects unexpected scope',async()=>{
++ const state='S'.repeat(44),challenge='C'.repeat(43);
++ const url=oauthAuthorizationUrl({clientId:'test-client',redirectUri:'https://backend.example.org/oauth/callback',state,codeChallenge:challenge});
++ assert.equal(new URL(url).searchParams.get('scope'),SEND_SCOPE);
++ assert.equal(new URL(url).searchParams.get('state'),state);
++ assert.equal(new URL(url).searchParams.get('code_challenge_method'),'S256');
++ await assert.rejects(exchangeOAuthCode({clientId:'c',clientSecret:'s',redirectUri:'https://backend.example.org/oauth/callback',code:'c',
++ verifier:'v'.repeat(43),fetcher:async()=>({ok:true,json:async()=>({access_token:'a',refresh_token:'r',scope:'https://www.googleapis.com/auth/gmail.readonly'})})}));
++});
++test('OAuth state expires and disconnect deletes local access',async()=>{
++ const x=sample();let now=100000;
++ try{
++ const oauth=new OAuthConnection({store:x.store,authorize:async()=>true,clientId:'test-client',clientSecret:'fake-secret',
++ redirectUri:'https://backend.example.org/oauth/callback',clock:()=>now,
++ fetcher:async()=>({ok:true,json:async()=>({access_token:'a',refresh_token:'r',scope:SEND_SCOPE,expires_in:3600})})});
++ const started=await oauth.begin('owner');const state=new URL(started.url).searchParams.get('state');
++ await assert.rejects(oauth.complete({state:'wrong',code:'fake'},'owner'));
++ now+=300001;await assert.rejects(oauth.complete({state,code:'fake'},'owner'),/expired/);
++ now=100000;await oauth.begin('owner');const state2=x.store.read('00000000-0000-0000-0000-000000000002').state;
++ assert.equal((await oauth.complete({state:state2,code:'fake'},'owner')).connected,true);
++ assert.equal((await oauth.disconnect('owner')).connected,false);
++ assert.equal(oauth.status().connected,false);
++ } finally{x.close();}
++});
++test('persistent sending marker blocks retry even if previous process crashed',async()=>{
++ const x=sample({liveEnabled:true,provider:{ready:async()=>{},send:async()=>({id:'m'})}});try{
++ const d=await x.service.compose(specimen,'operator');await x.service.review(d.id,'operator');await x.service.approve(d.id,d.digest,'operator');
++ const r=x.store.read(d.id);r.status='sending';r.attempt={at:new Date().toISOString(),result:'uncertain'};x.store.write(d.id,r);
++ await assert.rejects(x.service.send(d.id,'operator'),/already attempted/);
++ }finally{x.close();}
++});
++test('timeline failure is recorded as pending and can be reconciled without another Gmail send',async()=>{
++ let calls=0, writes=0;
++ const x=sample({liveEnabled:true,provider:{ready:async()=>{},send:async()=>{calls++;return{id:'gmail-ok'};}},
++ onOutcome:async()=>{writes++;if(writes===1)throw new Error('case timeline unavailable');}});
++ try{const d=await x.service.compose(specimen,'operator');await x.service.review(d.id,'operator');await x.service.approve(d.id,d.digest,'operator');
++ const result=await x.service.send(d.id,'operator');assert.equal(result.status,'sent');assert.equal(result.timelineStatus,'pending');
++ const update=await x.service.reconcileTimeline(d.id,'operator');assert.equal(update.timelineStatus,'recorded');
++ assert.equal(calls,1);assert.equal(writes,2);
++ }finally{x.close();}
++});
++test('send preflight failure does not record a provider attempt, so the operator can resolve authorization',async()=>{
++ let sends=0;const x=sample({liveEnabled:true,provider:{ready:async()=>{throw new Error('disconnected');},send:async()=>{sends++;return{id:'m'};}}});
++ try{const d=await x.service.compose(specimen,'operator');await x.service.review(d.id,'operator');await x.service.approve(d.id,d.digest,'operator');
++ await assert.rejects(x.service.send(d.id,'operator'),/disconnected/);assert.equal(x.service.status(d.id).status,'awaiting_send');
++ assert.equal(sends,0);
++ }finally{x.close();}
++});
+--- /dev/null
++++ b/email_communications/protected_backend.mjs
+@@ -0,0 +1,138 @@
++// Private HTTPS email-only service. No arbitrary command, file or remote-control API.
++// Starts only when explicitly configured by a protected administrator.
++import {createServer} from 'node:https';
++import {readFileSync,readdirSync} from 'node:fs';
++import {join,resolve} from 'node:path';
++import {createHash,timingSafeEqual} from 'node:crypto';
++import {fileURLToPath} from 'node:url';
++import {EncryptedStore,EmailService,OAuthConnection} from './email_service.mjs';
++import {requireScope,authorize as authorizeScope,clearActiveScope} from '../_shared/scope.mjs';
++import {checkAuthority} from '../_shared/authority_link.mjs';
++import {addTimelineEvent,createCaseTimeline,caseEvidence} from '../toolbox/toolbox.mjs';
++
++const ROOT=resolve(fileURLToPath(new URL('..',import.meta.url)));
++const isId=x=>/^[a-f0-9-]{36}$/.test(x||'');
++const isCase=x=>/^[A-Za-z0-9_-]{1,60}$/.test(x||'');
++function config() {
++  const req=['GB2L_EMAIL_STATE_DIR','GB2L_EMAIL_KEY_B64','GB2L_EMAIL_TLS_CERT','GB2L_EMAIL_TLS_KEY',
++    'GB2L_EMAIL_OPERATORS_FILE','GB2L_GMAIL_CLIENT_ID','GB2L_GMAIL_CLIENT_SECRET','GB2L_GMAIL_REDIRECT_URI'];
++  for(const name of req) if(!process.env[name]) throw new Error(`${name} must be configured on the protected server`);
++  const v={};for(const name of req)v[name]=process.env[name];
++  if(!v.GB2L_GMAIL_REDIRECT_URI.startsWith('https://')) throw new Error('deployed OAuth callback requires HTTPS');
++  return v;
++}
++const digest=s=>createHash('sha256').update(s).digest('hex');
++function tokenAuthorizer(operatorFile) {
++  const file=JSON.parse(readFileSync(operatorFile,'utf8'));
++  if(!Array.isArray(file.operators)||!file.operators.length)throw new Error('protected operator list missing');
++  const entries=file.operators;
++  for(const e of entries) if(!/^[A-Za-z0-9_. -]{1,96}$/.test(e.actor)||!/^[a-f0-9]{64}$/.test(e.tokenSha256)||
++      !Array.isArray(e.roles)||e.roles.some(r=>!['draft','review','approve','send','connect'].includes(r)))
++    throw new Error('invalid protected operator configuration');
++  const tokenToActor=token=>{
++    if(typeof token!=='string'||token.length<32||token.length>256) return null;
++    const h=Buffer.from(digest(token),'hex');
++    return entries.find(e=>timingSafeEqual(h,Buffer.from(e.tokenSha256,'hex')))||null;
++  };
++  const authorize=async ({role,actor,incidentId,recipient})=>{
++    const user=entries.find(u=>u.actor===actor);
++    if(!user||!user.roles.includes(role))return false;
++    if(incidentId && (!isCase(incidentId)|| (user.incidents!=='*' && !(Array.isArray(user.incidents)&&user.incidents.includes(incidentId)))))return false;
++    // Stateless per-request authorization: no global activeScope context can leak
++    // between different volunteers or different incidents on this long-lived server.
++    if(!incidentId)return true;
++    const scopePath=join(ROOT,'Cases',incidentId,'scope.json');
++    try {
++      const scope=JSON.parse(readFileSync(scopePath,'utf8'));
++      if(scope.incident_id!==incidentId || !authorizeScope(scope,{action:'save_local'}).allowed)return false;
++      if(role!=='send')return true;
++      // Both signed protected owner authorization AND exact scoped human contact
++      // permission are mandatory. Unprotected operator attestations alone cannot send.
++      const domain=typeof recipient==='string'?recipient.split('@')[1]:null;
++      if(!domain||!authorizeScope(scope,{action:'contact_third_party',target:domain,services:['gmail']}).allowed)return false;
++      const signed=checkAuthority(scopePath,scope);
++      return signed.required && signed.valid && scope.status==='open';
++    }catch{return false;}
++  };
++  return {tokenToActor,authorize};
++}
++function sizeLimitedJson(req,max=32*1024){return new Promise((resolve,reject)=>{
++  const parts=[];let n=0;
++  req.on('data',p=>{n+=p.length;if(n>max){req.destroy();reject(new Error('request exceeds limit'));}else parts.push(p);});
++  req.on('end',()=>{try{resolve(JSON.parse(Buffer.concat(parts).toString('utf8')));}catch{reject(new Error('invalid JSON'));}});
++  req.on('error',reject);
++});}
++function reply(res,status,data){const b=JSON.stringify(data);res.writeHead(status,{'content-type':'application/json; charset=utf-8',
++  'cache-control':'no-store','x-content-type-options':'nosniff','content-length':Buffer.byteLength(b)});res.end(b);}
++export function createProtectedEmailServer(v=config()) {
++  const {tokenToActor,authorize}=tokenAuthorizer(v.GB2L_EMAIL_OPERATORS_FILE);
++  const store=new EncryptedStore(v.GB2L_EMAIL_STATE_DIR,v.GB2L_EMAIL_KEY_B64);
++  const oauth=new OAuthConnection({store,authorize,clientId:v.GB2L_GMAIL_CLIENT_ID,clientSecret:v.GB2L_GMAIL_CLIENT_SECRET,
++    redirectUri:v.GB2L_GMAIL_REDIRECT_URI});
++  const service=new EmailService({store,authorize,provider:oauth.provider(),liveEnabled:process.env.GB2L_EMAIL_LIVE_SEND_ENABLED==='1' && process.env.GB2L_EMAIL_VERIFIED_SENDER==='gitback2life.ai@gmail.com',
++    onOutcome:async result=>{
++      // Minimal reference only. Idempotent audit repair never re-sends Gmail.
++      const caseDir=join(ROOT,'Cases',result.incidentId);
++      const reference=`email:${result.id} ${result.status}`;
++      for(const file of readdirSync(caseDir).filter(n=>/^timeline_\d{4}\.json$/.test(n))) {
++        if(JSON.parse(readFileSync(join(caseDir,file),'utf8')).events?.some(e=>e.reference===reference))return;
++      }
++      const scope=join(caseDir,'scope.json');
++      try {
++      requireScope(scope,{action:'save_local'});
++      try { addTimelineEvent(result.incidentId,'notify_assessment',result.status==='sent'?'confirmed':'unknown',
++        reference); }
++      catch (err) { if(/no timeline for this case/.test(err.message)){
++        createCaseTimeline(result.incidentId,'other','real');
++        addTimelineEvent(result.incidentId,'notify_assessment',result.status==='sent'?'confirmed':'unknown',
++          reference);
++      } else throw err; }
++      } finally {clearActiveScope();}
++    }});
++  const callbackPath=new URL(v.GB2L_GMAIL_REDIRECT_URI).pathname;
++  return createServer({cert:readFileSync(v.GB2L_EMAIL_TLS_CERT),key:readFileSync(v.GB2L_EMAIL_TLS_KEY),minVersion:'TLSv1.2'},async(req,res)=>{
++    try {
++      const url=new URL(req.url,'https://localhost');
++      if(url.pathname===callbackPath && req.method==='GET') {
++        const state=url.searchParams.get('state'),code=url.searchParams.get('code');
++        const pending=store.read('00000000-0000-0000-0000-000000000002');
++        await oauth.complete({state,code},pending.actor);
++        return reply(res,200,{status:'connected',note:'Return to the Toolbox. The owner must confirm the selected Google account.'});
++      }
++      const token=(req.headers.authorization||'').match(/^Bearer ([\w.-]{32,256})$/)?.[1];
++      const user=tokenToActor(token);
++      if(!user)return reply(res,401,{error:'protected operator authorization required'});
++      if(url.pathname==='/v1/email/connection' && req.method==='GET'){
++        if(!await authorize({role:'connect',actor:user.actor}))return reply(res,403,{error:'not authorized'});
++        return reply(res,200,oauth.status());}
++      if(url.pathname==='/v1/email/connect' && req.method==='POST')return reply(res,200,await oauth.begin(user.actor));
++      if(url.pathname==='/v1/email/disconnect' && req.method==='POST')return reply(res,200,await oauth.disconnect(user.actor));
++      if(url.pathname==='/v1/email/drafts' && req.method==='POST'){
++        const draft=await sizeLimitedJson(req);
++        const valid=new Set(caseEvidence(draft.incidentId).items.map(i=>i.id));
++        if((draft.evidenceRefs??[]).some(ref=>!valid.has(ref)))throw new Error('evidence reference missing from this incident');
++        return reply(res,201,await service.compose(draft,user.actor));
++      }
++      const m=/^\/v1\/email\/drafts\/([a-f0-9-]{36})(?:\/(approve|send))?$/.exec(url.pathname);
++      if(m && req.method==='GET' && !m[2])return reply(res,200,await service.review(m[1],user.actor));
++      if(m && req.method==='PUT' && !m[2])return reply(res,200,await service.edit(m[1],await sizeLimitedJson(req),user.actor));
++      if(m && req.method==='POST' && m[2]==='approve')return reply(res,200,await service.approve(m[1],(await sizeLimitedJson(req)).digest,user.actor));
++      if(m && req.method==='POST' && m[2]==='send')return reply(res,200,await service.send(m[1],user.actor));
++      if(/^\/v1\/email\/drafts\/[a-f0-9-]{36}\/sync$/.test(url.pathname) && req.method==='POST')
++        return reply(res,200,await service.reconcileTimeline(url.pathname.split('/')[4],user.actor));
++      return reply(res,404,{error:'email operation not found'});
++    }catch(err){
++      // Never expose credentials, private drafts, OAuth responses or exception stacks.
++      const code=/required|refused|missing|disabled|expired|not approved|changed|already|unavailable|not connected|not found|not configured|not permitted|invalid/i.test(err.message)?409:503;
++      return reply(res,code,{error:'email operation could not be completed; review authorization, connection and exact draft status'});
++    }
++  });
++}
++if(process.argv[1]===fileURLToPath(import.meta.url)){
++  if(process.env.GB2L_EMAIL_BACKEND_MODE!=='protected')throw new Error('Protected backend mode is not enabled');
++  const port=Number(process.env.GB2L_EMAIL_PORT||8443);
++  if(!Number.isInteger(port)||port<1024||port>65535)throw new Error('invalid protected backend port');
++  createProtectedEmailServer().listen(port,process.env.GB2L_EMAIL_BIND_HOST||'127.0.0.1',()=>{
++    console.log('Protected Email Communications HTTPS service listening (Gmail sends disabled unless separately authorized)');
++  });
++}
+--- a/toolbox/13_tool_interface.test.mjs
++++ b/toolbox/13_tool_interface.test.mjs
+@@ -9,18 +9,18 @@
+   'Incident Management', 'Evidence Collection', 'Reports & Evidence Packages',
+   'Domain Health', 'Website Redirect & Authenticity', 'Email Security',
+   'Account Recovery & Access', 'Organization Registers', 'Directory Audit',
+   'Website Code Analysis', 'Dependency Analysis', 'File Protection',
+-  'Computer Security Check'
++  'Computer Security Check', 'Email Communications'
+ ];
+ const internal = ['sandbox_setup', 'regression_harness', 'authority'];
+ const approved = ['incident_intake','incident_timeline','github_evidence','evidence_ledger',
+   'decision_summary','notice_drafter','case_packet','domain_research','domain_watch',
+   'redirect_inspector','lookalike_domain_check','email_spoof_check','email_header_triage',
+   'account_recovery_guide','access_offboarding','org_registers','directory_record_audit',
+   'fetcher_review','code_flow_scan','dependency_inventory','safe_backup','metadata_scrub','device_check'];
+ 
+-test('exactly 13 top-level choices, matching approved consolidation', () => {
++test('original 13 choices plus explicitly owner-approved Email Communications', () => {
+   assert.deepEqual(TOOL_GROUPS.map(x => x.name), expected);
+   const codes = TOOL_GROUPS.flatMap(g => g.actions.map(a => a.code));
+   assert.equal(new Set(codes).size, codes.length);
+   assert.ok(codes.length >= 40, 'all earlier actions remain available');
+--- a/toolbox/ToolboxUI.ps1
++++ b/toolbox/ToolboxUI.ps1
+@@ -1,5 +1,5 @@
+-# 911_gitback2life desktop navigation for the thirteen already-approved tools.
++# 911_gitback2life desktop navigation for the original thirteen tools plus the explicitly authorized Email Communications tool.
+ # Windows PowerShell 5.1 / WinForms: no downloads, installs, privilege changes or new tools.
+ # Each button launches the EXISTING guided action, including its original confirmations.
+ $ErrorActionPreference = 'Stop'
+ function Get-GB2LDownloads {
+@@ -38,9 +38,10 @@
+     @{ Name='Directory Audit'; Actions=@('Review rescue directory records') },
+     @{ Name='Website Code Analysis'; Actions=@('Find local source files','Run selected code flow scan','Static disclosure scan','Guided source scan','Review fetch and redirect code (static)') },
+     @{ Name='Dependency Analysis'; Actions=@('Review local npm dependencies') },
+     @{ Name='File Protection'; Actions=@('Preview backup selection','Make reviewed local backup','Prepare restore review request (does not restore)','Make cleaned screenshot copies') },
+-    @{ Name='Computer Security Check'; Actions=@('Review a client security report ZIP','Check this computer (optional)') }
++    @{ Name='Computer Security Check'; Actions=@('Review a client security report ZIP','Check this computer (optional)') },
++    @{ Name='Email Communications'; Actions=@('Prepare, review and authorize an outgoing incident email') }
+ )
+ function Color([string]$hex) { [System.Drawing.ColorTranslator]::FromHtml($hex) }
+ function Log-UIError([string]$summary) {
+     try {
+@@ -91,13 +92,13 @@
+ }
+ function Show-Home {
+     $script:activeGroup = 0
+     $script:zeroPrefix = $false
+-    $script:heading.Text = 'Your 13 tools'
++    $script:heading.Text = 'Your 14 tools'
+     $script:subtitle.Text = 'Choose a tool to see its existing actions.'
+     $script:back.Visible = $false
+     $script:footer.Location = [System.Drawing.Point]::new(24, 9)
+-    $script:footer.Text = 'Mouse: click a tool     Keyboard: 1-9, or 0 then 1-4 for tools 10-13     Esc: exit'
++    $script:footer.Text = 'Mouse: click a tool     Keyboard: 1-9, or 0 then 1-5 for tools 10-14     Esc: exit'
+     $script:tiles.SuspendLayout()
+     $script:tiles.Controls.Clear()
+     for ($i = 0; $i -lt $script:groups.Count; $i++) {
+         $n = $i + 1
+@@ -110,9 +111,9 @@
+     $script:tiles.ResumeLayout()
+     Adjust-Tiles
+ }
+ function Show-Actions([int]$groupNumber) {
+-    if ($groupNumber -lt 1 -or $groupNumber -gt 13) { return }
++    if ($groupNumber -lt 1 -or $groupNumber -gt 14) { return }
+     $script:activeGroup = $groupNumber
+     $script:zeroPrefix = $false
+     $group = $script:groups[$groupNumber - 1]
+     $script:heading.Text = $group.Name
+@@ -133,9 +134,9 @@
+     Adjust-Tiles
+ }
+ function Start-Action([int]$actionNumber) {
+     $group = $script:activeGroup
+-    if ($group -lt 1 -or $group -gt 13 -or $actionNumber -lt 1 -or
++    if ($group -lt 1 -or $group -gt 14 -or $actionNumber -lt 1 -or
+         $actionNumber -gt $script:groups[$group - 1].Actions.Count) { return }
+     try {
+         if ($null -ne $script:running -and -not $script:running.HasExited) {
+             [System.Windows.Forms.MessageBox]::Show('Finish the open toolbox action before starting another.',
+@@ -148,9 +149,9 @@
+         $shell = $env:ComSpec
+         if (-not $shell -or -not (Test-Path -LiteralPath $shell -PathType Leaf)) { throw 'Windows Command Processor was not found.' }
+         $info = New-Object System.Diagnostics.ProcessStartInfo
+         $info.FileName = $shell
+-        # The only inserted values are validated integers 1-13 and 1-7.
++        # The only inserted values are validated integers 1-14 and 1-7.
+         # The file path is fixed to this staged copy and is enclosed in quotes.
+         $info.Arguments = ('/d /c ""{0}" --menu-action {1} {2}"' -f $launcher, $group, $actionNumber)
+         $info.WorkingDirectory = $script:root
+         $info.UseShellExecute = $true
+@@ -264,13 +265,13 @@
+             return
+         }
+         if ($script:zeroPrefix) {
+             $script:zeroPrefix = $false
+-            if ($digit -ge 1 -and $digit -le 4) { Show-Actions (9 + $digit) }
++            if ($digit -ge 1 -and $digit -le 5) { Show-Actions (9 + $digit) }
+             else { Show-Home }
+         } elseif ($digit -eq 0) {
+             $script:zeroPrefix = $true
+-            $script:footer.Text = 'Press 1 for tool 10, 2 for tool 11, 3 for tool 12, or 4 for tool 13. Esc cancels.'
++            $script:footer.Text = 'Press 1 for tool 10, 2 for tool 11, 3 for tool 12, or 4 for tool 13, 5 for tool 14. Esc cancels.'
+         } else { Show-Actions $digit }
+     })
+     $script:tiles.Add_Resize({ Adjust-Tiles })
+     Show-Home
+--- a/toolbox/client_device_report.test.mjs
++++ b/toolbox/client_device_report.test.mjs
+@@ -8,9 +8,9 @@
+ 
+ const ROOT = new URL('../device_check/', import.meta.url);
+ 
+ test('client-first computer check stays inside existing thirteenth tool', () => {
+-  assert.equal(TOOL_GROUPS.length, 13);
++  assert.equal(TOOL_GROUPS.length, 14);
+   assert.deepEqual(TOOL_GROUPS[12].actions.map(a => a.code), ['CLIENT_DEVICE', 'DEVICE']);
+   for (const file of ['CLIENT_DEVICE_CHECK.cmd', 'Client_Device_Collector.ps1', 'check_device.ps1', 'review_client_report.py'])
+     assert.ok(existsSync(new URL(file, ROOT)));
+ });
+--- a/toolbox/gui_ui.test.mjs
++++ b/toolbox/gui_ui.test.mjs
+@@ -1,5 +1,5 @@
+-// Existing thirteen user-facing tool groups must match the WinForms button labels.
++// Original thirteen groups plus the owner-approved Email Communications group must match the WinForms button labels.
+ // A UI change must not silently add tools or reroute a button to another action.
+ import test from 'node:test';
+ import assert from 'node:assert/strict';
+ import { readFileSync } from 'node:fs';
+@@ -12,19 +12,19 @@
+ const psGroups = [...ui.matchAll(/^\s*@\{ Name='((?:''|[^'])+)'; Actions=@\((.*)\) \},?\s*$/gm)].map(m => ({
+   name: m[1].replaceAll("''", "'"),
+   actions: [...m[2].matchAll(/'((?:''|[^'])+)'/g)].map(x => x[1].replaceAll("''", "'")),
+ }));
+-test('mouse and numeric-key buttons match all and only the 13 approved menu groups and actions', () => {
+-  assert.equal(TOOL_GROUPS.length, 13);
++test('mouse and numeric-key buttons match all fourteen owner-approved menu groups and actions', () => {
++  assert.equal(TOOL_GROUPS.length, 14);
+   assert.deepEqual(psGroups.map(g => g.name), TOOL_GROUPS.map(g => g.name));
+-  for (let i = 0; i < 13; i++) {
++  for (let i = 0; i < 14; i++) {
+     assert.deepEqual(psGroups[i].actions, TOOL_GROUPS[i].actions.map(a => a.label), `tool ${i + 1}`);
+     assert.ok(psGroups[i].actions.length >= 1 && psGroups[i].actions.length <= 9);
+   }
+ });
+ test('buttons require validated numeric groups and launch only existing guided actions', () => {
+   assert.match(ui, /--menu-action \{1\} \{2\}/);
+-  assert.match(ui, /\$group -gt 13/m);
++  assert.match(ui, /\$group -gt 14/m);
+   assert.match(ui, /Finish the open toolbox action before starting another/);
+   assert.match(launcher, /if "%~1"=="" goto :SHOW_UI/);
+   assert.match(launcher, /node\.exe "%ROOT%toolbox\\toolbox\.mjs" %\* 2>>/);
+ });
+--- a/toolbox/toolbox.mjs
++++ b/toolbox/toolbox.mjs
+@@ -11,8 +11,9 @@
+ import { POWERSHELL, trustedEnv } from '../_shared/system_exec.mjs';
+ import { fileURLToPath } from 'node:url';
+ import { isDeepStrictEqual } from 'node:util';
+ import { failureKind } from '../_shared/assessment_status.mjs';
++import { emailMenu } from '../email_communications/email_client.mjs';
+ import { safeWrite, maskForStorage, readStoredZip, TOOLBOX_ROOT } from '../_shared/common.mjs';
+ import { template, validateScope, requireScope, clearActiveScope, stopScope } from '../_shared/scope.mjs';
+ import { addHypothesis, addItem, createLedger, toMarkdown, validateLedger } from '../evidence_ledger/ledger.mjs';
+ import { renderSummary } from '../decision_summary/decision_summary.mjs';
+@@ -1277,10 +1278,10 @@
+ }
+ function inputWasInterrupted(error) {
+   return error?.name === 'AbortError' || error?.code === 'ERR_USE_AFTER_CLOSE';
+ }
+-// Approved 26 source components are presented as exactly 13 user-facing tools.
+-// Each entry points only to an existing action; no separate public menu for
++// The owner's later written authorization adds dedicated Email Communications.
++// The original thirteen groups remain intact; no public menu for
+ // authority, regression harness or sandbox prerequisites.
+ export const TOOL_GROUPS = Object.freeze([
+   {name:'Incident Management', actions:[
+     {label:'Start incident', code:'1'}, {label:'Find incidents', code:'5'},
+@@ -1323,8 +1324,9 @@
+     {label:'Make cleaned screenshot copies', code:'L'}]},
+   {name:'Computer Security Check', actions:[
+     {label:'Review a client security report ZIP', code:'CLIENT_DEVICE'},
+     {label:'Check this computer (optional)', code:'DEVICE'}]},
++  {name:'Email Communications', actions:[{label:'Prepare, review and authorize an outgoing incident email',code:'EMAIL_COMM'}]},
+ ].map(g => Object.freeze({...g, actions: Object.freeze(g.actions.map(a => Object.freeze(a)))})));
+ 
+ async function interactive(preselected = null) {
+   const io = createInterface({ input: process.stdin, output: process.stdout });
+@@ -1565,9 +1567,9 @@
+   // existing, approved specialist or the previously reviewed local workflow.
+   // Source modules and safety/authority helpers remain separate internally;
+   // grouping never weakens their own scope, permission or approval checks.
+   const groups = TOOL_GROUPS;
+-  const menu = `\n911_gitback2life Toolbox — 13 tools\n\n${groups.map((g, i) =>
++  const menu = `\n911_gitback2life Toolbox — 14 tools\n\n${groups.map((g, i) =>
+     `  ${String(i + 1).padStart(2)}  ${g.name}`).join('\n')}\n\n   0  Exit\n`;
+   if (!preselected) console.log('Choose a tool number. At any question type /back to cancel; Ctrl+C exits.');
+   const specialist = (script, args, { findingCodes = [] } = {}) => {
+     // Bounded, fixed executable and audited bundled module; never shell input.
+@@ -1613,9 +1615,9 @@
+       let choice = '';
+       try {
+         const groupNumber = preselected ? String(preselected.group) : await ask('Tool number: ');
+         if (groupNumber === '0' || !groupNumber) return;
+-        if (!/^(?:[1-9]|1[0-3])$/.test(groupNumber)) { console.log('Choose a number from 1 to 13.'); continue; }
++        if (!/^(?:[1-9]|1[0-4])$/.test(groupNumber)) { console.log('Choose a number from 1 to 14.'); continue; }
+         const group = groups[Number(groupNumber) - 1];
+         console.log(`\n${group.name}`);
+         group.actions.forEach((action, i) => console.log(`  ${i + 1}  ${action.label}`));
+         console.log('  0  Main menu');
+@@ -1712,8 +1714,18 @@
+           console.log('Have them review and voluntarily send the resulting report ZIP. No remote access is used.');
+           console.log(reviewClientDeviceReport(await ask('Path to the client report ZIP from Downloads: ')));
+         }
+         else if (choice.toUpperCase() === 'DEVICE') console.log(JSON.stringify(deviceStatus(), null, 2));
++        else if (choice === 'EMAIL_COMM') await emailMenu({ask,chooseCase,
++          suggest: (id,audience) => {
++            const c=currentCase(id);
++            const proposal=draftNotice(c.ledger,{audience});
++            if(proposal.warnings.length)refuse('notice contains unverified verdict language; review evidence first');
++            const lines=proposal.text.split('\n');
++            const subject=lines[0].replace(/^Subject: /,'');
++            const end=lines.indexOf('----');
++            return {subject,body:lines.slice(2,end>=0?end:undefined).join('\n').trim()};
++          }});
+         else if (choice.toUpperCase() === 'N') {
+           const id = await chooseCase();
+           console.log('Review all case content for names, addresses, faces, and visible personal information before proceeding.');
+           const additional = [];
+@@ -1863,10 +1875,10 @@
+   diagnostic('START', `Node=${process.version}; mode=${cmd || 'menu'}`);
+   if (!cmd) { if (!process.stdin.isTTY) { console.log(HELP); return; } return interactive(); }
+   if (cmd === '--menu-action') {
+     // Private UI route to the exact same guided action as the console menu.
+-    // There are still exactly thirteen tools, and no bypass of confirmations.
+-    if (a.length !== 2 || !/^(?:[1-9]|1[0-3])$/.test(a[0]) || !/^\d{1,2}$/.test(a[1]) ||
++    // There are fourteen owner-approved tools, and no bypass of confirmations.
++    if (a.length !== 2 || !/^(?:[1-9]|1[0-4])$/.test(a[0]) || !/^\d{1,2}$/.test(a[1]) ||
+         Number(a[1]) < 1 || Number(a[1]) > TOOL_GROUPS[Number(a[0]) - 1].actions.length)
+       refuse('invalid tool or action button');
+     if (!process.stdin.isTTY) refuse('the guided action needs an interactive console');
+     return interactive({group: Number(a[0]), action: Number(a[1])});

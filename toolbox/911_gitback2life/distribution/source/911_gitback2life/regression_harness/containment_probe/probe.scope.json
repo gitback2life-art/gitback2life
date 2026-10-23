@@ -1,0 +1,41 @@
+{
+  "scope_schema": 1,
+  "incident_id": "containment-probe-2026-10-09",
+  "created_at": "2026-10-09T18:55:52.189Z",
+  "expires_at": "2026-10-16T18:55:52.189Z",
+  "status": "open",
+  "question": "Does run_offline contain a project inside the tests-mode sandbox?",
+  "targets": [
+    "gitback2life/containment-probe"
+  ],
+  "scope": "The synthetic project regression_harness/containment_probe only. Nothing else.",
+  "urgency": "normal",
+  "confidence": "low",
+  "permissions": {
+    "read_public_github": false,
+    "passive_lookup": false,
+    "save_local": false,
+    "local_patch": false,
+    "run_project_tests": true,
+    "live_http_inspection": false,
+    "third_party_submission": false,
+    "external_write": false,
+    "contact_third_party": false,
+    "publish": false
+  },
+  "disclosures": [],
+  "approvals": [],
+  "deny_actions": [
+    "external_write",
+    "contact_third_party",
+    "publish"
+  ],
+  "allow_derived_lookalikes": false,
+  "prohibited": [
+    "No changes to the organization's live data, contacts, or phone numbers",
+    "No probing of private/internal networks",
+    "No running of downloaded or fetched content"
+  ],
+  "stopping_condition": "Stop after one run inside the tests-mode sandbox and report the result.",
+  "persistence": "transient"
+}

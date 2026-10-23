@@ -1,0 +1,37 @@
+{
+  "scope_schema": 1,
+  "about": "The one incident-scope contract shared by _shared/scope.mjs (Node) and _shared/gb2l_core.py (Python). Change it here only, and bump scope_schema when old scope files would no longer mean the same thing.",
+  "required_text": ["incident_id", "question", "scope", "stopping_condition"],
+  "status": ["open", "stopped"],
+  "urgency": ["low", "normal", "high", "critical"],
+  "confidence": ["low", "medium", "high"],
+  "persistence": ["transient", "local"],
+  "actions": {
+    "read_public_github": "Read public GitHub issues, runs and files (GET only)",
+    "passive_lookup": "Passive RDAP / DNS / certificate / archive lookups (queries public lookup services)",
+    "save_local": "Save incident reports, snapshots, baselines and packets inside the toolbox folder",
+    "local_patch": "Create a local copy of a project and prepare a patch (nothing pushed)",
+    "run_project_tests": "Run a project's tests locally with the network blocked",
+    "live_http_inspection": "Send requests to the organization's (or a redirect target's) live website",
+    "third_party_submission": "Submit a URL or file to a public scanning/reputation service",
+    "external_write": "Comment, open an issue/PR, fork, or commit anywhere outside this machine",
+    "contact_third_party": "Contact the organization, maintainer, registrar, host or anyone else",
+    "publish": "Publish findings anywhere"
+  },
+  "services": {
+    "github": "GitHub (api.github.com, codeload.github.com)",
+    "gmail": "Google Gmail API (outgoing approved message and destination email address)",
+    "rdap": "registration data services (rdap.org and domain registries)",
+    "dns": "the DNS resolver (and, through it, the domain's own DNS servers)",
+    "doh": "DNS-over-HTTPS providers (Cloudflare, Google)",
+    "certificate_logs": "certificate transparency search (crt.sh)",
+    "web_archive": "the Wayback Machine (web.archive.org)",
+    "target_website": "the target's own website (live requests)"
+  },
+  "always_ask": ["live_http_inspection", "third_party_submission", "external_write", "contact_third_party", "publish"],
+  "attestation_max_age_hours": 24,
+  "optional": {
+    "deny_actions": "list of action names that are always refused for this scope, whatever permissions or attestations say. This is the executable form of 'prohibited'; the prohibited prose is guidance for people only.",
+    "allow_derived_lookalikes": "true lets lookalike_domain_check look up generated lookalike names of a listed target (each name is still disclosed to the allowed lookup services). Default false: only names listed in targets are looked up."
+  }
+}
