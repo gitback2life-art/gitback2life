@@ -6,7 +6,7 @@ import {createServer} from 'node:http';
 import {randomBytes,createHash} from 'node:crypto';
 import {execFileSync,spawnSync} from 'node:child_process';
 import {assertMainOnlyDeployment,REPO} from './policy.mjs';
-import {assertOwner,assertSoloMainRuleset,assertManualEnvironment,assertKeyPair} from './setup-checks.mjs';
+import {assertOwner,assertSoloMainRuleset,assertManualEnvironment,assertKeyPair,assertGmailSendGranted} from './setup-checks.mjs';
 const args=process.argv.slice(2);
 const idx=args.indexOf('--credentials');
 const filename=idx>=0?args[idx+1]:null;
@@ -70,6 +70,7 @@ try{
  const response=await fetch('https://oauth2.googleapis.com/token',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({code,client_id:cfg.client_id,client_secret:cfg.client_secret,redirect_uri:callback,grant_type:'authorization_code',code_verifier:verifier}),signal:AbortSignal.timeout(20000)});
  if(!response.ok)throw new Error('Google token exchange failed (HTTP '+response.status+')');
  const token=await response.json();
+ assertGmailSendGranted(token); // before identity check and before any GitHub secret is written
  await verifySenderIdentity(token.access_token);
  if(!token.refresh_token)throw new Error('Google did not issue an offline refresh token. Revoke/retry with consent and ensure Gmail send scope.');
 
