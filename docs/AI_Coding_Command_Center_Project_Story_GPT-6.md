@@ -928,3 +928,20 @@ The project's central lesson remains: **“edit applied” and “tests pass” 
 ## 2026-10-23 — Correct the owner-approved email quota
 
 The owner reported that the email system's three-per-UTC-day limit had never been chosen by them. Repository review showed inconsistent defaults: the existing mode-switch script had allowed a default of 30, while first-time setup initialized the stored policy to three. The owner explicitly approved a coherent default of **10 per UTC day**, while retaining owner approval for every message. The correction aligns the canonical mode script, first-time setup, regression tests, operational guide, and bundled Toolbox adapter copies. The live policy remains in a protected GitHub secret and must be updated separately by the owner after merge; source code changes alone do not change the live limit. The request blocked by the old quota was not sent and must not be retried.
+
+## 2026-10-23 — Production Gmail scope repair, real-message evidence, and quota correction
+
+This session's adjacent GitBack2Life email work reached the first live provider-accepted messages, exposed an authentication failure, and then exposed a built-in quota default the owner had not chosen. The full operational state and continuation instructions are recorded in [Production Email + 911 Toolbox Session Handoff](email-production-session-handoff-2026-10-23.md).
+
+### Verified milestones
+- The Gmail `gmail.send` guard was merged at [commit `0926a6b`](https://github.com/gitback2life-art/gitback2life/commit/0926a6bb4858fa02c88f695822402c913adc7e59). The updated owner setup refuses to write GitHub secrets when the OAuth grant lacks the exact send scope. Email tests and Toolbox source integrity checks passed.
+- Owner setup completed locally after reauthorization. The owner reported both the email no-send preflight and Sender Readiness (no-send) succeeded; the owner then restored `approval_required`.
+- [Run #39887797236](https://github.com/gitback2life-art/gitback2life/actions/runs/39887797236) logged Gmail `provider_accepted`; the owner reported the message landed in Spam. This establishes that Gmail accepted it, not that it reached Inbox.
+- [Run #39889341623](https://github.com/gitback2life-art/gitback2life/actions/runs/39889341623) logged `provider_accepted` for the Terri Boo family-introduction email; the owner reported that she loved it.
+- [Run #40003116089](https://github.com/gitback2life-art/gitback2life/actions/runs/40003116089) failed before Gmail contact because the live policy quota was exhausted. That request was not sent.
+
+### Quota-default correction and lesson
+The owner explicitly reported that the old three-per-UTC-day limit was not owner-selected. The current source was aligned to 10 per UTC day in approval-required mode at [commit `67675c7`](https://github.com/gitback2life-art/gitback2life/commit/67675c76f688937348476e0c9b1f8e71b0003fe6); the latest email tests [#40007245990](https://github.com/gitback2life-art/gitback2life/actions/runs/40007245990) and Toolbox source integrity [#40007245930](https://github.com/gitback2life-art/gitback2life/actions/runs/40007245930) passed. Source code does not rotate a protected environment secret. The owner must apply `owner-mode.mjs approval_required --daily=10 --actor=gitback2life-art` locally and confirm its output before creating a fresh request.
+
+The owner-review gate was retained throughout. No autonomous-send provisioning or approval bypass is authorized. Private recipients, plaintext messages, private receipts, nonces, and credentials are intentionally omitted from this public story record.
+

@@ -259,3 +259,10 @@ The user was expecting the repository handoff itself to be updated, not merely a
 ### Adjacent GitBack2Life email quota update — 2026-10-23
 
 The owner authorized an approval-required quota of 10 emails per UTC day because the old limit of three was not owner-selected. Keep the per-message gb2l-email-send reviewer gate unchanged. The correction aligns owner-mode.mjs, first-time owner-setup.mjs, tests, runbooks, and exact mirrored adapter copies. Live policy is stored separately in the protected GB2L_EMAIL_POLICY secret; after merge, the owner must run `node tools/gb2l-email/owner-mode.mjs approval_required --daily=10 --actor=gitback2life-art` from current main to update it. No email is sent as part of this change.
+
+## Adjacent GitBack2Life production-email handoff — 2026-10-23
+
+A separate operational handoff now records the 911 Toolbox source import and owner-controlled Gmail workflow recovery: [Production Email + 911 Toolbox Session Handoff](email-production-session-handoff-2026-10-23.md).
+
+This is adjacent repository activity, not a change to the local AI Coding Command Center's Stage A1/A2 status, authorizations, or test evidence. Do not infer any new AI Coding Command Center deployment permission from the email-workflow changes. The current email-source quota is 10/day in approval-required mode, but the protected live `GB2L_EMAIL_POLICY` secret still requires an owner-side update and confirmation; per-message owner review remains required.
+

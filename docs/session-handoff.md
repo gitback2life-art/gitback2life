@@ -1280,3 +1280,20 @@ This section governs how handoffs are prepared. Project-specific technical statu
 The owner confirmed that the prior three-per-UTC-day sender quota was a built-in default, not an owner-selected policy. The owner authorized aligning the approval-required default and initial setup policy to **10 per UTC day**, while retaining per-message owner approval. The change aligns canonical email scripts, tests, runbooks, and mirrored Toolbox adapter copies.
 
 Important: source changes do not update the protected live GB2L_EMAIL_POLICY secret. After this change is merged, the owner must apply `node tools/gb2l-email/owner-mode.mjs approval_required --daily=10 --actor=gitback2life-art` from a current main checkout and confirm the command reports quota 10. Do not enable auto_send or retry a request blocked by the old quota.
+
+## 2026-10-23 — Production email and 911 Toolbox handoff
+
+**Canonical detailed handoff:** [Production Email + 911 Toolbox Session Handoff](email-production-session-handoff-2026-10-23.md).
+
+Current verified checkpoint:
+- The 14-tool Toolbox source archive has been imported under `toolbox/911_gitback2life/distribution/`; manifests and source-integrity checks passed. Windows installation acceptance is still unverified.
+- The Gmail `gmail.send` guard is merged, local owner setup succeeded, and the owner reported successful no-send preflight and sender readiness. Production email mode is `approval_required`; do not bypass per-message owner review.
+- The owner's own inbox received a Gmail-provider-accepted message that the owner reported went to Spam. A later Terri Boo message was provider-accepted; the owner reported a positive response.
+- The Momma request in [run #40003116089](https://github.com/gitback2life-art/gitback2life/actions/runs/40003116089) was **not sent**: the sender refused it because the old live daily quota was exhausted, before contacting Gmail.
+- Main now sets the approval-required source default to **10 per UTC day** in [commit `67675c7`](https://github.com/gitback2life-art/gitback2life/commit/67675c76f688937348476e0c9b1f8e71b0003fe6); the latest email tests and Toolbox source integrity runs pass. Tracked source changes do not update the protected live `GB2L_EMAIL_POLICY` secret.
+- **Next owner action:** from an up-to-date local checkout, run `node .\tools\gb2l-email\owner-mode.mjs approval_required --daily=10 --actor=gitback2life-art` and verify the successful output explicitly reports quota 10. Retain `approval_required`.
+- After live-policy confirmation, create a fresh encrypted request for Momma, review it privately, approve the protected send, and verify the job result. Do not retry a previously reserved/uncertain draft ID.
+- Diagnose Spam placement from Gmail “Show original” SPF/DKIM/DMARC outcomes before changing delivery configuration.
+
+This activity does not mean the broader 911 Toolbox is operationally verified. The detailed handoff records run links, privacy boundaries, and remaining work.
+
