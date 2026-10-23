@@ -19,3 +19,13 @@ The imported snapshot is exactly build: 2026-10-20_14TOOLS_EMAIL_COMMUNICATIONS_
 - Native Windows staging and menu acceptance were not run on the owner's computer as part of this import.
 - The legacy full Python test suite was not treated as passing; the build notes identify a Windows-only _winapi import and two existing deployment payload count expectations that fail in the Linux review environment.
 - Importing source files does not deploy services, provision credentials, activate protected authority operations, or authorize live email.
+## Verified repository import record — 2026-10-23
+
+The reviewed ZIP was committed at `toolbox/911_gitback2life/911_GitBack2Life_Email_Communications_Review_Build_20261020 (2).zip` and successfully imported by [GitHub Actions run 39876286489](https://github.com/gitback2life-art/gitback2life/actions/runs/39876286489) on PR #29. The importer reported:
+
+- Exact archive SHA-256: `d91ef009c3d5a9e5fb335dd7eaeb8b8cbf91e05fb64f2afd6569bda6a832b9ee`
+- Outer manifest: 206 files verified
+- Embedded source manifest: 205 files verified
+- Acceptance script: all 14 user-facing tool groups present
+
+The source files are currently on PR #29's branch pending merge to `main`. This proves source import integrity only. It does not prove native Windows installation acceptance or readiness for live email sending.
