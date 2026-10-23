@@ -1,0 +1,15 @@
+{
+  "id": "nyc-rescue-redirect-2026-10",
+  "scenario": "website_redirect",
+  "mode": "real",
+  "events": [
+    {"at": "2026-09-28T00:00:00Z", "stage": "recognize", "fact_status": "reported", "reference": "run-36438667140-65-of-311-flagged"},
+    {"at": "2026-10-05T00:00:00Z", "stage": "recognize", "fact_status": "reported", "reference": "run-37332890503-58-of-311-flagged"},
+    {"at": "2026-10-05T00:00:00Z", "stage": "scope", "fact_status": "reported", "reference": "issue-1-kittensandbarbells-to-talesofhazaribagh"},
+    {"at": "2026-10-08T00:00:00Z", "stage": "scope", "fact_status": "unknown", "reference": "originating-page-role-unverified"}
+  ],
+  "decisions": {
+    "recognize": {"owner": "investigator", "reference": "scope-file-nyc-animal-rescue", "complete": true},
+    "preserve": {"owner": "investigator", "reference": "github-evidence-snapshot-pending", "complete": false}
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "incident_id": "nyc-animal-rescue-weekly-check-2026-10",
+  "created_at": "2026-10-08T00:00:00Z",
+  "expires_at": "2026-10-15T00:00:00Z",
+  "status": "open",
+  "question": "Why did the Sept 28 and Oct 5 weekly checks flag 65 and 58 of 311 records, and is the Kittens and Barbells primary website actually redirecting off-domain?",
+  "targets": [
+    "https://github.com/maintainer-handle-redacted/nyc-animal-rescue/issues/1",
+    "https://github.com/maintainer-handle-redacted/nyc-animal-rescue/actions/runs/36438667140",
+    "https://github.com/maintainer-handle-redacted/nyc-animal-rescue/actions/runs/37332890503",
+    "https://github.com/maintainer-handle-redacted/nyc-animal-rescue/blob/main/data/orgs/kittens-and-barbells-rescue-inc.json",
+    "www.kittensandbarbells.org",
+    "www.talesofhazaribagh.com"
+  ],
+  "scope": "Read-only review of the public issue, two workflow runs, checker source (weekly.ts, fetch.ts, rules.ts, agent.test.ts) and the one public data record; passive domain research on the two domains; an offline local patch + regression test. Out of scope: any write to the target repo, any contact with the rescue or maintainer, live requests to either website.",
+  "urgency": "high",
+  "confidence": "low",
+  "permissions": {
+    "read_public_github": true,
+    "passive_lookup": true,
+    "save_local": true,
+    "local_patch": false,
+    "run_project_tests": false,
+    "live_http_inspection": false,
+    "third_party_submission": false,
+    "external_write": false,
+    "contact_third_party": false,
+    "publish": false
+  },
+  "disclosures": ["github", "rdap", "dns", "certificate_logs", "web_archive"],
+  "approvals": [],
+  "prohibited": [
+    "No issue comments, branches, PRs, commits or workflow runs on the target repository",
+    "No contact with the rescue organization or the directory maintainer",
+    "No submission of either URL to public scanning services",
+    "No changes to directory data, phone numbers, clinic or intake contacts, thresholds or workflows",
+    "No probing of private or internal networks"
+  ],
+  "stopping_condition": "Stop and report once the originating page role of the talesofhazaribagh.com destination is identified or marked unverifiable from public evidence, passive domain results are collected, and the offline regression proposal is ready for review.",
+  "persistence": "local"
+}

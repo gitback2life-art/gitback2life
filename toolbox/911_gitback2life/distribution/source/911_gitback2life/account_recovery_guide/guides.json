@@ -1,0 +1,100 @@
+{
+  "general": {
+    "who_this_is_for": "The organization's own authorized people (for example a board officer). Helpers can explain these steps; they never file recovery requests, contact providers, or try to log in on the organization's behalf.",
+    "before_you_start": [
+      "Decide who has authority to recover the account (usually a board decision; write it down in the minutes).",
+      "Pick ONE person to do the recovery so the provider sees a single, consistent request.",
+      "Do not guess passwords or answers repeatedly: failed attempts can lock the account for longer, or permanently.",
+      "Use the provider's official help site only. Ignore anyone who contacts you offering to recover the account; that is a common scam.",
+      "If the domain or website is redirecting somewhere strange, recover the domain (registrar) account first: it controls where the website and email go."
+    ],
+    "proof_checklist": [
+      "The organization's legal name, exactly as registered (and EIN or charity number if it has one).",
+      "Formation or registration documents (for example articles of incorporation) and, if applicable, the tax-exemption determination letter.",
+      "A letter on the organization's letterhead, signed by an officer, naming who is authorized to recover the account.",
+      "Government photo ID of that authorized person (providers usually ask for this; share it only through the provider's official upload process).",
+      "Billing evidence: invoices, receipt numbers, the last digits of the card or bank account used, and approximate payment dates.",
+      "Account details you still know: the account email or username, customer number, domain names, page or site names, and when it was created.",
+      "The email address or phone number that used to be on the account, even if nobody can access it anymore."
+    ],
+    "expired_domain": [
+      "Act immediately: many registrars keep an expired domain for a renewal grace period, followed by a redemption period (often around 30 days) with a higher fee. After that it can be released and bought by anyone.",
+      "Check the registrar's own terms for its exact periods and fees.",
+      "If the registrar is unresponsive or refuses to follow its published policies, ICANN Contractual Compliance accepts complaints about registrars of generic domains (.org, .com, .net and others)."
+    ],
+    "after_recovery": [
+      "Turn on two-step login (2FA) with an authenticator app or security key, not just text messages if you can avoid it.",
+      "Add a second administrator who is a current board member or staff, so one person leaving can never lock the organization out again.",
+      "Update the recovery email and phone to role-based ones the organization controls (for example an admin@ mailbox), not a personal address.",
+      "Turn on auto-renew for domains and confirm the payment method is current.",
+      "Remove anyone who no longer needs access (see access_offboarding) and record the account in org_registers."
+    ],
+    "what_helpers_never_do": [
+      "File recovery requests, contact the provider, or log in on the organization's behalf.",
+      "Ask for, store, or handle the organization's passwords, recovery codes, or ID documents.",
+      "Use tricks, impersonation, or third-party 'recovery services'."
+    ]
+  },
+  "providers": {
+    "godaddy": {
+      "name": "GoDaddy (domains and hosting)",
+      "help_url": "https://www.godaddy.com/help",
+      "search_terms": ["account recovery", "change of account holder", "can't access my account"],
+      "notes": "Registrars usually verify ownership with ID and billing details. If a former volunteer's personal account holds the domain, ask about a change of account holder or an account-to-account move once they (or proof of the organization's ownership) can be provided."
+    },
+    "namecheap": {
+      "name": "Namecheap (domains)",
+      "help_url": "https://www.namecheap.com/support/",
+      "search_terms": ["lost access to account", "account recovery", "domain push to another account"],
+      "notes": "Have the domain name, approximate registration date and billing details ready."
+    },
+    "squarespace": {
+      "name": "Squarespace (websites and domains)",
+      "help_url": "https://support.squarespace.com",
+      "search_terms": ["can't log in", "account recovery", "transfer site ownership", "domain ownership"],
+      "notes": "Website ownership and domain ownership can be separate; ask about both. Site contributors cannot take over ownership on their own; the owner role must be transferred."
+    },
+    "wix": {
+      "name": "Wix (websites)",
+      "help_url": "https://support.wix.com",
+      "search_terms": ["recover account", "transfer site", "site owner left"],
+      "notes": "If a former volunteer owns the site, a site transfer to an organization account is the usual route."
+    },
+    "wordpress_com": {
+      "name": "WordPress.com (websites)",
+      "help_url": "https://wordpress.com/support/",
+      "search_terms": ["account recovery", "change site owner"],
+      "notes": "Self-hosted WordPress is different: access depends on the web host account, so recover that first."
+    },
+    "google_workspace": {
+      "name": "Google Workspace (email and documents)",
+      "help_url": "https://support.google.com/a",
+      "search_terms": ["can't sign in as administrator", "verify domain ownership to recover admin access"],
+      "notes": "Admin recovery may involve proving control of the domain (for example by adding a DNS record), so domain access often comes first."
+    },
+    "microsoft_365": {
+      "name": "Microsoft 365 (email and documents)",
+      "help_url": "https://support.microsoft.com",
+      "search_terms": ["can't sign in admin account", "admin takeover", "reset admin password"],
+      "notes": "Organizations with Microsoft nonprofit offers may also have a partner or reseller who can help; check billing records."
+    },
+    "facebook_page": {
+      "name": "Facebook Page",
+      "help_url": "https://www.facebook.com/help",
+      "search_terms": ["lost access to Page", "Page admin left", "hacked Page"],
+      "notes": "Pages are managed through people's personal profiles. Any remaining admin can add new ones; if none remain, use the official help forms only."
+    },
+    "instagram": {
+      "name": "Instagram",
+      "help_url": "https://help.instagram.com",
+      "search_terms": ["can't log in", "hacked account", "lost access to email or phone"],
+      "notes": "If linked to a Facebook Page or Meta business account, recovering that may restore Instagram access."
+    },
+    "registrar_other": {
+      "name": "Any other domain registrar",
+      "help_url": "https://lookup.icann.org",
+      "search_terms": ["look up the domain to find its registrar, then use that registrar's own support site"],
+      "notes": "Use domain_research rdap <domain> or the ICANN lookup to see which registrar holds the domain. If a registrar does not follow its published policies, ICANN Contractual Compliance (https://www.icann.org/compliance) accepts complaints for generic domains."
+    }
+  }
+}
