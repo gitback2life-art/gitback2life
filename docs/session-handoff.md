@@ -1275,3 +1275,8 @@ For a new-session handoff, use this minimum operator-facing format:
 3. A brief, truthful note about any material gaps that the next session must verify.
 
 This section governs how handoffs are prepared. Project-specific technical status and authorization must still be taken from the latest relevant project documents.
+## GitBack2Life email quota correction — 2026-10-23
+
+The owner confirmed that the prior three-per-UTC-day sender quota was a built-in default, not an owner-selected policy. The owner authorized aligning the approval-required default and initial setup policy to **10 per UTC day**, while retaining per-message owner approval. The change aligns canonical email scripts, tests, runbooks, and mirrored Toolbox adapter copies.
+
+Important: source changes do not update the protected live GB2L_EMAIL_POLICY secret. After this change is merged, the owner must apply `node tools/gb2l-email/owner-mode.mjs approval_required --daily=10 --actor=gitback2life-art` from a current main checkout and confirm the command reports quota 10. Do not enable auto_send or retry a request blocked by the old quota.
