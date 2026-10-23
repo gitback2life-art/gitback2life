@@ -11,7 +11,11 @@ const sealed=()=>seal(draft,pair.publicKey);
 const repo='gitback2life-art/gitback2life',owner='gitback2life-art';
 const manual={version:1,mode:'approval_required',owner,requester:owner,sender:'gitback2life.ai@gmail.com',daily_limit:3};
 const auto={...manual,mode:'auto_send',daily_limit:2};
-test('owner approval policy permits the requested 30 daily emails but rejects higher or invalid quotas',()=>{\n const max={...manual,daily_limit:30};\n assert.equal(parsePolicy(JSON.stringify(max),'approval_required',owner).daily_limit,30);\n for(const daily_limit of [0,-1,31,1.5])assert.throws(()=>parsePolicy(JSON.stringify({...manual,daily_limit}),'approval_required',owner),/quota/);\n});
+test('owner approval policy permits the requested 30 daily emails but rejects higher or invalid quotas',()=>{
+ const max={...manual,daily_limit:30};
+ assert.equal(parsePolicy(JSON.stringify(max),'approval_required',owner).daily_limit,30);
+ for(const daily_limit of [0,-1,31,1.5])assert.throws(()=>parsePolicy(JSON.stringify({...manual,daily_limit}),'approval_required',owner),/quota/);
+});
 const gh={repo,sha:'a'.repeat(40),githubToken:'synthetic-test-token'};
 const oauth={clientId:'x',clientSecret:'y',refreshToken:'z'};
 const response=(status,obj)=>({status,ok:status>=200&&status<300,json:async()=>obj});
