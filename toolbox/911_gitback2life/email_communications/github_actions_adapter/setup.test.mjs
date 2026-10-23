@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {generateKeyPairSync} from 'node:crypto';
-import {assertOwner,assertSoloProtection,assertSoloMainRuleset,assertManualEnvironment,assertKeyPair} from './setup-checks.mjs';
+import {assertOwner,assertSoloProtection,assertSoloMainRuleset,assertManualEnvironment,assertKeyPair,assertGmailSendGranted} from './setup-checks.mjs';
 import {verifySenderIdentity} from './identity.mjs';
 import {assertOutsideRepository,securePrivateKeyFile} from './prepare-key.mjs';
 import {mkdtempSync,writeFileSync,statSync,lstatSync,symlinkSync,rmSync} from 'node:fs';
@@ -117,4 +117,21 @@ test('ruleset setup check rejects inactive, bypassed, wrong-target or missing-ch
  ];
  for(const mutate of mutations){const x=ruleset();mutate(x);assert.throws(()=>assertSoloMainRuleset([x]));}
  assert.throws(()=>assertSoloMainRuleset([]));
+});
+
+
+import {readFileSync as readSetupSource} from 'node:fs';
+test('setup refuses a Google grant without gmail.send, including unticked-permission and missing-scope responses',()=>{
+ const send='https://www.googleapis.com/auth/gmail.send';
+ assertGmailSendGranted({scope:`openid https://www.googleapis.com/auth/userinfo.email ${send}`});
+ assertGmailSendGranted({scope:send});
+ for(const token of [{scope:'openid https://www.googleapis.com/auth/userinfo.email'},{scope:''},{},null,undefined,{scope:['x']},{scope:`${send}.metadata`},{scope:`openid ${send}x`}])
+  assert.throws(()=>assertGmailSendGranted(token),/did not grant gmail\.send/);
+});
+test('owner-setup checks the granted scope before identity check and before any GitHub secret or variable is written',()=>{
+ const src=readSetupSource(new URL('./owner-setup.mjs',import.meta.url),'utf8');
+ const scope=src.indexOf('assertGmailSendGranted(token)');
+ assert.ok(scope>0,'owner-setup must call assertGmailSendGranted');
+ for(const later of ['verifySenderIdentity(token.access_token)',"set('GMAIL_CLIENT_ID'","set('GMAIL_REFRESH_TOKEN'","setVar('GB2L_REQUEST_ACTOR'"])
+  assert.ok(src.indexOf(later)>scope,later+' must come after the scope check');
 });
