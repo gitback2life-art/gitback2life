@@ -256,3 +256,6 @@ The latest conversation makes this limited v16 safety inspection the current sub
 ### Continuity and communication
 
 The user was expecting the repository handoff itself to be updated, not merely a handoff written in chat. For future handoff maintenance, update this file in GitHub, preserve the existing history, commit the change, read it back to verify the added section, and give the user the real repository URL and commit SHA. Never substitute a chat-only draft for the repository operation when the user expects the repository to be changed.
+### Adjacent GitBack2Life email quota update — 2026-10-23
+
+The owner authorized an approval-required quota of 10 emails per UTC day because the old limit of three was not owner-selected. Keep the per-message gb2l-email-send reviewer gate unchanged. The correction aligns owner-mode.mjs, first-time owner-setup.mjs, tests, runbooks, and exact mirrored adapter copies. Live policy is stored separately in the protected GB2L_EMAIL_POLICY secret; after merge, the owner must run `node tools/gb2l-email/owner-mode.mjs approval_required --daily=10 --actor=gitback2life-art` from current main to update it. No email is sent as part of this change.
