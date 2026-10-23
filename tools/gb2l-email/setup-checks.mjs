@@ -21,6 +21,14 @@ export function assertManualEnvironment(data) {
      rule.reviewers?.length!==1 || rule.reviewers[0].type!=='User' || rule.reviewers[0].reviewer?.login!==OWNER)
     throw Error('Owner approval gate must allow self-review, disable admin bypass and require only gitback2life-art');
 }
+export const GMAIL_SEND_SCOPE='https://www.googleapis.com/auth/gmail.send';
+// Google's consent screen lets the account holder untick individual permissions, so a successful
+// token exchange does not prove gmail.send was granted. Fail closed before any secret is written.
+export function assertGmailSendGranted(token) {
+  const scopes=typeof token?.scope==='string'?token.scope.split(/\s+/):[];
+  if(!scopes.includes(GMAIL_SEND_SCOPE))
+    throw Error('Google did not grant gmail.send (the send-email permission was unticked or not offered). No GitHub secrets were changed. Restart setup and keep the Gmail send permission ticked on the consent screen.');
+}
 export function assertKeyPair(publicPem, privatePem) {
   const priv=createPrivateKey(privatePem),pub=createPublicKey(publicPem);
   if(priv.asymmetricKeyType!=='rsa'||priv.asymmetricKeyDetails?.modulusLength<3072 ||
