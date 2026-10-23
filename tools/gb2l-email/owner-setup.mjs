@@ -84,7 +84,7 @@ try{
    set('GMAIL_REFRESH_TOKEN',token.refresh_token,environment);
    set('GB2L_MAIL_PRIVATE_KEY',privateKey,environment);
  }
- const policy={version:1,mode:'approval_required',owner:'gitback2life-art',requester:'gitback2life-art',sender:'gitback2life.ai@gmail.com',daily_limit:3};
+ const policy={version:1,mode:'approval_required',owner:'gitback2life-art',requester:'gitback2life-art',sender:'gitback2life.ai@gmail.com',daily_limit:10};
  set('GB2L_EMAIL_POLICY',JSON.stringify(policy),'gb2l-email-send');
  // Auto policy is NOT enabled at setup. The owner must separately configure and
  // enable it through owner-mode.mjs after branch/environment protections are checked.
