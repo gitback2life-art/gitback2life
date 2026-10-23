@@ -21,18 +21,21 @@ jobs:
           persist-credentials: true
           fetch-depth: 0
       - name: Wait for the reviewed source ZIP upload
-        if: hashFiles('.toolbox-source-import-payload/*.zip') == ''
-        run: echo "Awaiting the single reviewed ZIP at .toolbox-source-import-payload/911_GitBack2Life_Email_Communications_Review_Build_20261020.zip."
+        if: hashFiles('.toolbox-source-import-payload/*.zip') == '' && hashFiles('toolbox/911_gitback2life/911_GitBack2Life_Email_Communications_Review_Build_20261020 (2).zip') == ''
+        run: echo "Awaiting the reviewed source ZIP in the repository upload location."
 
       - name: Import only the pinned and manifest-verified 14-tool source archive
-        if: hashFiles('.toolbox-source-import-payload/*.zip') != ''
+        if: hashFiles('.toolbox-source-import-payload/*.zip') != '' || hashFiles('toolbox/911_gitback2life/911_GitBack2Life_Email_Communications_Review_Build_20261020 (2).zip') != ''
         run: |
           set -euo pipefail
-          if [ ! -d .toolbox-source-import-payload ]; then
-            echo "No staging payload remains; import already completed or this PR has no import payload."
-            exit 0
+          payload_dir=".toolbox-source-import-payload"
+          source_archive="toolbox/911_gitback2life/911_GitBack2Life_Email_Communications_Review_Build_20261020 (2).zip"
+          staged_archive="$payload_dir/911_GitBack2Life_Email_Communications_Review_Build_20261020.zip"
+          mkdir -p "$payload_dir"
+          if [ -f "$source_archive" ] && [ ! -f "$staged_archive" ]; then
+            cp -- "$source_archive" "$staged_archive"
           fi
-          python toolbox/911_gitback2life/import_source_package.py --payload-dir .toolbox-source-import-payload --destination toolbox/911_gitback2life/distribution --repo-root .
+          python toolbox/911_gitback2life/import_source_package.py --payload-dir "$payload_dir" --destination toolbox/911_gitback2life/distribution --repo-root .
       - name: Commit the verified source files to this pull request branch
         if: hashFiles('toolbox/911_gitback2life/distribution/BUILD_MANIFEST.json') != ''
         env:
