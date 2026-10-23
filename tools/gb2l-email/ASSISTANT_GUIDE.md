@@ -1,6 +1,6 @@
 # GitBack2Life Email Communications — AI Assistant Guide
 
-Last checked: 2026-10-22. Read this file and `OWNER_SETUP.md` before taking any email action.
+Last checked: 2026-10-23. Read this file and `OWNER_SETUP.md` before taking any email action.
 
 ## What this adapter does
 
@@ -14,20 +14,19 @@ It does **not** read Gmail inboxes or retrieve incoming messages/replies. The Gi
 - Dedicated request channel: [PR #18](https://github.com/gitback2life-art/gitback2life/pull/18). Keep it open and unmerged.
 - Repository mode: `GB2L_EMAIL_MODE=approval_required`. Never switch to `auto_send` as a workaround.
 - The protected `gb2l-email-send` environment and its six required secrets have been provisioned. Never request or print their values in chat/logs.
-- The sender-readiness workflow successfully refreshes an access token, but the latest no-send diagnosis failed because that token's actual Google OAuth grant **does not contain** `https://www.googleapis.com/auth/gmail.send`: [readiness run 39813519317](https://github.com/gitback2life-art/gitback2life/actions/runs/39813519317). That diagnostic did not contact Gmail's send endpoint.
+- The owner completed fresh Google OAuth authorization with `gmail.send`; the owner subsequently confirmed the [Sender Readiness (no-send) workflow](https://github.com/gitback2life-art/gitback2life/actions/runs/39887443804) succeeded. The earlier missing-scope 403 is historical, not the current readiness state.
 - The initial test request reached Gmail's send endpoint and returned HTTP 403 after its attempt had been reserved; status was `uncertain_delivery`: [run 39798700833](https://github.com/gitback2life-art/gitback2life/actions/runs/39798700833). The old diagnostic version did not record Google's response reason.
-- The old request/draft ID `dbd4da02a28c5f2acd9e991b26005f0c` is permanently reserved. **Never retry, rerun, or reuse it.** No fresh test email is authorized by this guide.
+- The old request/draft ID `dbd4da02a28c5f2acd9e991b26005f0c` is permanently reserved. **Never retry, rerun, or reuse it.** Later messages used fresh IDs and still require their own private review and owner approval.
 - Safe error-detail logging and the no-send scope/audience diagnostic are included and their CI tests passed on main at commit `b8148c7be873fa455008813eee95a86b52d96f0c`.
 
-## Next recovery step (currently paused)
+## Current operational state — 2026-10-23
 
-The diagnosis points to a missing Gmail permission, not a need for a new Google Cloud project or OAuth client. When the owner resumes setup:
-
-1. Restore local GitHub CLI sign-in to `gitback2life-art` before running owner-only setup; the local account switch is currently on hold.
-2. Keep use of the existing Desktop OAuth client. Reauthorize `gitback2life.ai@gmail.com` with `gmail.send` and `openid email`; do not request inbox access.
-3. The existing `owner-setup.mjs` requires sending mode to be disabled during credential provisioning. The owner must explicitly run its setup procedure, which securely replaces the refresh-token secret and leaves mode disabled, then explicitly restore `approval_required`.
-4. Run [sender readiness (no-send)](https://github.com/gitback2life-art/gitback2life/actions/workflows/gb2l-email-readiness.yml). Proceed only if actual token audience/client, `gmail.send` scope, identity, key pair, secret presence, and policy checks pass.
-5. A live test email needs a **new draft ID and fresh explicit owner authorization**. Only then post a new encrypted request to PR #18 and approve the protected environment. Do not send anything on the basis of this guide alone.
+- Gmail authorization was refreshed and the owner confirmed Sender Readiness (no-send) succeeded.
+- An approval-gated message was accepted by Gmail, but the owner reported it landed in Spam; provider acceptance is not inbox delivery.
+- A later request was stopped before Gmail because the persisted owner policy's daily quota of three had been exhausted. The owner did not choose that limit and explicitly approved 10 messages per UTC day with per-message owner review retained.
+- This change aligns owner-mode.mjs, first-time owner-setup.mjs, tests, this guide, and the packaged adapter to a default quota of 10. The protected live GB2L_EMAIL_POLICY secret is separate and is not changed merely by merging source.
+- After merge, update the live policy locally from current main with: node tools/gb2l-email/owner-mode.mjs approval_required --daily=10 --actor=gitback2life-art. Confirm the command reports quota 10 and owner review remains required.
+- The quota-stopped request was not sent. Do not rerun its workflow or reuse its request ID; submit a fresh, privately reviewed request only after the live policy update.
 
 ## Required files
 

@@ -6,7 +6,7 @@ import {stdin as input,stdout as output} from 'node:process';
 import {parsePolicy,assertMainOnlyDeployment,OWNER,REPO,SENDER} from './policy.mjs';
 import {assertOwner,assertSoloMainRuleset,assertManualEnvironment} from './setup-checks.mjs';
 const [mode,...flags]=process.argv.slice(2);
-if(!['approval_required','auto_send','disabled'].includes(mode))throw Error('Usage: node tools/gb2l-email/owner-mode.mjs approval_required|auto_send|disabled [--daily=30] [--actor=gitback2life-art] [--domain=example.org]');
+if(!['approval_required','auto_send','disabled'].includes(mode))throw Error('Usage: node tools/gb2l-email/owner-mode.mjs approval_required|auto_send|disabled [--daily=10] [--actor=gitback2life-art] [--domain=example.org]');
 const opts={};for(const f of flags){const m=/^--(daily|actor|domain|recipient)=([\w@.\-]+)$/.exec(f);if(!m)throw Error('Unknown mode setting');opts[m[1]]=m[2];}
 const run=(args,data)=>{const p=spawnSync('gh',args,{input:data,encoding:'utf8',stdio:['pipe','pipe','pipe']});if(p.status!==0)throw Error('GitHub owner permission/configuration check failed: '+args.slice(0,3).join(' '));return p.stdout.trim();};
 if(process.env.GH_TOKEN||process.env.GITHUB_TOKEN)throw Error('Remove token overrides and sign in with the owner account');
@@ -36,7 +36,7 @@ if(mode==='disabled'){
   assertManualEnvironment(environ);
   assertMainOnlyDeployment(environ,JSON.parse(run(['api',`repos/${REPO}/environments/gb2l-email-send/deployment-branch-policies?per_page=100`])));
   assertMainRulesetConfigured();
-  const actor=opts.actor||OWNER,daily=opts.daily===undefined?30:Number(opts.daily);
+  const actor=opts.actor||OWNER,daily=opts.daily===undefined?10:Number(opts.daily);
   if(!/^[A-Za-z0-9-]{1,39}$/.test(actor))throw Error('Invalid authorized GitHub requester');
   if(!Number.isSafeInteger(daily)||daily<1||daily>30)throw Error('Daily send quota must be an integer from 1 to 30');
   const policy={version:1,mode:'approval_required',owner:OWNER,requester:actor,sender:SENDER,daily_limit:daily};

@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {generateKeyPairSync} from 'node:crypto';
+import {readFileSync} from 'node:fs';
 import {seal,unseal,normalizeDraft} from './crypto.mjs';
 import {makeComment,parseComment,envelopeForEvent} from './request.mjs';
 import {requestedMode,parsePolicy,assertSendContext,assertMainOnlyDeployment} from './policy.mjs';
@@ -9,12 +10,19 @@ const pair=generateKeyPairSync('rsa',{modulusLength:3072,publicKeyEncoding:{form
 const draft={to:'rescue@example.org',subject:'Harmless test',body:'A harmless synthetic request',incident_id:'SYNTHETIC'};
 const sealed=()=>seal(draft,pair.publicKey);
 const repo='gitback2life-art/gitback2life',owner='gitback2life-art';
-const manual={version:1,mode:'approval_required',owner,requester:owner,sender:'gitback2life.ai@gmail.com',daily_limit:3};
+const manual={version:1,mode:'approval_required',owner,requester:owner,sender:'gitback2life.ai@gmail.com',daily_limit:10};
 const auto={...manual,mode:'auto_send',daily_limit:2};
-test('owner approval policy permits the requested 30 daily emails but rejects higher or invalid quotas',()=>{
+test('owner-approved policy accepts ten daily sends and enforces the configured maximum of 30',()=>{
+ assert.equal(parsePolicy(JSON.stringify(manual),'approval_required',owner).daily_limit,10);
  const max={...manual,daily_limit:30};
  assert.equal(parsePolicy(JSON.stringify(max),'approval_required',owner).daily_limit,30);
  for(const daily_limit of [0,-1,31,1.5])assert.throws(()=>parsePolicy(JSON.stringify({...manual,daily_limit}),'approval_required',owner),/quota/);
+});
+test('owner-approved mode and first-time setup default to ten daily sends',()=>{
+ const mode=readFileSync(new URL('./owner-mode.mjs',import.meta.url),'utf8');
+ const setup=readFileSync(new URL('./owner-setup.mjs',import.meta.url),'utf8');
+ assert.ok(mode.includes('daily=opts.daily===undefined?10:Number(opts.daily)'));
+ assert.ok(setup.includes('daily_limit:10'));
 });
 const gh={repo,sha:'a'.repeat(40),githubToken:'synthetic-test-token'};
 const oauth={clientId:'x',clientSecret:'y',refreshToken:'z'};
