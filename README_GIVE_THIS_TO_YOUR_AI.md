@@ -1,30 +1,35 @@
-# To Baby Brother — integrate into existing GitBack2Life Email Communications
+# GitBack2Life email — current inbox handoff
 
-This is the **new inbox-only extension**, not a replacement of the existing working sender. Begin with the latest `main` of `gitback2life-art/gitback2life`. Review the new files under `REPOSITORY_FILES/` and add them at matching paths on a **new feature branch**. Do not overwrite unrelated files. `tools/gb2l-email/INBOX_SETUP.md` is the technical and owner setup guide.
+**Status:** The read-only receiving extension is merged into `main` (PR #35, merge commit `68216d32282f559c0e7c59f695f69adbd9fce473`). It is integrated into the existing GitBack2Life Email Communications app; it is not a second email app and it does not replace the sender.
 
-**The other connected AI's GitHub account, not this chat, must perform repository writes.** The GitHub accounts available to the build conversation have `pull: true`, `push: false`; nothing was committed or activated here. Do not merge, run OAuth, alter sender secrets, enable inbox checks/autonomous sending, or read live Gmail until separately authorized.
+## What is already in the repository
 
-### Exact contents
+- `.github/workflows/gb2l-inbox-check.yml`: inbox-only GitHub Actions workflow, disabled unless `GB2L_INBOX_ENABLED=true`, owner-review-gated, and restricted to `main`.
+- `tools/gb2l-email/receive.mjs`: bounded Gmail read of at most five matching inbox messages, text/plain content only, with no attachment retrieval or mail modification.
+- `tools/gb2l-email/inbox-transport.mjs`, `inbox-inspect.mjs`, and `inbox-run.mjs`: encrypted request/response protocol, owner/channel checks, one-time request reservation, and ciphertext-only return.
+- `tools/gb2l-email/assistant_inbox_session.py`: temporary recipient key and same-session response decryption through the existing GitHub connector.
+- `tools/gb2l-email/inbox-owner-setup.mjs` and `inbox-prepare-key.mjs`: local owner setup. The read credential must be limited to `gmail.readonly`; the reader rejects any broader Gmail grant.
 
-- `.github/workflows/gb2l-inbox-check.yml` — dedicated encrypted request-only GitHub Actions workflow, approval-protected
-- `tools/gb2l-email/receive.mjs` and `receive.test.mjs` — reviewed baseline staged read-only Gmail retrieval
-- `tools/gb2l-email/inbox-transport.mjs` — sealed search criteria, signed response, event/actor validation
-- `tools/gb2l-email/inbox-run.mjs` and `inbox-inspect.mjs` — protected sender, replay guard, encrypted reply channel
-- `tools/gb2l-email/inbox-flow.test.mjs` — integration/mocking and Python cross-language test
-- `tools/gb2l-email/assistant_inbox_session.py` — ephemeral Python assistant-side transport and decryption, kept in active execution session
-- `tools/gb2l-email/inbox-prepare-key.mjs`, `inbox-owner-setup.mjs`, `INBOX_SETUP.md` — separate owner-only future activation helpers and documentation
+## Existing sender protection
 
-The existing `send.mjs`, `owner-setup.mjs`, `readiness.mjs`, `public-key.pem`, `GB2L_EMAIL_MODE`, and `.github/workflows/gb2l-approved-email.yml` **must remain untouched**. Do not commit the private inbox key or OAuth JSON. A new public inbox key has **not yet been created**: `inbox-public-key.pem` is intentionally absent until the owner creates it on their own trusted computer.
+The existing `send.mjs`, `owner-setup.mjs`, `readiness.mjs`, `public-key.pem`, and `.github/workflows/gb2l-approved-email.yml` remain unchanged. Preserve `approval_required`. The inbox has a separate environment, private key, and read-only OAuth grant so receiving cannot inherit sending permission.
 
-### Run tests on the feature branch
+## What's still needed for first use
 
-```sh
-node --test tools/gb2l-email/receive.test.mjs tools/gb2l-email/inbox-flow.test.mjs
-node --test tools/gb2l-email/*.test.mjs
+The implementation and synthetic CI tests pass, including the inbox SHA-256 manifest check. It is **not live-connected yet**: `tools/gb2l-email/inbox-public-key.pem` has intentionally not been created, the protected `gb2l-inbox-read` environment is not yet configured, no dedicated request PR has been designated, and no inbox OAuth grant/secrets have been provisioned.
+
+On the owner's trusted Windows computer, from the local repository root in PowerShell, the next local-only step is:
+
+```powershell
+node tools/gb2l-email/inbox-prepare-key.mjs "$env:USERPROFILE\gb2l.inbox.private.pem"
 ```
 
-The cross-language test requires `python3` and the Python `cryptography` package on the testing runner. For CI, use a pinned Python setup if existing GitHub Actions does not provide it. The standalone staged reader tests need only Node.js 22+.
+That creates the **private** key under the local user profile and writes only the matching public key into `tools/gb2l-email/inbox-public-key.pem`. Never share, upload, or commit `gb2l.inbox.private.pem`; only the public PEM belongs in GitHub. After the public key is published, the remaining steps are: configure the designated open inbox PR and owner-reviewed `gb2l-inbox-read` environment; obtain a separate read-only OAuth grant using `inbox-owner-setup.mjs`; then run one owner-approved synthetic message round-trip and verify decryption in the same live assistant session. Keep the inbox disabled except for an explicitly approved test.
 
-No new workflow can be asserted operational until GitHub main accepts it, a protected `gb2l-inbox-read` environment is owner-approved, a separate scope-authorized Google credential is provisioned, and a safe synthetic test is decrypted **inside Baby Brother's actual active conversation**.
+## Verified checks
 
-**Specific connector limitation to verify before enabling:** the connected GitHub app here exposes `add_comment_to_issue` for PR conversation comments (not arbitrary issue comments). This package therefore deliberately uses an **open dedicated PR channel**. Verify that Baby Brother's connected account can post as the trusted `gitback2life-art` actor. A `read`-only GitHub connection cannot create those comments.
+- Inbox crypto/protocol, bounded reader, mocked GitHub/Gmail and cross-language tests passed.
+- Existing email regression tests and Toolbox source-integrity check passed.
+- SHA-256/byte-count manifest validation passed on the merged inbox branch.
+
+Synthetic tests are not evidence of live Gmail access. The existing sender must remain unchanged while the receiving path is being configured.
