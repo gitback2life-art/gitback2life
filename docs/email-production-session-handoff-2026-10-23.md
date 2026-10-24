@@ -351,4 +351,32 @@ Before requesting consent for the read scope, determine and document the applica
 ### Handoff discipline
 
 A green mocked test run is not proof of live Gmail access. A GitHub file commit is not proof that the intended live configuration changed. Do not tell the owner to do setup steps that the assistant can complete safely through its connected repository tools; do not claim to have performed actions that require unavailable GitHub write permissions, local owner credentials, Google's consent screen, or the owner's private key. Ask the owner for an action only when it is genuinely owner-only, and state the single specific action needed.
+---
+
+## Follow-up review — reject overbroad Gmail grants (2026-10-24)
+
+A second security review of draft PR #35 found a least-privilege gap: the inbox reader originally accepted a token whenever `gmail.readonly` was present, even if that same token also carried a broader Gmail permission. That was not sufficiently strict for an inbox-only credential.
+
+### Correction made on the existing review branch
+
+- `receive.mjs` now rejects any Google token containing Gmail permissions beyond exactly `https://www.googleapis.com/auth/gmail.readonly`, including `gmail.send`, `gmail.modify`, and `https://mail.google.com/`.
+- `inbox-owner-setup.mjs` applies the same check before storing any inbox-specific GitHub secrets. An overbroad grant is refused before secret provisioning.
+- `receive.test.mjs` now checks that broader grants fail closed even when `gmail.readonly` is also present.
+- `INBOX_SETUP.md` and `BUILD_REPORT.md` document the stricter grant requirement.
+- The SHA-256 manifest was refreshed. I independently recomputed SHA-256 and UTF-8 byte counts for all **15** listed files against the review branch; all 15 hashes and sizes matched.
+
+### CI evidence on the corrected branch head
+
+Draft PR [#35](https://github.com/gitback2life-art/gitback2life/pull/35), head commit [`00c4ad1d7eae2955c1aed2115f8569a55f135877`](https://github.com/gitback2life-art/gitback2life/commit/00c4ad1d7eae2955c1aed2115f8569a55f135877):
+
+- [Encrypted inbox tests — run #40047310118](https://github.com/gitback2life-art/gitback2life/actions/runs/40047310118): passed.
+- [Existing email tests and Toolbox bundle-integrity check — run #40047310117](https://github.com/gitback2life-art/gitback2life/actions/runs/40047310117): passed.
+
+The inbox workflow ran the synthetic crypto/protocol tests and JavaScript syntax checks. The existing email workflow ran the complete Node test suite, Toolbox adapter integrity verification, and JavaScript syntax checks. This validates the reviewed code paths and bundle integrity checks; it **does not** prove live GitHub comment posting, protected-environment approval behavior, Google restricted-scope eligibility, or a real Gmail read.
+
+### Current gate
+
+PR #35 remains **draft and unmerged**. No inbox public key was published, no inbox OAuth consent was requested, no inbox secrets were provisioned, no inbox mode was enabled, and no live message was read. The existing sender files remain byte-for-byte unchanged from `main`.
+
+The remaining owner-only decision is whether to pursue `gmail.readonly` for this GitHub-hosted processing design after confirming Google's applicable restricted-scope verification/security-assessment requirements. Only after that question is resolved should the owner explicitly authorize the separate live setup/test sequence. Do not merge or activate PR #35 just because synthetic CI is green.
 
