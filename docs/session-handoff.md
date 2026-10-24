@@ -1297,3 +1297,16 @@ Current verified checkpoint:
 
 This activity does not mean the broader 911 Toolbox is operationally verified. The detailed handoff records run links, privacy boundaries, and remaining work.
 
+
+
+## 2026-10-23 — Inbound email receiving handoff
+
+The detailed continuation notes for extending the existing GitBack2Life Email Communications application to receive email are in [Production Email + 911 Toolbox Session Handoff](email-production-session-handoff-2026-10-23.md), under **“Inbound Email / Baby Brother Session Handoff Addendum — 2026-10-23 (Evening)”**.
+
+Key state at the recorded checkpoint:
+- Outgoing reply to Mom was accepted by Gmail in [Actions run #40021401914](https://github.com/gitback2life-art/gitback2life/actions/runs/40021401914); recipient delivery/read status was not verified by the workflow.
+- The staged `911_GitBack2Life_Inbox_Read_Staged_20261023.zip` is not merged. ZIP SHA-256: `e90660fd87601fb89e02da1fec0babbd7cba65724e885eb1284b5e1615d6579e`. ZIP CRC and four manifest hashes were checked; its build report claims 14/14 offline tests, but Baby Brother did not independently rerun those tests.
+- Current main did not contain `tools/gb2l-email/receive.mjs`, its tests, or an inbound workflow at the checkpoint. No live Gmail read scope was authorized and no live inbox message was read.
+- The target is the existing repository email app plus the GitHub connector available in the active conversation. Do not require a separate ChatGPT Dock or new email application.
+- Next work: integrate read-only receiving behind explicit owner approval; evaluate Google restricted-scope requirements; encrypt private query metadata and returned messages; use the existing GitHub connector to pull ciphertext and prove that the active session can decrypt and read a synthetic test message. Keep the existing outbound workflow, `approval_required` mode, and per-send owner approval unchanged.
+- Do not call the inbound feature operational until the full synthetic round trip passes and the public GitHub surfaces/logs contain no plaintext email data.
