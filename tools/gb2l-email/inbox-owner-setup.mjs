@@ -54,7 +54,10 @@ try{
  const infoResponse=await fetch('https://oauth2.googleapis.com/tokeninfo',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({access_token:token.access_token}),signal:AbortSignal.timeout(20000)});
  if(!infoResponse.ok)fail('Unable to inspect Google grant');
  const info=await infoResponse.json();
- if(![info.aud,info.azp].includes(cfg.client_id)||!String(info.scope||'').split(/\s+/).includes(SCOPE))fail('Read-only Gmail scope/audience not granted');
+ const grantedScopes=String(info.scope||'').split(/\s+/).filter(Boolean);
+ if(![info.aud,info.azp].includes(cfg.client_id)||!grantedScopes.includes(SCOPE))fail('Read-only Gmail scope/audience not granted');
+ const gmailScopes=grantedScopes.filter(s=>s==='https://mail.google.com/'||/^https:\/\/www\.googleapis\.com\/auth\/gmail\./.test(s));
+ if(gmailScopes.some(s=>s!==SCOPE))fail('Inbox OAuth grant includes broader Gmail permissions; no secrets written');
  await verifySenderIdentity(token.access_token);
  const secret=(name,value)=>gh(['secret','set',name,'--repo',REPO,'--env','gb2l-inbox-read'],value);
  secret('GMAIL_INBOX_CLIENT_ID',cfg.client_id);
