@@ -1,22 +1,26 @@
 """In-memory GitBack2Life inbox request/response companion for an AI execution session.
 
-Use only after an explicit owner request, and keep the InboxSession instance alive
-between posting ciphertext and reading its signed response.  No private key is saved.
-GitHub connector handles posting and fetching comments; this module makes NO HTTP calls.
+Use only after showing the data-use disclosure and receiving the owner's explicit consent
+for this specific retrieval. prepare_request requires consent_confirmed=True and embeds a
+versioned, timestamped consent attestation. Keep the InboxSession instance alive between
+posting ciphertext and reading its signed response. No private key is saved. The GitHub
+connector handles posting/fetching comments; this module makes NO HTTP calls.
 """
 import base64
 import hashlib
 import json
 import re
 import secrets
+from datetime import datetime, timezone
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import rsa, padding
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
-REQ_PREFIX = 'GB2L_INBOX_V1:'
+REQ_PREFIX = 'GB2L_INBOX_V2:'
 RET_PREFIX = 'GB2L_INBOX_RESULT_V1:'
-SCHEMA = 'gb2l-inbox-request-v1'
+SCHEMA = 'gb2l-inbox-request-v2'
 RESP_SCHEMA = 'gb2l-inbox-return-v1'
+CONSENT_NOTICE_VERSION = '2026-10-24'
 EMAIL = re.compile(r"^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9](?:[A-Za-z0-9-]*\.)+[A-Za-z0-9-]+$")
 
 def b64(b): return base64.b64encode(b).decode('ascii')
@@ -36,7 +40,9 @@ class InboxSession:
         self.request_id = None
         self.return_fingerprint = fingerprint(self._private.public_key())
 
-    def prepare_request(self, inbox_public_pem, *, from_address=None, after=None, limit=5):
+    def prepare_request(self, inbox_public_pem, *, from_address=None, after=None, limit=5, consent_confirmed=False):
+        if consent_confirmed is not True:
+            raise ValueError('Explicit consent required before creating a Gmail request')
         if self.request_id is not None: raise ValueError('One request per session; use a fresh InboxSession')
         if from_address is not None:
             if not isinstance(from_address,str) or len(from_address)>254 or not EMAIL.fullmatch(from_address) or '..' in from_address:
@@ -50,7 +56,9 @@ class InboxSession:
         if not isinstance(pk,rsa.RSAPublicKey) or pk.key_size<3072: raise ValueError('Unsafe inbox encryption key')
         self.request_id = secrets.token_hex(16)
         reply_public=self._private.public_key().public_bytes(serialization.Encoding.PEM,serialization.PublicFormat.SubjectPublicKeyInfo).decode()
-        query={'limit':limit,'return_public_key':reply_public,'return_key_fingerprint':self.return_fingerprint}
+        consent_at_utc=datetime.now(timezone.utc).isoformat(timespec='milliseconds').replace('+00:00','Z')
+        query={'limit':limit,'return_public_key':reply_public,'return_key_fingerprint':self.return_fingerprint,
+            'consent_confirmed':True,'consent_notice_version':CONSENT_NOTICE_VERSION,'consent_at_utc':consent_at_utc}
         if from_address is not None: query['from']=from_address
         if after: query['after']=after
         aes=secrets.token_bytes(32); iv=secrets.token_bytes(12)

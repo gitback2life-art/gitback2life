@@ -4,9 +4,11 @@ import {createHash,createPublicKey,randomBytes,sign,verify,
   createCipheriv,createDecipheriv,publicEncrypt,privateDecrypt,constants} from 'node:crypto';
 import {normalizeInboxQuery} from './receive.mjs';
 
-export const INBOX_REQUEST_PREFIX='GB2L_INBOX_V1:';
+export const INBOX_REQUEST_PREFIX='GB2L_INBOX_V2:';
 export const INBOX_RESPONSE_PREFIX='GB2L_INBOX_RESULT_V1:';
-const REQUEST_SCHEMA='gb2l-inbox-request-v1';
+const REQUEST_SCHEMA='gb2l-inbox-request-v2';
+const CONSENT_NOTICE_VERSION='2026-10-24';
+const CONSENT_TIMESTAMP=/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
 const ID=/^[a-f0-9]{32}$/;
 const HEX=/^[a-f0-9]{64}$/;
 const B64=/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/;
@@ -29,12 +31,16 @@ export function validateInboxRequestEnvelope(e){
     throw err('INVALID_INBOX_REQUEST');
   return e;
 }
-export function sealInboxRequest({from,after,limit=3,return_public_key,request_id},inboxPublicPem){
+export function sealInboxRequest({from,after,limit=3,return_public_key,request_id,consent_confirmed,consent_at_utc},inboxPublicPem){
+  if(consent_confirmed!==true)throw err('INBOX_CONSENT_REQUIRED');
+  const consentAt=consent_at_utc??new Date().toISOString();
+  if(typeof consentAt!=='string'||!CONSENT_TIMESTAMP.test(consentAt))throw err('INVALID_CONSENT_TIMESTAMP');
   const normalized=normalizeInboxQuery({from,after,limit});
   const id=request_id||randomBytes(16).toString('hex');
   if(!ID.test(id))throw err('INVALID_REQUEST_ID');
   const replyKey=publicKey(return_public_key);
   const query={from,limit:normalized.limit,...(after?{after}:{}),
+    consent_confirmed:true,consent_notice_version:CONSENT_NOTICE_VERSION,consent_at_utc:consentAt,
     return_public_key:replyKey.export({type:'spki',format:'pem'}).toString(),
     return_key_fingerprint:fingerprint(return_public_key)};
   const serverKey=publicKey(inboxPublicPem);
@@ -56,10 +62,12 @@ export function unsealInboxRequest(envelope,inboxPrivatePem){
     d.setAAD(Buffer.from(REQUEST_SCHEMA+':'+e.request_id));
     d.setAuthTag(Buffer.from(e.tag,'base64'));
     const data=JSON.parse(Buffer.concat([d.update(Buffer.from(e.data,'base64')),d.final()]).toString('utf8'));
+    if(data?.consent_confirmed!==true||data?.consent_notice_version!==CONSENT_NOTICE_VERSION||typeof data?.consent_at_utc!=='string'||!CONSENT_TIMESTAMP.test(data.consent_at_utc))throw err('INBOX_CONSENT_REQUIRED');
     const norm=normalizeInboxQuery(data);
     const returnKey=publicKey(data.return_public_key);
     if(fingerprint(data.return_public_key)!==data.return_key_fingerprint)throw err('RETURN_KEY_MISMATCH');
     return {request_id:e.request_id,filter:{from:data.from,...(data.after?{after:data.after}:{}),limit:norm.limit},
+      consent_confirmed:true,consent_notice_version:data.consent_notice_version,consent_at_utc:data.consent_at_utc,
       return_public_key:returnKey.export({type:'spki',format:'pem'}).toString(),return_key_fingerprint:data.return_key_fingerprint};
   }catch{throw err('INBOX_DECRYPTION_FAILED');}
 }
@@ -105,6 +113,7 @@ export function decodeInboxResponse(comment){
 export function validateOwnerInboxEvent(event,env){
   if(env.GITHUB_REPOSITORY!=='gitback2life-art/gitback2life'||env.GITHUB_REF!=='refs/heads/main'||env.GITHUB_RUN_ATTEMPT!=='1')throw err('UNTRUSTED_INBOX_CONTEXT');
   if(env.GB2L_INBOX_ENABLED!=='true')throw err('INBOX_DISABLED');
+  if(env.GB2L_INBOX_GOOGLE_COMPLIANCE_READY!=='true')throw err('INBOX_COMPLIANCE_NOT_CLEARED');
   if(env.GITHUB_EVENT_NAME!=='issue_comment'||event?.action!=='created'||!event?.issue?.pull_request || event?.issue?.state!=='open')throw err('UNTRUSTED_INBOX_EVENT');
   const actor=env.GB2L_INBOX_ACTOR;
   if(actor!=='gitback2life-art'||env.GITHUB_ACTOR!==actor||event?.comment?.user?.login!==actor)throw err('UNAUTHORIZED_INBOX_ACTOR');

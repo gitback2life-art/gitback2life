@@ -18,6 +18,7 @@ jobs:
     if: >-
       ${{
         vars.GB2L_INBOX_ENABLED == 'true' &&
+        vars.GB2L_INBOX_GOOGLE_COMPLIANCE_READY == 'true' &&
         github.ref == 'refs/heads/main' &&
         github.run_attempt == 1 &&
         github.actor == 'gitback2life-art' &&
@@ -27,7 +28,7 @@ jobs:
         github.event.issue.state == 'open' &&
         github.event.issue.number == 41 &&
         github.event.comment.user.login == 'gitback2life-art' &&
-        startsWith(github.event.comment.body, 'GB2L_INBOX_V1:')
+        startsWith(github.event.comment.body, 'GB2L_INBOX_V2:')
       }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -52,6 +53,7 @@ jobs:
       - name: Read the bounded inbox request and return ciphertext only
         env:
           GB2L_INBOX_ENABLED: ${{ vars.GB2L_INBOX_ENABLED }}
+          GB2L_INBOX_GOOGLE_COMPLIANCE_READY: ${{ vars.GB2L_INBOX_GOOGLE_COMPLIANCE_READY }}
           GB2L_INBOX_ACTOR: gitback2life-art
           GB2L_INBOX_REQUEST_PR: '41'
           GITHUB_TOKEN: ${{ github.token }}

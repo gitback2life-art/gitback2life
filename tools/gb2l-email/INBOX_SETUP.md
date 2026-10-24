@@ -2,7 +2,7 @@
 
 ## How it works
 
-1. In ChatGPT, ask to read your emails. The assistant posts a one-use `GB2L_INBOX_V1:` encrypted request as a comment on PR #41.
+1. The assistant shows the in-context data-use disclosure and obtains an explicit yes for this specific retrieval. Only then may it create a one-use `GB2L_INBOX_V2:` encrypted request comment on PR #41. The channel and hosted reader remain paused until the compliance-ready gate is satisfied.
 2. The `.github/workflows/gb2l-inbox-read.yml` workflow starts from the GitHub `issue_comment` event. It only accepts a new request comment authored by `gitback2life-art` on the open, dedicated PR #41, while running trusted code from `main`.
 3. The job uses a dedicated Gmail refresh token authorized for `gmail.readonly` to read at most five newest messages from Inbox, all senders by default. It verifies the expected Google account and the read-only scope, reserves the request ID against replay, and never writes to or sends mail.
 4. The reply is encrypted for the active ChatGPT session's temporary public key and signed. GitHub receives only the encrypted response comment; message text and headers are not printed to workflow logs.
@@ -27,19 +27,29 @@ In **Settings → Environments**, create an environment named exactly `gb2l-inbo
 
 The **client ID and client secret may be the same values already used by the sender**, so you do not need a second OAuth client just for reading. The Gmail refresh token must be the dedicated read-only inbox grant; do not reuse the sender's refresh token because it may have only `gmail.send` scope, and this reader intentionally rejects broader Gmail scopes. The inbox private key is separate from the sender's mail key because it protects a different encrypted request/return protocol.
 
-Set the repository Actions variable **`GB2L_INBOX_ENABLED`** to the string `true` only after the environment and its secrets are configured. The hosted workflow checks this flag before it starts; if the variable is unset or false, a request comment will not start Gmail reading. This is the kill switch. Keep the sender's `approval_required` mode, daily quota of 30, keys, and secrets unchanged.
+The hosted reader is **paused pending Google data-policy compliance**. The workflow requires both repository Actions variables `GB2L_INBOX_ENABLED=true` and `GB2L_INBOX_GOOGLE_COMPLIANCE_READY=true`; the second gate must remain unset/false until the required security assessment is complete (or Google confirms an exemption in writing) and the privacy notice, OAuth privacy-policy URL, and in-context consent flow are in place. Do not set the compliance-ready variable merely to test the workflow. Keep the sender's `approval_required` mode, quota, keys, and secrets unchanged.
 
 The workflow's short-lived `GITHUB_TOKEN` is used for the one-use reservation tag and encrypted response comment. The control token is used only to inspect the protected environment configuration. If the protected environment, control token, inbox key, or OAuth credentials are missing or misconfigured, the reader fails closed.
 
+## Consent before every request
+
+Before generating a request, the assistant must show the in-context disclosure immediately before asking for permission:
+
+> This request will retrieve up to five matching Gmail Inbox messages, including message metadata and text. GitHub Actions will process the message text transiently before encrypting the result into a comment on this public repository. The encrypted result will be provided to ChatGPT for the email analysis you requested. The comment is public ciphertext and may persist; ChatGPT processes decrypted content under its own service terms and settings. Do you explicitly consent to this retrieval and sharing for this request?
+
+Only after the user explicitly answers yes may the assistant call `InboxSession.prepare_request(..., consent_confirmed=True)`. A missing consent flag is rejected by the client and server. The request records the notice version and UTC time inside the encrypted payload. No request must be submitted on silence, ambiguity, or a negative answer.
+
 ## Privacy and Google scope note
 
-The repository is private, but that does **not** mean the hosted runner never sees email text: Gmail plaintext is processed transiently in the GitHub-hosted runner's memory before the response is encrypted. The workflow is designed not to persist that text or place it in logs. Only the bounded, encrypted return is posted as a comment.
+This repository is public. The hosted runner processes Gmail plaintext transiently in memory before the response is encrypted; the workflow is designed not to persist that text or place it in logs. The bounded encrypted return is posted as a comment on the public repository, where the ciphertext can persist. Encryption does not remove the hosted runner's plaintext access or replace Google's compliance requirements.
 
-Google classifies `gmail.readonly` as a restricted Gmail scope and says that storing restricted-scope data on servers or transmitting it requires a security assessment. See [Gmail API scopes](https://developers.google.com/workspace/gmail/api/auth/scopes) and [restricted scope verification](https://developers.google.com/identity/protocols/oauth2/production-readiness/restricted-scope-verification). A private repository and encrypted return do not waive those requirements. Use this hosted architecture only if you accept the server-side processing boundary and have addressed the applicable Google requirements.
+Google classifies `gmail.readonly` as a restricted Gmail scope. Google states that an app with restricted data accessible from or through a third-party server must undergo a security assessment by a Google-approved assessor, with reassessment at least every 12 months. Personal-use status is an OAuth verification exception; Google's published assessment rule does not extend that exception to hosted server processing. See [Gmail API scopes](https://developers.google.com/workspace/gmail/api/auth/scopes), [restricted scope verification](https://developers.google.com/identity/protocols/oauth2/production-readiness/restricted-scope-verification), and the [Workspace User Data and Developer Policy](https://developers.google.com/workspace/workspace-api-user-data-developer-policy).
 
 ## Safety invariants
 
 - Requester and dedicated PR are checked; only the repository owner's newly created encrypted request is accepted.
-- The inbox key fingerprint, one-use request ID, temporary return key, response signature and read-only Gmail scope are verified.
+- The inbox key fingerprint, one-use request ID, temporary return key, response signature, per-request consent attestation and read-only Gmail scope are verified.
+- The hosted reader remains disabled until the external Google compliance prerequisites are completed and the owner deliberately enables the compliance-ready gate.
+- V1 requests are obsolete and rejected by the updated workflow. Do not reuse old request comments; a future authorized request must be newly generated as V2 after disclosure and consent.
 - At most five Inbox messages are read; attachments are not fetched.
 - The existing outgoing email sender remains separate and unchanged.

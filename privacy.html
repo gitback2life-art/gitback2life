@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="How gitback2life uses Google Analytics and how visitors can manage analytics collection.">
+  <meta name="description" content="Privacy notice for the gitback2life website and its personal Gmail assistant, including Google data access, encrypted transport, ChatGPT processing, consent, and deletion.">
   <title>Privacy Notice | gitback2life</title>
   <style>
     :root{color-scheme:light dark;--bg:light-dark(#eef8ff,#030712);--surface:light-dark(#fff,#08111f);--text:light-dark(#101827,#f3f8ff);--muted:light-dark(#52657a,#9eb1c7);--line:light-dark(#c7deef,#20324d);--accent:light-dark(#087ea4,#00d9ff)}
@@ -24,10 +24,29 @@
     <main>
       <p class="muted">Last updated: October 13, 2026</p>
       <h1>Privacy notice</h1>
-      <p>This notice explains how the public gitback2life website uses analytics. The project is pseudonymous and aims to avoid publishing private identity information.</p>
+      <p>This notice explains how the public gitback2life website uses analytics and how the owner-operated, single-user Gmail assistant is designed to handle Google user data. The project is pseudonymous and aims to avoid publishing private identity information.</p>
       <h2>Google Analytics</h2>
       <p>This website uses Google Analytics 4 (GA4), provided by Google, to understand how visitors use the site and improve its pages. The site sends standard analytics events such as page views and engagement. Depending on browser and service settings, analytics may process information such as page URLs, browser and device details, approximate location, and identifiers or cookies used for measurement.</p>
       <p>Google processes data under its own terms and privacy practices. Read <a href="https://policies.google.com/privacy" rel="noopener noreferrer">Google's Privacy Policy</a> for more information. The site owner does not use GA4 to intentionally request sensitive personal information.</p>
+      <h2>Personal Gmail assistant — current status</h2>
+      <p>The hosted Gmail reader is paused while the owner addresses Google's data-use, allowed-use-case, and restricted-scope security requirements. This feature must not be re-enabled until the applicable requirements are addressed.</p>
+      <p>The intended feature is user-directed email question-answering and summarization: when the owner asks a question, the assistant searches recent Inbox messages and uses ChatGPT to analyze the relevant content. Google lists generative-AI summaries as an approved Gmail productivity use case, but the exact request-and-return architecture has not been approved by Google; because it retrieves message text on demand, its classification must not be assumed.</p>
+      <h2>Google data accessed and why</h2>
+      <p>When enabled, the reader uses the Gmail API with the read-only <code>gmail.readonly</code> scope. It retrieves up to five newest Inbox messages matching the user's request, including message metadata and text. It does not fetch attachments. Message text is intended to be used only to answer the owner's requested email question or provide the requested summary or analysis.</p>
+      <h2>How data moves</h2>
+      <ol>
+        <li>Gmail provides matching messages to a GitHub-hosted Actions runner. That runner processes plaintext message content transiently in memory before encrypting the response. The workflow is designed not to print message bodies, headers, search filters, or credentials to logs.</li>
+        <li>The response is encrypted for a temporary session key and posted as ciphertext in a comment on this public GitHub repository. The comment is public encrypted data and may persist on GitHub. It is not plaintext email, but it should not be assumed harmless if a private key is compromised.</li>
+        <li>The encrypted response is decrypted in the active assistant session so ChatGPT can answer the owner's request. The selected message content is transferred to and processed by OpenAI's service under the applicable OpenAI terms, service controls, and account settings. This project does not control OpenAI's service retention systems.</li>
+      </ol>
+      <p>The reader is designed not to change the Gmail mailbox. It does not intentionally sell email data, use it for advertising, or create a permanent email archive. GitHub comments and logs, and ChatGPT conversation handling, remain subject to the respective providers' controls and retention practices.</p>
+      <h2>Disclosure and consent</h2>
+      <p>Before each retrieval, the assistant must display an in-context disclosure of the message data accessed, GitHub-hosted plaintext processing, the public ciphertext comment, and the transfer to ChatGPT. It must obtain an explicit affirmative response for that particular request before it sends the request to the hosted reader. Silence or ambiguity is not consent.</p>
+      <h2>Google Limited Use commitment</h2>
+      <p>The use of information received from Google Workspace scopes will adhere to the <a href="https://developers.google.com/workspace/workspace-api-user-data-developer-policy" rel="noopener noreferrer">Google Workspace User Data and Developer Policy</a>, including the Limited Use requirements. The application will not intentionally use Google user data to train or improve general-purpose AI models or to create a permanent email dataset. Before the reader is re-enabled, the owner must verify that the selected ChatGPT service and account settings satisfy Google's restrictions; the application cannot guarantee provider-side retention or processing beyond the providers' published terms and controls.</p>
+      <h2>Managing or deleting data</h2>
+      <p>The owner can stop new access by keeping the hosted reader's compliance-ready gate disabled, delete request/response comments from GitHub, delete the relevant ChatGPT conversation using ChatGPT's controls, revoke the app's Gmail access in the Google Account's third-party connections, and remove the associated OAuth refresh token and GitHub secrets. Deletion in one service does not automatically delete data held by another service or immediately remove all provider backups or logs.</p>
+      <p>This is a single-user personal tool; there are no other enrolled users or public accounts. Do not put plaintext email, private sender filters, OAuth tokens, or private keys in public GitHub comments or commits.</p>
       <h2>Your choices</h2>
       <p>You can limit or prevent analytics collection using browser privacy settings and available controls. Google provides a <a href="https://tools.google.com/dlpage/gaoptout" rel="noopener noreferrer">Google Analytics opt-out browser add-on</a> for supported browsers. Blocking scripts or cookies may affect measurement.</p>
       <h2>Contact and changes</h2>
