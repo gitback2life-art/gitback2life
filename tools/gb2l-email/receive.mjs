@@ -1,5 +1,5 @@
 // Bounded, read-only Gmail fetch logic. PRIVATE DATA: never log or publish return values.
-// NOT WIRED TO GITHUB ACTIONS: no trusted ChatGPT return path has been verified.
+// Called by inbox-run.mjs only after the owner-approved workflow gate; live transport remains unverified until the owner's controlled round-trip test.
 import {createHash,createCipheriv,createDecipheriv,randomBytes,createPublicKey,
   publicEncrypt,privateDecrypt,constants} from 'node:crypto';
 
