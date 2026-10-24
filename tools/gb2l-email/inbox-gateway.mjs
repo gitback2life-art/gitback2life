@@ -58,7 +58,9 @@ export function createHandler(config={},invoke=requestEmails){
   let msg;try{msg=JSON.parse(raw);}catch{return send(400,{error:'BAD_JSON'});}
   const reply=result=>send(200,{jsonrpc:'2.0',id:msg.id,result});
   const error=(code,message)=>send(200,{jsonrpc:'2.0',id:msg.id,error:{code,message}});
+  if(msg?.jsonrpc==='2.0'&&msg.method==='notifications/initialized'&&msg.id===undefined){res.writeHead(202,{'Cache-Control':'no-store'});return res.end();}
   if(msg?.jsonrpc!=='2.0'||!['string','number'].includes(typeof msg.id))return error(-32600,'Invalid Request');
+  if(msg.method==='ping')return reply({});
   if(msg.method==='initialize')return reply({protocolVersion:'2025-03-26',capabilities:{tools:{}},serverInfo:{name:'gb2l-inbox',version:'1.0.0'}});
   if(msg.method==='tools/list')return reply({tools:[TOOL]});
   if(msg.method!=='tools/call')return error(-32601,'Method not found');
