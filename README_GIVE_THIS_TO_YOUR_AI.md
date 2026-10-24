@@ -16,7 +16,7 @@ The existing `send.mjs`, `owner-setup.mjs`, `readiness.mjs`, `public-key.pem`, a
 
 ## What's still needed for first use
 
-The implementation and synthetic CI tests pass, including the inbox SHA-256 manifest check. It is **not live-connected yet**: `tools/gb2l-email/inbox-public-key.pem` has intentionally not been created, the protected `gb2l-inbox-read` environment is not yet configured, no dedicated request PR has been designated, and no inbox OAuth grant/secrets have been provisioned.
+The implementation and synthetic CI tests pass, including the inbox SHA-256 manifest check. It is **not live-connected yet**: `tools/gb2l-email/inbox-public-key.pem` has intentionally not been created, the protected `gb2l-inbox-read` environment is not yet configured, the dedicated channel [PR #41](https://github.com/gitback2life-art/gitback2life/pull/41) is open but `GB2L_INBOX_REQUEST_PR=41` has not been configured, and no inbox OAuth grant/secrets have been provisioned.
 
 On the owner's trusted Windows computer, from the local repository root in PowerShell, the next local-only step is:
 
@@ -24,7 +24,7 @@ On the owner's trusted Windows computer, from the local repository root in Power
 node tools/gb2l-email/inbox-prepare-key.mjs "$env:USERPROFILE\gb2l.inbox.private.pem"
 ```
 
-That creates the **private** key under the local user profile and writes only the matching public key into `tools/gb2l-email/inbox-public-key.pem`. Never share, upload, or commit `gb2l.inbox.private.pem`; only the public PEM belongs in GitHub. After the public key is published, the remaining steps are: configure the designated open inbox PR and owner-reviewed `gb2l-inbox-read` environment; obtain a separate read-only OAuth grant using `inbox-owner-setup.mjs`; then run one owner-approved synthetic message round-trip and verify decryption in the same live assistant session. Keep the inbox disabled except for an explicitly approved test.
+That creates the **private** key under the local user profile and writes only the matching public key into `tools/gb2l-email/inbox-public-key.pem`. Never share, upload, or commit `gb2l.inbox.private.pem`; only the public PEM belongs in GitHub. After the public key is published, the remaining steps are: configure `GB2L_INBOX_REQUEST_PR=41` and the owner-reviewed `gb2l-inbox-read` environment; obtain a separate read-only OAuth grant using `inbox-owner-setup.mjs`; then run one owner-approved synthetic message round-trip and verify decryption in the same live assistant session. Keep the inbox disabled except for an explicitly approved test.
 
 ## Verified checks
 
