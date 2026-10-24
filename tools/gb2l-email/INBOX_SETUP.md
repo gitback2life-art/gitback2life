@@ -2,7 +2,7 @@
 
 ## How it works
 
-1. In ChatGPT, ask to read your emails. The assistant posts a one-use `GB2L_INBOX_V2:` encrypted request as a comment on PR #41.
+1. The assistant shows the in-context data-use disclosure and obtains an explicit yes for this specific retrieval. Only then may it create a one-use `GB2L_INBOX_V2:` encrypted request comment on PR #41. The channel and hosted reader remain paused until the compliance-ready gate is satisfied.
 2. The `.github/workflows/gb2l-inbox-read.yml` workflow starts from the GitHub `issue_comment` event. It only accepts a new request comment authored by `gitback2life-art` on the open, dedicated PR #41, while running trusted code from `main`.
 3. The job uses a dedicated Gmail refresh token authorized for `gmail.readonly` to read at most five newest messages from Inbox, all senders by default. It verifies the expected Google account and the read-only scope, reserves the request ID against replay, and never writes to or sends mail.
 4. The reply is encrypted for the active ChatGPT session's temporary public key and signed. GitHub receives only the encrypted response comment; message text and headers are not printed to workflow logs.
