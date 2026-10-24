@@ -20,3 +20,16 @@ test('authentication and MCP discovery with mocked read',async()=>{
   assert.equal((await r.json()).result.structuredContent.status,'no_matches');
  }finally{await new Promise(resolve=>server.close(resolve));}
 });
+
+test('MCP ping and initialization notification are supported',async()=>{
+ const server=createServer(createHandler({accessToken:'test-token'},async()=>({status:'no_matches',count:0,messages:[]})));
+ await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
+ try{
+  const url=`http://127.0.0.1:${server.address().port}/mcp`;
+  const call=message=>fetch(url,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer test-token'},body:JSON.stringify(message)});
+  let r=await call({jsonrpc:'2.0',id:4,method:'ping'});
+  assert.deepEqual((await r.json()).result,{});
+  r=await call({jsonrpc:'2.0',method:'notifications/initialized'});
+  assert.equal(r.status,202);
+ }finally{await new Promise(resolve=>server.close(resolve));}
+});
