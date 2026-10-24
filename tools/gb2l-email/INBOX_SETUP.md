@@ -41,7 +41,7 @@ Only after the user explicitly answers yes may the assistant call `InboxSession.
 
 ## Privacy and Google scope note
 
-The repository is private, but that does **not** mean the hosted runner never sees email text: Gmail plaintext is processed transiently in the GitHub-hosted runner's memory before the response is encrypted. The workflow is designed not to persist that text or place it in logs. Only the bounded, encrypted return is posted as a comment.
+This repository is public. The hosted runner processes Gmail plaintext transiently in memory before the response is encrypted; the workflow is designed not to persist that text or place it in logs. The bounded encrypted return is posted as a comment on the public repository, where the ciphertext can persist. Encryption does not remove the hosted runner's plaintext access or replace Google's compliance requirements.
 
 Google classifies `gmail.readonly` as a restricted Gmail scope. Google states that an app with restricted data accessible from or through a third-party server must undergo a security assessment by a Google-approved assessor, with reassessment at least every 12 months. Personal-use status is an OAuth verification exception; Google's published assessment rule does not extend that exception to hosted server processing. See [Gmail API scopes](https://developers.google.com/workspace/gmail/api/auth/scopes), [restricted scope verification](https://developers.google.com/identity/protocols/oauth2/production-readiness/restricted-scope-verification), and the [Workspace User Data and Developer Policy](https://developers.google.com/workspace/workspace-api-user-data-developer-policy).
 
@@ -50,5 +50,6 @@ Google classifies `gmail.readonly` as a restricted Gmail scope. Google states th
 - Requester and dedicated PR are checked; only the repository owner's newly created encrypted request is accepted.
 - The inbox key fingerprint, one-use request ID, temporary return key, response signature, per-request consent attestation and read-only Gmail scope are verified.
 - The hosted reader remains disabled until the external Google compliance prerequisites are completed and the owner deliberately enables the compliance-ready gate.
+- V1 requests are obsolete and rejected by the updated workflow. Do not reuse old request comments; a future authorized request must be newly generated as V2 after disclosure and consent.
 - At most five Inbox messages are read; attachments are not fetched.
 - The existing outgoing email sender remains separate and unchanged.
