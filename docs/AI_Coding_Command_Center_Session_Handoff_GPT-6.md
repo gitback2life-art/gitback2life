@@ -266,3 +266,7 @@ A separate operational handoff now records the 911 Toolbox source import and own
 
 This is adjacent repository activity, not a change to the local AI Coding Command Center's Stage A1/A2 status, authorizations, or test evidence. Do not infer any new AI Coding Command Center deployment permission from the email-workflow changes. The current email-source quota is 10/day in approval-required mode, but the protected live `GB2L_EMAIL_POLICY` secret still requires an owner-side update and confirmation; per-message owner review remains required.
 
+## Cross-link — GitBack2Life email/inbox handoff (2026-10-23)
+
+The detailed email application and inbound inbox review checkpoint is maintained in [Production Email + 911 Toolbox Session Handoff](email-production-session-handoff-2026-10-23.md). The new addendum documents draft PR #35, the synthetic CI evidence, the corrected manifest paths, the Google restricted `gmail.readonly` scope decision, and the remaining live-integration blockers. This is adjacent repository work; it does not authorize Stage A1/A2 execution, merge PR #35, enable inbox access, or change the AI Coding Command Center deployment status.
+
