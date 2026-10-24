@@ -36,10 +36,11 @@ class InboxSession:
         self.request_id = None
         self.return_fingerprint = fingerprint(self._private.public_key())
 
-    def prepare_request(self, inbox_public_pem, *, from_address, after=None, limit=3):
+    def prepare_request(self, inbox_public_pem, *, from_address=None, after=None, limit=5):
         if self.request_id is not None: raise ValueError('One request per session; use a fresh InboxSession')
-        if not isinstance(from_address,str) or len(from_address)>254 or not EMAIL.fullmatch(from_address) or '..' in from_address:
-            raise ValueError('Explicit sender address required')
+        if from_address is not None:
+            if not isinstance(from_address,str) or len(from_address)>254 or not EMAIL.fullmatch(from_address) or '..' in from_address:
+                raise ValueError('Sender must be a valid email address when provided')
         if type(limit) is not int or not 1 <= limit <= 5: raise ValueError('Limit 1–5')
         if after is not None:
             from datetime import date
@@ -49,7 +50,8 @@ class InboxSession:
         if not isinstance(pk,rsa.RSAPublicKey) or pk.key_size<3072: raise ValueError('Unsafe inbox encryption key')
         self.request_id = secrets.token_hex(16)
         reply_public=self._private.public_key().public_bytes(serialization.Encoding.PEM,serialization.PublicFormat.SubjectPublicKeyInfo).decode()
-        query={'from':from_address,'limit':limit,'return_public_key':reply_public,'return_key_fingerprint':self.return_fingerprint}
+        query={'limit':limit,'return_public_key':reply_public,'return_key_fingerprint':self.return_fingerprint}
+        if from_address is not None: query['from']=from_address
         if after: query['after']=after
         aes=secrets.token_bytes(32); iv=secrets.token_bytes(12)
         encrypted=AESGCM(aes).encrypt(iv,json.dumps(query,separators=(',',':')).encode(),(SCHEMA+':'+self.request_id).encode())
