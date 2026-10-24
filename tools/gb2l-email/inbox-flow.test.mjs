@@ -7,7 +7,7 @@ import {sealInboxRequest,unsealInboxRequest,encodeInboxComment,decodeInboxCommen
   validateOwnerInboxEvent,signInboxResponse,verifyInboxResponse,
   encodeInboxResponse,decodeInboxResponse} from './inbox-transport.mjs';
 import {encryptInboxReturn,decryptInboxReturn} from './receive.mjs';
-import {boundInboxResult,runInboxRequest} from './inbox-run.mjs';
+import {assertInboxPrivateKeyMatches,boundInboxResult,runInboxRequest} from './inbox-run.mjs';
 const key=()=>generateKeyPairSync('rsa',{modulusLength:3072,publicKeyEncoding:{type:'spki',format:'pem'},privateKeyEncoding:{type:'pkcs8',format:'pem'}});
 const server=key(),receiver=key();
 const requestId='a'.repeat(32);
@@ -32,6 +32,11 @@ function mock(calls,{scope=true,returnList=true}={}){
   throw Error('Unexpected endpoint '+url);
  };
 }
+test('inbox reader requires a real matching RSA private key',()=>{
+ assert.equal(assertInboxPrivateKeyMatches(server.privateKey,server.publicKey),true);
+ assert.throws(()=>assertInboxPrivateKeyMatches(server.publicKey,server.publicKey),/INBOX_PRIVATE_KEY_INVALID/);
+ assert.throws(()=>assertInboxPrivateKeyMatches(receiver.privateKey,server.publicKey),/INBOX_PRIVATE_KEY_MISMATCH/);
+});
 test('encrypted query hides sender and is bound to ephemeral return key',()=>{
  const e=make(),encoded=encodeInboxComment(e);
  assert.ok(!encoded.includes(filter.from));
