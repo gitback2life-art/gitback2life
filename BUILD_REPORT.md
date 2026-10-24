@@ -19,6 +19,7 @@ Date: 2026-10-23. Target: public `gitback2life-art/gitback2life` current `main`,
 - Fresh inbox-only public key generated on the owner device and published, private key held locally/protected environment
 - Dedicated PR channel, repo Actions variables and environment reviewer/branch-policy setup
 - Google's restricted `gmail.readonly` scope authorization and applicability of verification/security assessment
+- Google's data-use rules for transferring decrypted Gmail content into a separate AI conversation, explicit consent/disclosure, human viewing, and prohibition on using Google user data to train/improve foundation models
 - Live protected GitHub Actions execution, Gmail retrieval and return, and same-active-session decryption
 - Canonical Toolbox adapter mirror and source-integrity manifest synchronization before distributing in the full Windows Toolbox
 
