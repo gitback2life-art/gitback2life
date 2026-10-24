@@ -15,13 +15,23 @@ gmail.readonly is a restricted scope. Google lists personal use as an exception 
 3. From the local repo root, double-click Read-GB2L-Inbox.ps1. On first run, choose the Google Desktop OAuth client JSON when the file picker opens. The local setup requests only gmail.readonly plus openid/email identity, checks the actual grant and exact account, and stores the refresh token outside GitHub and outside the repo in %LOCALAPPDATA%\GitBack2Life\inbox-oauth.json with a Windows owner-only ACL. It does not read any email during setup.
 4. If Google does not issue a refresh token or the actual grant includes another Gmail scope, the setup refuses and writes no credentials. Do not broaden the scope or replace the existing sender grant.
 
-## Reading a requested email
+## One-time local watcher
 
-1. In the active assistant conversation, ask to read a message from one sender. The assistant prepares an encrypted GB2L_INBOX_V1 request for the existing inbound-request PR #41; sender/date/limit are encrypted to the local inbox public key.
-2. Double-click Read-GB2L-Inbox.ps1 on the owner's computer. It confirms GitHub CLI is signed in as gitback2life-art, finds the newest unanswered encrypted request, and displays the sender, optional date, and limit locally.
-3. Type YES only when that exact request is yours. It retrieves at most five matching messages in the Inbox, plain-text bodies only, and never downloads attachments or changes email.
-4. The local program reserves the request ID once, signs and encrypts the bounded result to the active assistant session's temporary return key, and posts only the ciphertext to PR #41. The assistant reads that ciphertext through the existing GitHub connector and decrypts it only if the same active session is still alive. If the session was reset, do not attempt to publish or recover the private key; make a fresh request.
-5. GitHub Actions is no longer allowed to read Gmail. Keep GB2L_INBOX_ENABLED=false and do not add Gmail read refresh tokens to GitHub environment secrets. The gb2l-inbox-read environment may remain configured but is unused by this local path.
+After OAuth setup is complete, start the local watcher once and leave its PowerShell window open:
+
+```powershell
+$repo = Join-Path $env:USERPROFILE 'GitBack2Life-InboxSetup'
+& (Join-Path $repo 'Read-GB2L-Inbox.ps1') -Watch
+```
+
+The watcher checks PR #41 every 10 seconds. Closing the window or pressing Ctrl+C stops it; after Windows restarts, start it again.
+
+## Reading email from ChatGPT
+
+1. In the active assistant conversation, simply ask to read your emails. The assistant prepares a one-use encrypted GB2L_INBOX_V1 request for the newest five messages in Inbox from any sender. A sender, date, or smaller limit can be specified, but is not required.
+2. The assistant posts only that encrypted request to PR #41. The already-running local watcher accepts only a valid encrypted request comment authored by `gitback2life-art`, created after the watcher started, then reads only the requested bounded messages locally without asking you to type YES again.
+3. The local reader reserves the request ID once, signs and encrypts the bounded result to the active assistant session's temporary return key, and posts only ciphertext to PR #41. The assistant retrieves and decrypts that response in the same active session. If the assistant session has reset, ask for a fresh request.
+4. GitHub Actions must never read Gmail. Keep GB2L_INBOX_ENABLED=false and do not add the Gmail read refresh token to GitHub secrets.
 
 ## Data handling
 

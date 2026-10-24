@@ -20,13 +20,18 @@ export function assertInboxScope(tokeninfo,clientId){
   if (gmailScopes.some(s=>s!==READ_SCOPE)) throw fail('INBOX_SCOPE_TOO_BROAD');
   return true;
 }
-export function normalizeInboxQuery({from,after,limit=3}={}){
-  if(typeof from!=='string'||from!==from.trim()||!from||from.length>254||!EMAIL.test(from)||from.includes('..'))
-    throw fail('INVALID_SENDER_FILTER');
+export function normalizeInboxQuery({from,after,limit=5}={}){
+  if(from!==undefined&&from!==null){
+    if(typeof from!=='string'||from!==from.trim()||!from||from.length>254||!EMAIL.test(from)||from.includes('..'))
+      throw fail('INVALID_SENDER_FILTER');
+  }
   if(!Number.isSafeInteger(limit)||limit<1||limit>MAX_MESSAGES)throw fail('INVALID_LIMIT');
   if(after!==undefined&&(!/^\d{4}-\d{2}-\d{2}$/.test(after)||!validDate(after)))throw fail('INVALID_DATE');
-  // Bounded inbox-only query. No arbitrary Gmail search string supplied by caller.
-  return {q:'in:inbox from:'+from.trim()+(after?' after:'+after.replaceAll('-','/'):'') ,limit};
+  // Bounded inbox-only query. Omitted sender means the newest messages from any sender.
+  const terms=['in:inbox'];
+  if(from!==undefined&&from!==null)terms.push('from:'+from.trim());
+  if(after)terms.push('after:'+after.replaceAll('-','/'));
+  return {q:terms.join(' '),limit};
 }
 function validDate(s){const d=new Date(s+'T00:00:00Z');return !Number.isNaN(d.getTime())&&d.toISOString().startsWith(s);}
 function cleanHeader(s,max=512){return typeof s==='string'?s.replace(/[\r\n\0\x01-\x1f\x7f]/g,' ').slice(0,max):'';}
