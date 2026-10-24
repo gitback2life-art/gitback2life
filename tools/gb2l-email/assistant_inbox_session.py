@@ -1,8 +1,10 @@
 """In-memory GitBack2Life inbox request/response companion for an AI execution session.
 
-Use only after an explicit owner request, and keep the InboxSession instance alive
-between posting ciphertext and reading its signed response.  No private key is saved.
-GitHub connector handles posting and fetching comments; this module makes NO HTTP calls.
+Use only after showing the data-use disclosure and receiving the owner's explicit consent
+for this specific retrieval. prepare_request requires consent_confirmed=True and embeds a
+versioned, timestamped consent attestation. Keep the InboxSession instance alive between
+posting ciphertext and reading its signed response. No private key is saved. The GitHub
+connector handles posting/fetching comments; this module makes NO HTTP calls.
 """
 import base64
 import hashlib
