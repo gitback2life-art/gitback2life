@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Owner-local Gmail OAuth setup. The refresh token remains on this computer.
-import {existsSync,mkdirSync,readFileSync,writeFileSync} from 'node:fs';
-import {resolve,dirname,realpathSync} from 'node:path';
+import {existsSync,mkdirSync,readFileSync,writeFileSync,realpathSync} from 'node:fs';
+import {resolve,dirname} from 'node:path';
 import {homedir} from 'node:os';
 import {fileURLToPath,pathToFileURL} from 'node:url';
 import {createServer} from 'node:http';
