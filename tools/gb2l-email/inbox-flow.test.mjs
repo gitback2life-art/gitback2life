@@ -12,9 +12,9 @@ const key=()=>generateKeyPairSync('rsa',{modulusLength:3072,publicKeyEncoding:{t
 const server=key(),receiver=key();
 const requestId='a'.repeat(32);
 const filter={from:'somebody@example.org',after:'2026-10-20',limit:2};
-const make=()=>sealInboxRequest({...filter,return_public_key:receiver.publicKey,request_id:requestId},server.publicKey);
+const make=()=>sealInboxRequest({...filter,return_public_key:receiver.publicKey,request_id:requestId,consent_confirmed:true},server.publicKey);
 const event=(body=encodeInboxComment(make()))=>({action:'created',issue:{number:35,state:'open',pull_request:{url:'https://api.github.com/repos/.../pulls/35'}},comment:{id:88,user:{login:'gitback2life-art'},body}});
-const env={GITHUB_REPOSITORY:'gitback2life-art/gitback2life',GITHUB_REF:'refs/heads/main',GITHUB_RUN_ATTEMPT:'1',GITHUB_EVENT_NAME:'issue_comment',GITHUB_ACTOR:'gitback2life-art',GB2L_INBOX_ENABLED:'true',GB2L_INBOX_ACTOR:'gitback2life-art',GB2L_INBOX_REQUEST_PR:'35',GITHUB_TOKEN:'test-github',GB2L_INBOX_REQUEST_PRIVATE_KEY:server.privateKey,GMAIL_INBOX_CLIENT_ID:'test-client',GMAIL_INBOX_CLIENT_SECRET:'secret-not-logged',GMAIL_INBOX_REFRESH_TOKEN:'refresh-not-logged',GITHUB_SHA:'f'.repeat(40)};
+const env={GITHUB_REPOSITORY:'gitback2life-art/gitback2life',GITHUB_REF:'refs/heads/main',GITHUB_RUN_ATTEMPT:'1',GITHUB_EVENT_NAME:'issue_comment',GITHUB_ACTOR:'gitback2life-art',GB2L_INBOX_ENABLED:'true',GB2L_INBOX_GOOGLE_COMPLIANCE_READY:'true',GB2L_INBOX_ACTOR:'gitback2life-art',GB2L_INBOX_REQUEST_PR:'35',GITHUB_TOKEN:'test-github',GB2L_INBOX_REQUEST_PRIVATE_KEY:server.privateKey,GMAIL_INBOX_CLIENT_ID:'test-client',GMAIL_INBOX_CLIENT_SECRET:'secret-not-logged',GMAIL_INBOX_REFRESH_TOKEN:'refresh-not-logged',GITHUB_SHA:'f'.repeat(40)};
 const reply=(status,body)=>({ok:status>=200&&status<300,status,json:async()=>body});
 const marker='SYNTHETIC-INBOX-TEST-314159';
 const msg={id:'msg01',threadId:'thread01',payload:{headers:[{name:'From',value:filter.from},{name:'Subject',value:'Test reply'},{name:'Date',value:'Fri, 23 Oct 2026 21:00:00 +0000'}],mimeType:'text/plain',body:{data:Buffer.from(marker).toString('base64url')}}};
@@ -40,12 +40,17 @@ test('inbox reader requires a real matching RSA private key',()=>{
 test('encrypted query hides sender and is bound to ephemeral return key',()=>{
  const e=make(),encoded=encodeInboxComment(e);
  assert.ok(!encoded.includes(filter.from));
- assert.deepEqual(unsealInboxRequest(decodeInboxComment(encoded),server.privateKey).filter,filter);
+ const decoded=unsealInboxRequest(decodeInboxComment(encoded),server.privateKey);
+ assert.deepEqual(decoded.filter,filter);
+ assert.equal(decoded.consent_confirmed,true);
+ assert.equal(decoded.consent_notice_version,'2026-10-24');
+ assert.match(decoded.consent_at_utc,/^\d{4}-\d{2}-\d{2}T/);
+ assert.throws(()=>sealInboxRequest({...filter,return_public_key:receiver.publicKey,request_id:requestId},server.publicKey),/INBOX_CONSENT_REQUIRED/);
  const altered={...e,data:'AAAA'+e.data.slice(4)};
  assert.throws(()=>unsealInboxRequest(altered,server.privateKey),/INBOX_DECRYPTION_FAILED/);
 });
 test('rejects untrusted actors, other channels, wrong issue/PR kind, disabled mode and reruns',()=>{
- const variants=[{...env,GITHUB_ACTOR:'attacker'},{...env,GB2L_INBOX_ENABLED:'false'},{...env,GB2L_INBOX_REQUEST_PR:'36'},{...env,GITHUB_RUN_ATTEMPT:'2'}];
+ const variants=[{...env,GITHUB_ACTOR:'attacker'},{...env,GB2L_INBOX_ENABLED:'false'},{...env,GB2L_INBOX_GOOGLE_COMPLIANCE_READY:'false'},{...env,GB2L_INBOX_REQUEST_PR:'36'},{...env,GITHUB_RUN_ATTEMPT:'2'}];
  for(const bad of variants)assert.throws(()=>validateOwnerInboxEvent(event(),bad));
  assert.throws(()=>validateOwnerInboxEvent({...event(),issue:{number:35,state:'open'}},env));
  assert.throws(()=>validateOwnerInboxEvent({...event(),comment:{...event().comment,user:{login:'attacker'}}},env));
@@ -110,7 +115,7 @@ test('duplicate reservation prevents inbox read',async()=>{
 const pythonAvailable=spawnSync(process.env.PYTHON||'python3',['-c','import cryptography'],{stdio:'ignore'}).status===0;
 test('Python assistant ephemeral key survives connector-style exchange and decrypts signed synthetic reply',{skip:!pythonAvailable},async()=>{
  const python=process.env.PYTHON||'python3';
- const script=`import os,sys,json,base64\nfrom assistant_inbox_session import InboxSession\npub=base64.b64decode(os.environ['INBOX_TEST_PUB']).decode()\ns=InboxSession()\nprint(s.prepare_request(pub,from_address='somebody@example.org',after='2026-10-20',limit=2),flush=True)\nreply=sys.stdin.readline().strip()\nr=s.read_response(reply,pub)\nprint(json.dumps({'status':r['status'],'marker':r['messages'][0]['body_text']}),flush=True)\n`;
+ const script=`import os,sys,json,base64\nfrom assistant_inbox_session import InboxSession\npub=base64.b64decode(os.environ['INBOX_TEST_PUB']).decode()\ns=InboxSession()\nprint(s.prepare_request(pub,from_address='somebody@example.org',after='2026-10-20',limit=2,consent_confirmed=True),flush=True)\nreply=sys.stdin.readline().strip()\nr=s.read_response(reply,pub)\nprint(json.dumps({'status':r['status'],'marker':r['messages'][0]['body_text']}),flush=True)\n`;
  const child=spawn(python,['-c',script],{cwd:new URL('.',import.meta.url).pathname,env:{...process.env,INBOX_TEST_PUB:Buffer.from(server.publicKey).toString('base64')},stdio:['pipe','pipe','pipe']});
  const rl=createInterface({input:child.stdout});
  let resolveLine;let nextLine=new Promise(resolve=>resolveLine=resolve);
@@ -119,7 +124,7 @@ test('Python assistant ephemeral key survives connector-style exchange and decry
  const timeout=ms=>new Promise((_,reject)=>{const t=setTimeout(()=>reject(Error('Python response timeout: '+stderr)),ms);t.unref();});
  try{
   const requestComment=await Promise.race([nextLine,timeout(30000)]);
-  assert.ok(requestComment.startsWith('GB2L_INBOX_V1:'));
+  assert.ok(requestComment.startsWith('GB2L_INBOX_V2:'));
   assert.ok(!requestComment.includes(filter.from));
   const parsed=unsealInboxRequest(decodeInboxComment(requestComment),server.privateKey);
   assert.equal(parsed.filter.from,filter.from);
@@ -137,12 +142,12 @@ test('Python assistant defaults to a bounded all-senders inbox request', {skip:!
   "from assistant_inbox_session import InboxSession",
   "pub=base64.b64decode(os.environ['INBOX_TEST_PUB']).decode()",
   "s=InboxSession()",
-  "print(s.prepare_request(pub),flush=True)"
+  "print(s.prepare_request(pub,consent_confirmed=True),flush=True)"
  ].join('\n');
  const run=spawnSync(python,['-c',script],{cwd:new URL('.',import.meta.url).pathname,env:{...process.env,INBOX_TEST_PUB:Buffer.from(server.publicKey).toString('base64')},encoding:'utf8'});
  assert.equal(run.status,0,run.stderr);
  const wire=run.stdout.trim();
- assert.ok(wire.startsWith('GB2L_INBOX_V1:'));
+ assert.ok(wire.startsWith('GB2L_INBOX_V2:'));
  const parsed=unsealInboxRequest(decodeInboxComment(wire),server.privateKey);
  assert.equal(parsed.filter.from,undefined);
  assert.equal(parsed.filter.after,undefined);
