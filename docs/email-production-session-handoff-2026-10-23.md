@@ -404,3 +404,12 @@ No Gmail consent or live read has occurred, inbox secrets have not been provisio
 ### Safe continuation
 
 Do not rerun the old inbox request: its ephemeral return private key belongs to the interrupted assistant session, so any encrypted reply would not be decryptable here. Generate a fresh request only after the required Google restricted-scope/privacy gate and explicit authorization for a bounded live test are satisfied. The existing outgoing sender remains unchanged apart from the isolated trigger guard and must stay in `approval_required` mode.
+
+
+## 2026-10-24 — Follow-up: reported live encrypted inbox result
+
+The previous session reported a successful bounded encrypted inbox exchange on PR #41, with one message returned. A corresponding encrypted result comment is present at [PR #41 comment 6379362571](https://github.com/gitback2life-art/gitback2life/pull/41#issuecomment-6379362571). That session requested five messages but received one; the cause of the count mismatch remains unknown. The current session cannot independently decrypt that prior result because its temporary private reply key belonged to the interrupted session.
+
+The current fetched PR #41 comments show four subsequent encrypted requests (IDs 6380570265, 6380781434, 6380888420, 6380948193) without subsequent GB2L_INBOX_RESULT_V1 comments in the fetched list. Treat these as unverified, not successful. The known failed inbox run [#40069431941](https://github.com/gitback2life-art/gitback2life/actions/runs/40069431941) stopped at INBOX_PRIVATE_KEY_INVALID before Gmail access; although the owner later reported updating the secret, no newer run has verified that update. Do not retry a stale request or claim the encrypted reader is reliably operational until a fresh request's full response is decrypted and validated.
+
+The unrelated sender-trigger correction is merged as [PR #53](https://github.com/gitback2life-art/gitback2life/pull/53), commit [fa62816748c271e0ef5d45fc76e8276b7221829a](https://github.com/gitback2life-art/gitback2life/commit/fa62816748c271e0ef5d45fc76e8276b7221829a). The documentation correction is proposed in [PR #54](https://github.com/gitback2life-art/gitback2life/pull/54).
