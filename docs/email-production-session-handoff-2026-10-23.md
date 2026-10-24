@@ -390,7 +390,7 @@ Google's [Workspace user-data policy](https://developers.google.com/workspace/wo
 
 `gmail.readonly` remains a **restricted Gmail scope** ([scope list](https://developers.google.com/workspace/gmail/api/auth/scopes)). Google states that restricted-scope data stored on servers or transmitted may require a security assessment ([assessment requirements](https://support.google.com/cloud/answer/13465431?hl=en)); the exact applicability must be resolved for the OAuth app and this deployment before obtaining the read grant. This is an activation/configuration task, not a reason to rebuild the receive path as a separate application.
 
-No Gmail consent or live read has occurred, inbox secrets have not been provisioned, and inbox mode has not been enabled. Existing outbound email remains unchanged.
+At the original setup checkpoint, no Gmail consent or live read had occurred, inbox secrets had not been provisioned, and inbox mode had not been enabled. Subsequent successful live-run evidence is recorded in the 2026-10-24 follow-up below. Existing outbound email remains unchanged.
 
 
 ## 2026-10-24 — Inbox workflow and sender-trigger diagnosis
