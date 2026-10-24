@@ -1,0 +1,340 @@
+TAP version 13
+# Subtest: sealed email contains no plaintext message or recipient
+ok 1 - sealed email contains no plaintext message or recipient
+  ---
+  duration_ms: 17.535498
+  type: 'test'
+  ...
+# Subtest: comment round trip is ciphertext only
+ok 2 - comment round trip is ciphertext only
+  ---
+  duration_ms: 1.622608
+  type: 'test'
+  ...
+# Subtest: comment cannot be arbitrary plaintext
+ok 3 - comment cannot be arbitrary plaintext
+  ---
+  duration_ms: 0.319942
+  type: 'test'
+  ...
+# Subtest: unsafe recipient and header injection rejected
+ok 4 - unsafe recipient and header injection rejected
+  ---
+  duration_ms: 0.262849
+  type: 'test'
+  ...
+# Subtest: default is manual approval and unknown modes fail closed
+ok 5 - default is manual approval and unknown modes fail closed
+  ---
+  duration_ms: 0.203606
+  type: 'test'
+  ...
+# Subtest: public or untrusted comment cannot trigger send
+ok 6 - public or untrusted comment cannot trigger send
+  ---
+  duration_ms: 1.827389
+  type: 'test'
+  ...
+# Subtest: trusted owner comment is accepted only for designated PR
+ok 7 - trusted owner comment is accepted only for designated PR
+  ---
+  duration_ms: 1.516518
+  type: 'test'
+  ...
+# Subtest: changing a repository file or issue cannot enable mode by itself
+ok 8 - changing a repository file or issue cannot enable mode by itself
+  ---
+  duration_ms: 0.715119
+  type: 'test'
+  ...
+# Subtest: wrong actor, owner or sender rejected even when sealed content valid
+ok 9 - wrong actor, owner or sender rejected even when sealed content valid
+  ---
+  duration_ms: 0.734261
+  type: 'test'
+  ...
+# Subtest: domain and recipient restrictions enforce owner scope
+ok 10 - domain and recipient restrictions enforce owner scope
+  ---
+  duration_ms: 0.868106
+  type: 'test'
+  ...
+# Subtest: both modes produce correct MIME sender and single recipient
+ok 11 - both modes produce correct MIME sender and single recipient
+  ---
+  duration_ms: 0.64061
+  type: 'test'
+  ...
+# Subtest: approval_required uses genuine required-reviewer environment before Gmail
+ok 12 - approval_required uses genuine required-reviewer environment before Gmail
+  ---
+  duration_ms: 10.312824
+  type: 'test'
+  ...
+# Subtest: approval_required rejects missing owner review gate
+ok 13 - approval_required rejects missing owner review gate
+  ---
+  duration_ms: 12.634928
+  type: 'test'
+  ...
+# Subtest: auto_send reaches Gmail WITHOUT required-reviewer gate when owner policy enabled
+ok 14 - auto_send reaches Gmail WITHOUT required-reviewer gate when owner policy enabled
+  ---
+  duration_ms: 9.913746
+  type: 'test'
+  ...
+# Subtest: auto_send refuses environment misconfigured with mandatory reviewer
+ok 15 - auto_send refuses environment misconfigured with mandatory reviewer
+  ---
+  duration_ms: 7.458713
+  type: 'test'
+  ...
+# Subtest: daily quota exhaustion fails before email
+ok 16 - daily quota exhaustion fails before email
+  ---
+  duration_ms: 8.69668
+  type: 'test'
+  ...
+# Subtest: a duplicate cannot be re-sent
+ok 17 - a duplicate cannot be re-sent
+  ---
+  duration_ms: 6.927439
+  type: 'test'
+  ...
+# Subtest: Gmail timeout after reservation is uncertain and never automatically retried
+ok 18 - Gmail timeout after reservation is uncertain and never automatically retried
+  ---
+  duration_ms: 6.819999
+  type: 'test'
+  ...
+# Subtest: OAuth failure never reserves an attempt
+ok 19 - OAuth failure never reserves an attempt
+  ---
+  duration_ms: 7.513908
+  type: 'test'
+  ...
+# Subtest: GitHub environment API error fails closed
+ok 20 - GitHub environment API error fails closed
+  ---
+  duration_ms: 7.73261
+  type: 'test'
+  ...
+# Subtest: GitHub reservation 422 fails closed
+ok 21 - GitHub reservation 422 fails closed
+  ---
+  duration_ms: 7.958471
+  type: 'test'
+  ...
+# Subtest: config set to manual again blocks auto environment policy
+ok 22 - config set to manual again blocks auto environment policy
+  ---
+  duration_ms: 0.188145
+  type: 'test'
+  ...
+# Subtest: public commitment resists offline guesses without private 256-bit nonce
+ok 23 - public commitment resists offline guesses without private 256-bit nonce
+  ---
+  duration_ms: 2.533605
+  type: 'test'
+  ...
+# Subtest: tampered nonce or substituted commitment fails even after decryption
+ok 24 - tampered nonce or substituted commitment fails even after decryption
+  ---
+  duration_ms: 6.824378
+  type: 'test'
+  ...
+# Subtest: autonomous only-main deployment policy rejects wildcard, tags, and protected-all
+ok 25 - autonomous only-main deployment policy rejects wildcard, tags, and protected-all
+  ---
+  duration_ms: 0.344795
+  type: 'test'
+  ...
+# Subtest: autonomous environment fails closed when branch rule is not precisely main
+ok 26 - autonomous environment fails closed when branch rule is not precisely main
+  ---
+  duration_ms: 6.74757
+  type: 'test'
+  ...
+# Subtest: owner mode changed to disabled while job runs stops before Gmail
+ok 27 - owner mode changed to disabled while job runs stops before Gmail
+  ---
+  duration_ms: 5.838794
+  type: 'test'
+  ...
+# Subtest: owner mode query failure blocks send closed
+ok 28 - owner mode query failure blocks send closed
+  ---
+  duration_ms: 6.5537
+  type: 'test'
+  ...
+# Subtest: quota and duplicate ledger scans beyond first 100 refs
+ok 29 - quota and duplicate ledger scans beyond first 100 refs
+  ---
+  duration_ms: 8.43754
+  type: 'test'
+  ...
+# Subtest: missing GitHub private permissions need real staging validation
+ok 30 - missing GitHub private permissions need real staging validation
+  ---
+  duration_ms: 0.115244
+  type: 'test'
+  ...
+# Subtest: actual inspection script can process a trusted encrypted GitHub comment without plaintext leak
+ok 31 - actual inspection script can process a trusted encrypted GitHub comment without plaintext leak
+  ---
+  duration_ms: 101.189542
+  type: 'test'
+  ...
+# Subtest: encrypted query hides sender and is bound to ephemeral return key
+ok 32 - encrypted query hides sender and is bound to ephemeral return key
+  ---
+  duration_ms: 19.986365
+  type: 'test'
+  ...
+# Subtest: rejects untrusted actors, other channels, wrong issue/PR kind, disabled mode and reruns
+ok 33 - rejects untrusted actors, other channels, wrong issue/PR kind, disabled mode and reruns
+  ---
+  duration_ms: 14.058449
+  type: 'test'
+  ...
+# Subtest: signed response can be decrypted only by designated recipient; forged/tampered responses rejected
+ok 34 - signed response can be decrypted only by designated recipient; forged/tampered responses rejected
+  ---
+  duration_ms: 2630.050085
+  type: 'test'
+  ...
+# Subtest: inbox response enforces bounded result size
+ok 35 - inbox response enforces bounded result size
+  ---
+  duration_ms: 1.002379
+  type: 'test'
+  ...
+# Subtest: mocked owner-approved workflow posts ciphertext only and never calls send
+ok 36 - mocked owner-approved workflow posts ciphertext only and never calls send
+  ---
+  duration_ms: 32.75013
+  type: 'test'
+  ...
+# Subtest: missing read scope returns encrypted error; no email content exposed
+ok 37 - missing read scope returns encrypted error; no email content exposed
+  ---
+  duration_ms: 20.999007
+  type: 'test'
+  ...
+# Subtest: missing environment owner review fails before Google
+ok 38 - missing environment owner review fails before Google
+  ---
+  duration_ms: 8.744683
+  type: 'test'
+  ...
+# Subtest: duplicate reservation prevents inbox read
+ok 39 - duplicate reservation prevents inbox read
+  ---
+  duration_ms: 8.992349
+  type: 'test'
+  ...
+# Subtest: Python assistant ephemeral key survives connector-style exchange and decrypts signed synthetic reply
+ok 40 - Python assistant ephemeral key survives connector-style exchange and decrypts signed synthetic reply
+  ---
+  duration_ms: 1134.789246
+  type: 'test'
+  ...
+# Subtest: custom environment branch allowlist must contain exactly main
+ok 41 - custom environment branch allowlist must contain exactly main
+  ---
+  duration_ms: 1.105061
+  type: 'test'
+  ...
+# Subtest: accept exact Gmail read-only scope and matching client
+ok 42 - accept exact Gmail read-only scope and matching client
+  ---
+  duration_ms: 4.398801
+  type: 'test'
+  ...
+# Subtest: reject missing read scope and wrong OAuth client
+ok 43 - reject missing read scope and wrong OAuth client
+  ---
+  duration_ms: 2.206057
+  type: 'test'
+  ...
+# Subtest: filter is inbox-only, bounded, with valid date
+ok 44 - filter is inbox-only, bounded, with valid date
+  ---
+  duration_ms: 1.990993
+  type: 'test'
+  ...
+# Subtest: reject arbitrary Gmail query injection, excessive results and invalid date
+ok 45 - reject arbitrary Gmail query injection, excessive results and invalid date
+  ---
+  duration_ms: 0.370946
+  type: 'test'
+  ...
+# Subtest: decodes nested plain text and encoded subject without interpreting HTML
+ok 46 - decodes nested plain text and encoded subject without interpreting HTML
+  ---
+  duration_ms: 0.855596
+  type: 'test'
+  ...
+# Subtest: HTML-only message has no body fallback to unsafe HTML
+ok 47 - HTML-only message has no body fallback to unsafe HTML
+  ---
+  duration_ms: 1.532472
+  type: 'test'
+  ...
+# Subtest: list/get read requests, deduplicate and bound count
+ok 48 - list/get read requests, deduplicate and bound count
+  ---
+  duration_ms: 2.313999
+  type: 'test'
+  ...
+# Subtest: empty inbox is distinguishable from error
+ok 49 - empty inbox is distinguishable from error
+  ---
+  duration_ms: 2.202805
+  type: 'test'
+  ...
+# Subtest: missing token or client ID fails before network
+ok 50 - missing token or client ID fails before network
+  ---
+  duration_ms: 0.767425
+  type: 'test'
+  ...
+# Subtest: missing Gmail readonly scope fails before Gmail list and does not read mail
+ok 51 - missing Gmail readonly scope fails before Gmail list and does not read mail
+  ---
+  duration_ms: 0.656818
+  type: 'test'
+  ...
+# Subtest: Google failure reports code not private response body
+ok 52 - Google failure reports code not private response body
+  ---
+  duration_ms: 0.653246
+  type: 'test'
+  ...
+# Subtest: encrypted return round-trip without public plaintext
+ok 53 - encrypted return round-trip without public plaintext
+  ---
+  duration_ms: 1184.805665
+  type: 'test'
+  ...
+# Subtest: tampering encrypted reply or request identifier fails closed
+ok 54 - tampering encrypted reply or request identifier fails closed
+  ---
+  duration_ms: 1869.487683
+  type: 'test'
+  ...
+# Subtest: untrusted content never triggers sending
+ok 55 - untrusted content never triggers sending
+  ---
+  duration_ms: 0.414982
+  type: 'test'
+  ...
+1..55
+# tests 55
+# suites 0
+# pass 55
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6971.30931
