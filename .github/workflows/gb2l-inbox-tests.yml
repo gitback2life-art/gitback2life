@@ -31,6 +31,8 @@ jobs:
       - name: Check new inbox JavaScript syntax
         run: |
           for file in tools/gb2l-email/inbox-*.mjs tools/gb2l-email/receive.mjs; do node --check "$file"; done
+      - name: Verify local inbox reader imports
+        run: node --input-type=module -e "await import('./tools/gb2l-email/inbox-local-read.mjs')"
       - name: Verify inbox package SHA-256 manifest
         run: |
           set -u
