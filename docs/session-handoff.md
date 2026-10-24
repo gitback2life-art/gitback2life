@@ -1364,3 +1364,15 @@ The code-side gate, V2 consent handling, public privacy notice, setup guidance, 
 This session can commit repository changes and inspect GitHub-side code/CI directly, but it cannot inspect the owner’s Google Cloud Console or developer email, change OAuth settings, obtain Google’s decision, or certify Google approval without account-side action/confirmation. Do not claim those tasks were checked or completed.
 
 Official references: [Restricted-scope verification and assessment](https://developers.google.com/identity/protocols/oauth2/production-readiness/restricted-scope-verification), [Gmail API scopes](https://developers.google.com/workspace/gmail/api/auth/scopes), [Workspace User Data and Developer Policy](https://developers.google.com/workspace/workspace-api-user-data-developer-policy), [CASA Tier 2 overview](https://appdefensealliance.dev/casa/tier-2/tier2-overview), [personal-use OAuth verification exception](https://support.google.com/cloud/answer/13464323?hl=en).
+
+## 2026-10-24 — Independent inbox audit and Google inquiry prepared
+
+- Follow-up branch: security/inbox-audit-google-inquiry-2026-10-24. This is a review branch; it has not been merged.
+- Added docs/gmail-inbox-security-audit-2026-10-24.md with a source/configuration review of the hosted reader, request/response crypto, scope checks, workflow, tests, and privacy notice. This is not a formal penetration test or CASA assessment.
+- Added docs/google-gmail-compliance-inquiry-2026-10-24.md with a precise draft asking Google to confirm the permitted Gmail use case, whether personal-use status changes the separate server-side security assessment requirement, the applicable CASA process, transfer-to-ChatGPT/AI data-use conditions, and required OAuth/consent configuration. The inquiry has not been sent.
+- Removed the unused pull-requests: write permission from the inbox workflow. The current reader uses contents: write for its replay-reservation tag, issues: write for the encrypted result comment, and deployments: write for the protected environment flow. Updated SHA256_MANIFEST.txt to match the workflow change.
+- Current audit conclusion: keep the hosted inbox paused. The GitHub-hosted runner processes plaintext before encryption; public ciphertext has residual key-compromise risk; the transfer to ChatGPT and the applicable assessment remain external compliance blockers.
+- Owner-side items remain: send the inquiry through the official Google support/Verification Center channel; check Google Cloud Verification Center/developer email for any CASA notice; set and verify the OAuth consent-screen privacy-policy URL; verify actual GitHub environment protections and both workflow variables; obtain written guidance and complete any required assessment before reactivation.
+- No live Gmail read was performed. No Google approval is claimed. CI must be inspected for this branch before merge.
+
+Official references are listed in the two new audit/inquiry documents and in docs/google-gmail-compliance-2026-10-24.md.

@@ -1,7 +1,7 @@
 8b6d15124ea65ab093dda79aca9e278b08ae85a58b92d1d8778f3c7e9dfd3b28  BUILD_REPORT.md  3576
 d1beceec2139f3c53b53c1502cb83f4e8b0cae9f8a74284babd802fe11ed180f  README_GIVE_THIS_TO_YOUR_AI.md  3503
 3ce0be458721a6be4df2529070960c6d424c1151c59230dae2d819bf4087351e  .github/workflows/gb2l-inbox-tests.yml  2077
-a53a61bee1d056a21861637f54ab2df6164e8333d321507a009afabd1d63c25e  .github/workflows/gb2l-inbox-read.yml  2315
+62a13d7e2f5f5f904eb1147aa3492085e77f72acc8855915b8de89dbc6286811  .github/workflows/gb2l-inbox-read.yml  2288
 1cb34cdf3cfb5e724d656d8ddb9be8f5b16268cc4a4ee1a816c0005015775835  tools/gb2l-email/INBOX_SETUP.md  6852
 15a2f93f1c4bfd28a6a7e89b4fb72e8a7fdd45c8153a592d76dbcb5da447c522  tools/gb2l-email/assistant_inbox_session.py  6023
 5a8a7b8ca8fa4bb070a9db2cb5cb29b6f0940353dac49c0717ebb5c73abd3eca  tools/gb2l-email/inbox-flow.test.mjs  13269
