@@ -1,35 +1,25 @@
-# GitBack2Life email — current inbox handoff
+# GitBack2Life email — current send and inbox handoff
 
-**Status:** The read-only receiving extension is merged into `main` (PR #35, merge commit `68216d32282f559c0e7c59f695f69adbd9fce473`). It is integrated into the existing GitBack2Life Email Communications app; it is not a second email app and it does not replace the sender.
+The existing outgoing sender is unchanged. Sending continues through owner-local setup, the GitHub encrypted request channel, and the protected GitHub Actions approval gate. Keep GB2L_EMAIL_MODE at approval_required.
 
-## What is already in the repository
+## Inbox receiving
 
-- `.github/workflows/gb2l-inbox-check.yml`: inbox-only GitHub Actions workflow, disabled unless `GB2L_INBOX_ENABLED=true`, owner-review-gated, and restricted to `main`.
-- `tools/gb2l-email/receive.mjs`: bounded Gmail read of at most five matching inbox messages, text/plain content only, with no attachment retrieval or mail modification.
-- `tools/gb2l-email/inbox-transport.mjs`, `inbox-inspect.mjs`, and `inbox-run.mjs`: encrypted request/response protocol, owner/channel checks, one-time request reservation, and ciphertext-only return.
-- `tools/gb2l-email/assistant_inbox_session.py`: temporary recipient key and same-session response decryption through the existing GitHub connector.
-- `tools/gb2l-email/inbox-owner-setup.mjs` and `inbox-prepare-key.mjs`: local owner setup. The read credential must be limited to `gmail.readonly`; the reader rejects any broader Gmail grant.
+Inbox requests still travel through the dedicated PR conversation using the GB2L_INBOX_V1: encrypted request and GB2L_INBOX_RESULT_V1: signed encrypted response formats. The public inbox key lives at tools/gb2l-email/inbox-public-key.pem; its private key stays on the owner's Windows computer.
 
-## Existing sender protection
+For Gmail reading, use the owner-local path in tools/gb2l-email/INBOX_SETUP.md. The Google OAuth refresh token and the Gmail API read run locally on the owner's computer. GitHub Actions must not read Gmail or receive the inbox refresh token. GitHub receives only the encrypted response, which the same active assistant session decrypts.
 
-The existing `send.mjs`, `owner-setup.mjs`, `readiness.mjs`, `public-key.pem`, and `.github/workflows/gb2l-approved-email.yml` remain unchanged. Preserve `approval_required`. The inbox has a separate environment, private key, and read-only OAuth grant so receiving cannot inherit sending permission.
+The repository variable GB2L_INBOX_ENABLED must remain false. It keeps the former server-side inbox workflow off. The local script is manually launched by the owner and asks for an explicit YES confirmation before reading the exact sender/date/limit in the pending request.
 
-## What's still needed for first use
+## Local setup
 
-The implementation and synthetic CI tests pass, including the inbox SHA-256 manifest check. It is **not live-connected yet**: `tools/gb2l-email/inbox-public-key.pem` has intentionally not been created, the protected `gb2l-inbox-read` environment is not yet configured, no dedicated request PR has been designated, and no inbox OAuth grant/secrets have been provisioned.
+From the repository root, double-click Read-GB2L-Inbox.ps1. On first run it opens a file picker for the Google Desktop OAuth client JSON, starts the local Google consent flow for only gmail.readonly plus identity, and stores the refresh token outside the repository with owner-only file permissions. Do not submit OAuth verification materials solely to use this as a personal app; Google lists personal use as a verification exception. Google may still display an unverified-app warning.
 
-On the owner's trusted Windows computer, from the local repository root in PowerShell, the next local-only step is:
+To process a pending request later, double-click the same script. It finds your private key and local OAuth file automatically, previews the requested sender/date/message limit, and waits for you to type YES. No message text is posted to GitHub; only a signed ciphertext reply is posted to the dedicated PR #41.
 
-```powershell
-node tools/gb2l-email/inbox-prepare-key.mjs "$env:USERPROFILE\gb2l.inbox.private.pem"
-```
+## Important boundary
 
-That creates the **private** key under the local user profile and writes only the matching public key into `tools/gb2l-email/inbox-public-key.pem`. Never share, upload, or commit `gb2l.inbox.private.pem`; only the public PEM belongs in GitHub. After the public key is published, the remaining steps are: configure the designated open inbox PR and owner-reviewed `gb2l-inbox-read` environment; obtain a separate read-only OAuth grant using `inbox-owner-setup.mjs`; then run one owner-approved synthetic message round-trip and verify decryption in the same live assistant session. Keep the inbox disabled except for an explicitly approved test.
+This path keeps the Gmail API token and raw Gmail API response off GitHub-hosted Actions. Only a bounded, user-requested result is encrypted for the active assistant session; GitHub stores ciphertext. Google distinguishes the personal-use exception for app verification from its separate security-assessment language concerning restricted data accessed through third-party servers. This local path avoids giving GitHub Actions the ability to read Gmail; do not claim it grants a blanket exemption for every possible data-transfer arrangement. Disclose the AI processing clearly and only retrieve email when the owner asks.
 
-## Verified checks
+## Existing sender
 
-- Inbox crypto/protocol, bounded reader, mocked GitHub/Gmail and cross-language tests passed.
-- Existing email regression tests and Toolbox source-integrity check passed.
-- SHA-256/byte-count manifest validation passed on the merged inbox branch.
-
-Synthetic tests are not evidence of live Gmail access. The existing sender must remain unchanged while the receiving path is being configured.
+Do not change send.mjs, owner-setup.mjs, public-key.pem, or .github/workflows/gb2l-approved-email.yml as part of inbox work. The outgoing sender keeps gmail.send only, owner review, per-message approval, quota enforcement, and the existing encrypted request protocol. The local reader uses a separate read-only token, never writes it to GitHub, and never invokes the sender.
