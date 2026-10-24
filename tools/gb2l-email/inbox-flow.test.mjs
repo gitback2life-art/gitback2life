@@ -125,6 +125,23 @@ test('Python assistant ephemeral key survives connector-style exchange and decry
  }finally{child.stdin.end();child.kill();rl.close();}
 });
 
+test('Python assistant defaults to a bounded all-senders inbox request', {skip:!pythonAvailable},()=>{
+ const python=process.env.PYTHON||'python3';
+ const script=\`import os,base64
+from assistant_inbox_session import InboxSession
+pub=base64.b64decode(os.environ['INBOX_TEST_PUB']).decode()
+s=InboxSession()
+print(s.prepare_request(pub),flush=True)
+\`;
+ const run=spawnSync(python,['-c',script],{cwd:new URL('.',import.meta.url).pathname,env:{...process.env,INBOX_TEST_PUB:Buffer.from(server.publicKey).toString('base64')},encoding:'utf8'});
+ assert.equal(run.status,0,run.stderr);
+ const wire=run.stdout.trim();
+ assert.ok(wire.startsWith('GB2L_INBOX_V1:'));
+ const parsed=unsealInboxRequest(decodeInboxComment(wire),server.privateKey);
+ assert.equal(parsed.filter.from,undefined);
+ assert.equal(parsed.filter.after,undefined);
+ assert.equal(parsed.filter.limit,5);
+});
 test('custom environment branch allowlist must contain exactly main',async()=>{
  const http=async url=>{
   if(url.endsWith('/environments/gb2l-inbox-read'))return reply(200,{protection_rules:[{type:'required_reviewers',reviewers:[{reviewer:{login:'gitback2life-art'}}]}],deployment_branch_policy:{custom_branch_policies:true}});
