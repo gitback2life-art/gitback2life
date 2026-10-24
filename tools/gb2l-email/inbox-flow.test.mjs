@@ -113,6 +113,24 @@ test('duplicate reservation prevents inbox read',async()=>{
 });
 
 const pythonAvailable=spawnSync(process.env.PYTHON||'python3',['-c','import cryptography'],{stdio:'ignore'}).status===0;
+test('Python assistant refuses to create a request without explicit consent',{skip:!pythonAvailable},()=>{
+ const python=process.env.PYTHON||'python3';
+ const script=[
+  "import os,base64",
+  "from assistant_inbox_session import InboxSession",
+  "pub=base64.b64decode(os.environ['INBOX_TEST_PUB']).decode()",
+  "try:",
+  " InboxSession().prepare_request(pub)",
+  "except ValueError as e:",
+  " assert 'consent' in str(e).lower()",
+  " print('blocked')",
+  "else:",
+  " raise SystemExit('missing consent was accepted')"
+ ].join('\n');
+ const run=spawnSync(python,['-c',script],{cwd:new URL('.',import.meta.url).pathname,env:{...process.env,INBOX_TEST_PUB:Buffer.from(server.publicKey).toString('base64')},encoding:'utf8'});
+ assert.equal(run.status,0,run.stderr);
+ assert.equal(run.stdout.trim(),'blocked');
+});
 test('Python assistant ephemeral key survives connector-style exchange and decrypts signed synthetic reply',{skip:!pythonAvailable},async()=>{
  const python=process.env.PYTHON||'python3';
  const script=`import os,sys,json,base64\nfrom assistant_inbox_session import InboxSession\npub=base64.b64decode(os.environ['INBOX_TEST_PUB']).decode()\ns=InboxSession()\nprint(s.prepare_request(pub,from_address='somebody@example.org',after='2026-10-20',limit=2,consent_confirmed=True),flush=True)\nreply=sys.stdin.readline().strip()\nr=s.read_response(reply,pub)\nprint(json.dumps({'status':r['status'],'marker':r['messages'][0]['body_text']}),flush=True)\n`;
