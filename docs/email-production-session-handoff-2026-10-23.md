@@ -320,9 +320,9 @@ The inbox implementation is additive under tools/gb2l-email/, with two workflow 
 
 ### Test evidence and limits
 
-GitHub Actions run [#40044869240](https://github.com/gitback2life-art/gitback2life/actions/runs/40044869240) completed successfully on the reviewed code commit. The logged CI suite ran **24 tests: 24 passed, 0 failed, 0 skipped**; JavaScript syntax checks and the synthetic Python/Node encrypted round-trip passed. The package's TEST_RESULTS.txt records a separate historical/local 55-test run (31 sender regression, 15 staged receiver, 9 new protocol tests); that is not the same as the current CI run, and it is not a live provider integration test.
+GitHub Actions run [#40044869240](https://github.com/gitback2life-art/gitback2life/actions/runs/40044869240) completed successfully on the earlier reviewed code commit. After the manifest-path correction at commit [1987cd1b2a59ff8f2d827ed126d6489d3d61b006](https://github.com/gitback2life-art/gitback2life/commit/1987cd1b2a59ff8f2d827ed126d6489d3d61b006), CI ran again on that corrected commit: encrypted inbox tests [#40046460375](https://github.com/gitback2life-art/gitback2life/actions/runs/40046460375) and existing email regression/source-integrity tests [#40046460378](https://github.com/gitback2life-art/gitback2life/actions/runs/40046460378) both succeeded. The inbox job completed its synthetic Python/Node crypto tests and JavaScript syntax checks; the existing email job completed its full Node test suite, Toolbox adapter integrity verification, and JavaScript syntax checks. The earlier inbox job reported **24 tests: 24 passed, 0 failed, 0 skipped**. These are synthetic/offline tests, not a live Gmail integration test.
 
-After CI, the repository manifest entries were corrected from the stale REPOSITORY_FILES/ prefix to the files' actual paths. That documentation/manifest-only change is commit 1987cd1. **The CI run above predates that manifest-path correction**; no claim is made that CI reran on the correction commit.
+The manifest-path correction therefore **did receive successful CI afterward**. This confirms the tested workflows and source-integrity check passed on the corrected commit; it does not independently prove every SHA-256/byte-count entry in the standalone SHA256_MANIFEST.txt matches the final package.
 
 ### Google authorization blocker — do not assume an exemption
 
