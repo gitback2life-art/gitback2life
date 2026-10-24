@@ -35,6 +35,7 @@ jobs:
     permissions:
       contents: write
       issues: write
+      pull-requests: write
       deployments: write
     steps:
       - name: Check out trusted main-branch code only
