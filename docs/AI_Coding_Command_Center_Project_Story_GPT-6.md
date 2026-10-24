@@ -945,3 +945,9 @@ The owner explicitly reported that the old three-per-UTC-day limit was not owner
 
 The owner-review gate was retained throughout. No autonomous-send provisioning or approval bypass is authorized. Private recipients, plaintext messages, private receipts, nonces, and credentials are intentionally omitted from this public story record.
 
+
+
+### Inbox request channel: diagnosis and guard correction (2026-10-24)
+The hosted inbox run [#40069431941](https://github.com/gitback2life-art/gitback2life/actions/runs/40069431941) failed closed on `INBOX_PRIVATE_KEY_INVALID` before Gmail access. The owner later reported updating the secret; no newer inbox run has yet verified it. A separate issue-comment run [#40070659673](https://github.com/gitback2life-art/gitback2life/actions/runs/40070659673) was mistakenly handled by the outgoing sender workflow, which correctly rejected PR #41 because outgoing requests are restricted to PR #18. No email was sent and send approval jobs were skipped.
+
+Draft PR [#53](https://github.com/gitback2life-art/gitback2life/pull/53) adds an explicit PR #18 guard to the sender workflow and synchronizes its Toolbox template. Email tests and Toolbox source integrity passed after synchronization ([run #40071058909](https://github.com/gitback2life-art/gitback2life/actions/runs/40071058909), [run #40071058913](https://github.com/gitback2life-art/gitback2life/actions/runs/40071058913)). This change remains unmerged. The lesson is to distinguish the inbox run from the sender run by workflow ID/logs, and never retry an encrypted request whose ephemeral return key was lost with an interrupted session. No live inbox read is claimed or authorized by these CI results.

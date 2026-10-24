@@ -14,7 +14,7 @@ concurrency:
 jobs:
   inspect:
     # A public comment by a third party can never start a privileged job.
-    if: ${{ github.ref == 'refs/heads/main' && github.run_attempt == 1 && (github.event_name == 'push' || (github.event_name == 'issue_comment' && github.event.comment.user.login == vars.GB2L_REQUEST_ACTOR && github.event.issue.pull_request)) }}
+    if: ${{ github.ref == 'refs/heads/main' && github.run_attempt == 1 && (github.event_name == 'push' || (github.event_name == 'issue_comment' && github.event.comment.user.login == vars.GB2L_REQUEST_ACTOR && github.event.issue.pull_request && github.event.issue.number == 18)) }}
     runs-on: ubuntu-latest
     outputs:
       ready: ${{ steps.inspect.outputs.ready }}

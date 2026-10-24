@@ -391,3 +391,16 @@ Google's [Workspace user-data policy](https://developers.google.com/workspace/wo
 `gmail.readonly` remains a **restricted Gmail scope** ([scope list](https://developers.google.com/workspace/gmail/api/auth/scopes)). Google states that restricted-scope data stored on servers or transmitted may require a security assessment ([assessment requirements](https://support.google.com/cloud/answer/13465431?hl=en)); the exact applicability must be resolved for the OAuth app and this deployment before obtaining the read grant. This is an activation/configuration task, not a reason to rebuild the receive path as a separate application.
 
 No Gmail consent or live read has occurred, inbox secrets have not been provisioned, and inbox mode has not been enabled. Existing outbound email remains unchanged.
+
+
+## 2026-10-24 — Inbox workflow and sender-trigger diagnosis
+
+### Verified current facts
+
+- Inbox workflow run [#40069431941](https://github.com/gitback2life-art/gitback2life/actions/runs/40069431941) failed with `INBOX_PRIVATE_KEY_INVALID` at the private-key parsing/match stage. The job did not reach Gmail OAuth refresh or read messages. The operator subsequently reported updating the secret, but no later inbox run has verified the new value.
+- The later run [#40070659673](https://github.com/gitback2life-art/gitback2life/actions/runs/40070659673) was the **outgoing email workflow**. Its inspect step rejected the event because the comment was on inbox PR #41 while the sender request channel is PR #18. The owner-approval and autonomous send jobs were skipped, and no email was sent.
+- Draft PR [#53](https://github.com/gitback2life-art/gitback2life/pull/53) restricts the sender's issue-comment trigger to PR #18 and updates the matching Toolbox workflow template. The email test suite and Toolbox source-integrity check passed on the updated branch at runs [#40071058909](https://github.com/gitback2life-art/gitback2life/actions/runs/40071058909) and [#40071058913](https://github.com/gitback2life-art/gitback2life/actions/runs/40071058913). PR #53 remains open/draft and is not merged.
+
+### Safe continuation
+
+Do not rerun the old inbox request: its ephemeral return private key belongs to the interrupted assistant session, so any encrypted reply would not be decryptable here. Generate a fresh request only after the required Google restricted-scope/privacy gate and explicit authorization for a bounded live test are satisfied. The existing outgoing sender remains unchanged apart from the isolated trigger guard and must stay in `approval_required` mode.
