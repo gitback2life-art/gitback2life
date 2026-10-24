@@ -1,0 +1,61 @@
+name: GitBack2Life hosted encrypted inbox reader
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: gb2l-hosted-inbox-reader
+  cancel-in-progress: false
+
+jobs:
+  read-inbox:
+    # Only the owner's encrypted request on the dedicated, open PR may start
+    # a privileged read. Never check out code from the pull-request head.
+    if: >-
+      ${{
+        github.ref == 'refs/heads/main' &&
+        github.run_attempt == 1 &&
+        github.actor == 'gitback2life-art' &&
+        github.event_name == 'issue_comment' &&
+        github.event.action == 'created' &&
+        github.event.issue.pull_request &&
+        github.event.issue.state == 'open' &&
+        github.event.issue.number == 41 &&
+        github.event.comment.user.login == 'gitback2life-art' &&
+        startsWith(github.event.comment.body, 'GB2L_INBOX_V1:')
+      }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment: gb2l-inbox-read
+    permissions:
+      contents: write
+      issues: write
+      deployments: write
+    steps:
+      - name: Check out trusted main-branch code only
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: main
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+
+      - name: Read the bounded inbox request and return ciphertext only
+        env:
+          GB2L_INBOX_ENABLED: 'true'
+          GB2L_INBOX_ACTOR: gitback2life-art
+          GB2L_INBOX_REQUEST_PR: '41'
+          GITHUB_TOKEN: ${{ github.token }}
+          GB2L_CONTROL_TOKEN: ${{ secrets.GB2L_CONTROL_TOKEN }}
+          GB2L_INBOX_REQUEST_PRIVATE_KEY: ${{ secrets.GB2L_INBOX_REQUEST_PRIVATE_KEY }}
+          GMAIL_INBOX_CLIENT_ID: ${{ secrets.GMAIL_INBOX_CLIENT_ID }}
+          GMAIL_INBOX_CLIENT_SECRET: ${{ secrets.GMAIL_INBOX_CLIENT_SECRET }}
+          GMAIL_INBOX_REFRESH_TOKEN: ${{ secrets.GMAIL_INBOX_REFRESH_TOKEN }}
+        run: node tools/gb2l-email/inbox-run.mjs
