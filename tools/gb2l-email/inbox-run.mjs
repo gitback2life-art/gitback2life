@@ -1,5 +1,6 @@
 // Privileged inbox reader, separate from outgoing send.mjs. No mail modification.
 import {readFileSync,appendFileSync} from 'node:fs';
+import {createPrivateKey,createPublicKey} from 'node:crypto';
 import {pathToFileURL} from 'node:url';
 import {validateOwnerInboxEvent,unsealInboxRequest,encodeInboxResponse,fingerprint,signInboxResponse} from './inbox-transport.mjs';
 import {readInbox,encryptInboxReturn} from './receive.mjs';
@@ -12,6 +13,18 @@ const GH_HEADERS=token=>({Authorization:'Bearer '+token,'Accept':'application/vn
 function fail(code){const e=new Error(code);e.code=code;return e;}
 async function safeJSON(r){if(!r?.ok)throw fail('GITHUB_REQUEST_FAILED');try{return await r.json()}catch{throw fail('GITHUB_INVALID_RESULT')}}
 
+export function assertInboxPrivateKeyMatches(privatePem, publishedPublicPem){
+  let privateKey;
+  try { privateKey=createPrivateKey(privatePem); }
+  catch { throw fail('INBOX_PRIVATE_KEY_INVALID'); }
+  if(privateKey.asymmetricKeyType!=='rsa'||(privateKey.asymmetricKeyDetails?.modulusLength||0)<3072)
+    throw fail('INBOX_PRIVATE_KEY_UNSAFE');
+  let derived;
+  try { derived=createPublicKey(privateKey).export({type:'spki',format:'pem'}).toString(); }
+  catch { throw fail('INBOX_PRIVATE_KEY_INVALID'); }
+  if(fingerprint(derived)!==fingerprint(publishedPublicPem))throw fail('INBOX_PRIVATE_KEY_MISMATCH');
+  return true;
+}
 export async function assertInboxEnvironment(token,http=fetch){
   const env=await safeJSON(await http(`${API}/repos/${REPO}/environments/gb2l-inbox-read`,
     {headers:GH_HEADERS(token),signal:AbortSignal.timeout(15000)}));
@@ -69,7 +82,7 @@ export async function runInboxRequest({event,env,http=fetch,inboxPublishedPublic
   const token=env.GITHUB_TOKEN;
   if(!token||!privateKey||!env.GMAIL_INBOX_CLIENT_ID||!env.GMAIL_INBOX_CLIENT_SECRET||!env.GMAIL_INBOX_REFRESH_TOKEN)throw fail('INBOX_SECRETS_MISSING');
   const publicKey=inboxPublishedPublicKey??readFileSync(new URL('./inbox-public-key.pem',import.meta.url),'utf8');
-  if(fingerprint(privateKey)!==fingerprint(publicKey))throw fail('INBOX_PRIVATE_KEY_MISMATCH');
+  assertInboxPrivateKeyMatches(privateKey,publicKey);
   const request=unsealInboxRequest(envelope,privateKey);
   // The fine-grained control token is used only to inspect protected environment policy;
   // the short-lived workflow GITHUB_TOKEN handles the one-use tag and encrypted comment.
