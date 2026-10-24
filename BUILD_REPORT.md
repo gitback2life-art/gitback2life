@@ -17,7 +17,7 @@ Date: 2026-10-23. Target: public `gitback2life-art/gitback2life` current `main`,
 
 - Live owner-comment posting/retrieval and protected `gb2l-inbox-read` environment approval still need an end-to-end synthetic test
 - Fresh inbox-only public key generated on the owner device and published, private key held locally/protected environment
-- Dedicated PR channel, repo Actions variables and environment reviewer/branch-policy setup
+- Dedicated request channel [PR #41](https://github.com/gitback2life-art/gitback2life/pull/41) is now open; set `GB2L_INBOX_REQUEST_PR=41` and configure the owner-reviewed environment/branch policy
 - Google's restricted `gmail.readonly` scope authorization and applicability of verification/security assessment
 - Privacy/consent disclosure that selected email is transferred only to answer the user's explicit request in a user-facing productivity feature; no email data may be used for model training. Google lists generative-AI email summaries as an approved Gmail use case, while disclosure and any applicable restricted-scope verification/security assessment remain required
 - Google's data-use rules for transferring decrypted Gmail content into a separate AI conversation, explicit consent/disclosure, human viewing, and prohibition on using Google user data to train/improve foundation models
