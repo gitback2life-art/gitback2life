@@ -56,28 +56,7 @@ function reserve(id,sha){
 function statusCode(e){
   return typeof e?.code==='string'&&/^[A-Z0-9_]{3,64}$/.test(e.code)?e.code:'LOCAL_INBOX_READ_FAILED';
 }
-async function main(args=process.argv.slice(2)){
-  if(process.env.CI==='true'||process.env.GITHUB_ACTIONS==='true')throw fail('LOCAL_ONLY_SCRIPT');
-  const privatePath=resolve(args[args.indexOf('--private-key')+1]||resolve(homedir(),'gb2l.inbox.private.pem'));
-  const configPath=localConfigPath();
-  if(!existsSync(privatePath))throw fail('LOCAL_INBOX_PRIVATE_KEY_MISSING');
-  if(!existsSync(configPath))throw fail('LOCAL_INBOX_AUTH_MISSING_RUN_SETUP_FIRST');
-  securePrivateKeyFile(privatePath);
-  securePrivateKeyFile(configPath);
-  const privatePem=readFileSync(privatePath,'utf8');
-  const publishedPem=readFileSync(new URL('./inbox-public-key.pem',import.meta.url),'utf8');
-  if(fingerprint(privatePem)!==fingerprint(publishedPem))throw fail('LOCAL_INBOX_KEY_MISMATCH');
-  const config=JSON.parse(readFileSync(configPath,'utf8'));
-  if(typeof config.client_id!=='string'||typeof config.client_secret!=='string'||typeof config.refresh_token!=='string'||config.account!=='gitback2life.ai@gmail.com')
-    throw fail('LOCAL_INBOX_AUTH_INVALID');
-  const login=gh(['api','user','--jq','.login']);
-  if(login!==OWNER)throw fail('GITHUB_CLI_WRONG_ACCOUNT');
-  const variable=process.env.GB2L_INBOX_REQUEST_PR;
-  const issueNumber=variable?Number(variable):41;
-  if(!Number.isSafeInteger(issueNumber)||issueNumber<1)throw fail('INBOX_REQUEST_PR_INVALID');
-  const raw=gh(['api','--paginate','--slurp','repos/'+REPO+'/issues/'+issueNumber+'/comments?per_page=100']);
-  let nested;try{nested=JSON.parse(raw);}catch{throw fail('GITHUB_COMMENTS_INVALID');}
-  const comments=Array.isArray(nested)?nested.flat(Infinity):[];
+function collectPending(issueNumber,privatePem,comments){
   const answered=new Set();
   for(const c of comments){
     const body=typeof c.body==='string'?c.body:'';
@@ -97,25 +76,42 @@ async function main(args=process.argv.slice(2)){
       pending.push({envelope,request,commentId:c.id,createdAt:c.created_at});
     }catch{}
   }
+  return pending;
+}
+async function processPending({issueNumber,privatePem,config,watch,watchStartedAt,handled}){
+  const raw=gh(['api','--paginate','--slurp','repos/'+REPO+'/issues/'+issueNumber+'/comments?per_page=100']);
+  let nested;try{nested=JSON.parse(raw);}catch{throw fail('GITHUB_COMMENTS_INVALID');}
+  const comments=Array.isArray(nested)?nested.flat(Infinity):[];
+  let pending=collectPending(issueNumber,privatePem,comments);
+  if(watch){
+    const startMs=watchStartedAt.getTime();
+    pending=pending.filter(p=>Date.parse(p.createdAt||'')>=startMs);
+  }
+  pending=pending.filter(p=>!handled.has(p.envelope.request_id));
   if(!pending.length){
-    console.log('No unanswered encrypted inbox request is waiting on PR #'+issueNumber+'.');
-    return;
+    if(!watch)console.log('No unanswered encrypted inbox request is waiting on PR #'+issueNumber+'.');
+    return false;
   }
   const selected=pending[0];
   const filter=selected.request.filter;
   console.log('');
   console.log('GitBack2Life inbox request found. Gmail has NOT been read yet.');
-  console.log('Sender filter: '+filter.from);
+  console.log('Sender filter: '+(filter.from||'all senders'));
   console.log('Mailbox: inbox only; attachments are not fetched.');
   console.log('Maximum messages: '+filter.limit);
   console.log('Date lower bound: '+(filter.after||'none'));
   console.log('Request ID: '+selected.request.request_id);
   if(pending.length>1)console.log('There are '+pending.length+' unanswered requests; only the newest will be considered. Older requests will not be read.');
-  const confirm=await ask('Read these messages locally and post only encrypted results? Type YES to authorize: ');
-  if(confirm!=='YES'){
-    console.log('Cancelled. No Gmail messages were read.');
-    return;
+  if(watch){
+    console.log('Watch mode: processing the explicit encrypted request without another prompt.');
+  }else{
+    const confirm=await ask('Read these messages locally and post only encrypted results? Type YES to authorize: ');
+    if(confirm!=='YES'){
+      console.log('Cancelled. No Gmail messages were read.');
+      return true;
+    }
   }
+  handled.add(selected.request.request_id);
   const token=await refreshAccessToken({clientId:config.client_id,clientSecret:config.client_secret,refreshToken:config.refresh_token});
   await verifySenderIdentity(token);
   const infoResponse=await fetch('https://oauth2.googleapis.com/tokeninfo',{
@@ -141,6 +137,48 @@ async function main(args=process.argv.slice(2)){
   console.log('Encrypted inbox response posted to PR #'+issueNumber+'.');
   console.log('No message text, subject, sender, access token or refresh token was posted or logged.');
   console.log('Response status: '+result.status+'. The active AI session must retrieve and decrypt this response.');
+  return true;
+}
+const pause=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+async function main(args=process.argv.slice(2)){
+  if(process.env.CI==='true'||process.env.GITHUB_ACTIONS==='true')throw fail('LOCAL_ONLY_SCRIPT');
+  const watch=args.includes('--watch');
+  const privateFlag=args.indexOf('--private-key');
+  const privatePath=resolve(privateFlag>=0?args[privateFlag+1]||resolve(homedir(),'gb2l.inbox.private.pem'):resolve(homedir(),'gb2l.inbox.private.pem'));
+  const configPath=localConfigPath();
+  if(!existsSync(privatePath))throw fail('LOCAL_INBOX_PRIVATE_KEY_MISSING');
+  if(!existsSync(configPath))throw fail('LOCAL_INBOX_AUTH_MISSING_RUN_SETUP_FIRST');
+  securePrivateKeyFile(privatePath);
+  securePrivateKeyFile(configPath);
+  const privatePem=readFileSync(privatePath,'utf8');
+  const publishedPem=readFileSync(new URL('./inbox-public-key.pem',import.meta.url),'utf8');
+  if(fingerprint(privatePem)!==fingerprint(publishedPem))throw fail('LOCAL_INBOX_KEY_MISMATCH');
+  const config=JSON.parse(readFileSync(configPath,'utf8'));
+  if(typeof config.client_id!=='string'||typeof config.client_secret!=='string'||typeof config.refresh_token!=='string'||config.account!=='gitback2life.ai@gmail.com')
+    throw fail('LOCAL_INBOX_AUTH_INVALID');
+  const login=gh(['api','user','--jq','.login']);
+  if(login!==OWNER)throw fail('GITHUB_CLI_WRONG_ACCOUNT');
+  const variable=process.env.GB2L_INBOX_REQUEST_PR;
+  const issueNumber=variable?Number(variable):41;
+  if(!Number.isSafeInteger(issueNumber)||issueNumber<1)throw fail('INBOX_REQUEST_PR_INVALID');
+  if(!watch){
+    await processPending({issueNumber,privatePem,config,watch:false,handled:new Set()});
+    return;
+  }
+  const watchStartedAt=new Date();
+  const handled=new Set();
+  console.log('GitBack2Life inbox watch is active for PR #'+issueNumber+'.');
+  console.log('It checks every 10 seconds for a new encrypted request created by '+OWNER+'.');
+  console.log('When you ask the assistant to read email, it can post the request; this window will process it locally.');
+  console.log('Gmail credentials and message contents stay on this computer. Press Ctrl+C to stop watching.');
+  while(true){
+    try{
+      await processPending({issueNumber,privatePem,config,watch:true,watchStartedAt,handled});
+    }catch(e){
+      console.error('Inbox watch check failed: '+(e.code||'LOCAL_INBOX_READ_FAILED'));
+    }
+    await pause(10000);
+  }
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(resolve(process.argv[1])).href){
   main().catch(e=>{console.error('Local inbox read stopped: '+(e.code||'LOCAL_INBOX_FAILED'));process.exitCode=1;});
