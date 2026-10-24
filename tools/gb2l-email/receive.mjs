@@ -12,8 +12,12 @@ function fail(code){const e=new Error(code);e.code=code;return e;}
 export function assertInboxScope(tokeninfo,clientId){
   if (!tokeninfo||typeof tokeninfo!=='object'||!(tokeninfo.aud===clientId||tokeninfo.azp===clientId))
     throw fail('OAUTH_CLIENT_MISMATCH');
-  if (!String(tokeninfo.scope||'').split(/\s+/).includes(READ_SCOPE))
-    throw fail('INBOX_SCOPE_MISSING');
+  const scopes=String(tokeninfo.scope||'').split(/\s+/).filter(Boolean);
+  if (!scopes.includes(READ_SCOPE)) throw fail('INBOX_SCOPE_MISSING');
+  // This credential is inbox-only. Reject any broader or additional Gmail
+  // permission even if gmail.readonly is also present in the same token.
+  const gmailScopes=scopes.filter(s=>s==='https://mail.google.com/'||/^https:\/\/www\.googleapis\.com\/auth\/gmail\./.test(s));
+  if (gmailScopes.some(s=>s!==READ_SCOPE)) throw fail('INBOX_SCOPE_TOO_BROAD');
   return true;
 }
 export function normalizeInboxQuery({from,after,limit=3}={}){
