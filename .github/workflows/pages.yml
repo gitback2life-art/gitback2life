@@ -8,6 +8,7 @@ on:
       - "index.html"
       - "story.html"
       - "privacy.html"
+      - "googleae25712b386c13c1.html"
       - "assets/**"
       - "projects/opportunity-tracker/index.html"
   workflow_dispatch:
@@ -56,6 +57,7 @@ jobs:
           cp -R assets site-dist/assets
           cp story.html site-dist/story.html
           cp privacy.html site-dist/privacy.html
+          cp googleae25712b386c13c1.html site-dist/googleae25712b386c13c1.html
           mkdir -p site-dist/projects/opportunity-tracker
           cp projects/opportunity-tracker/index.html site-dist/projects/opportunity-tracker/index.html
 
