@@ -71,7 +71,9 @@ export async function runInboxRequest({event,env,http=fetch,inboxPublishedPublic
   const publicKey=inboxPublishedPublicKey??readFileSync(new URL('./inbox-public-key.pem',import.meta.url),'utf8');
   if(fingerprint(privateKey)!==fingerprint(publicKey))throw fail('INBOX_PRIVATE_KEY_MISMATCH');
   const request=unsealInboxRequest(envelope,privateKey);
-  await assertInboxEnvironment(token,http);
+  // The fine-grained control token is used only to inspect protected environment policy;
+  // the short-lived workflow GITHUB_TOKEN handles the one-use tag and encrypted comment.
+  await assertInboxEnvironment(env.GB2L_CONTROL_TOKEN||token,http);
   const accessToken=await refreshAccessToken({clientId:env.GMAIL_INBOX_CLIENT_ID,
     clientSecret:env.GMAIL_INBOX_CLIENT_SECRET,refreshToken:env.GMAIL_INBOX_REFRESH_TOKEN},http);
   await verifySenderIdentity(accessToken,http);
