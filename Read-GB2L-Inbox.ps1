@@ -1,5 +1,6 @@
 param(
   [switch]$SetupOnly,
+  [switch]$Watch,
   [switch]$NoDiagnosticZip,
   [switch]$NoPause
 )
@@ -84,7 +85,12 @@ try {
   }
 
   Write-LocalLog 'Owner-local inbox request reader started.'
-  & node $localRead --private-key $privateKey
+  $readerArgs = @('--private-key', $privateKey)
+  if ($Watch) {
+    $readerArgs += '--watch'
+    Write-LocalLog 'Inbox watch mode enabled. Raw message content is never written to the helper log.'
+  }
+  & node $localRead @readerArgs
   $readCode = $LASTEXITCODE
   Write-LocalLog ('Local inbox reader process exit_code=' + $readCode)
   if ($readCode -ne 0) { Stop-Safely 'LOCAL_INBOX_READER_FAILED' 'Inbox processing stopped. See the safe error code in the terminal.' }
