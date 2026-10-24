@@ -31,3 +31,17 @@ jobs:
       - name: Check new inbox JavaScript syntax
         run: |
           for file in tools/gb2l-email/inbox-*.mjs tools/gb2l-email/receive.mjs; do node --check "$file"; done
+      - name: Verify inbox package SHA-256 manifest
+        run: |
+          set -u
+          failed=0
+          while read -r expected path expected_bytes; do
+            [ -n "$expected" ] || continue
+            actual="$(sha256sum "$path" | cut -d' ' -f1)"
+            actual_bytes="$(wc -c < "$path" | tr -d ' ')"
+            if [ "$expected" != "$actual" ] || [ "$expected_bytes" != "$actual_bytes" ]; then
+              echo "::error file=$path::Manifest mismatch: expected $expected / $expected_bytes bytes; got $actual / $actual_bytes bytes"
+              failed=1
+            fi
+          done < SHA256_MANIFEST.txt
+          exit "$failed"
