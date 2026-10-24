@@ -1,8 +1,8 @@
-1e5824d20c7480c2b78489d05a3217628d36059543fb5239f78787e6284c39fe  BUILD_REPORT.md  2993
+e6bf8595eec5020e4645463ad9aa645f00f2d300803eb2baae5b8b4873336d21  BUILD_REPORT.md  3361
 0fd8e6727ac2a5ceb40458c65f1c710d5f6f1821c33d2980ee7c2a4d823b1656  README_GIVE_THIS_TO_YOUR_AI.md  3195
 a5975b0587889fc5b1e219969beefe7033c2d928464a66d672c8bddbc84a0493  .github/workflows/gb2l-inbox-check.yml  2151
-50d93c2a7d2a96f3bdd158aa4a02d166888cecc497c16e65ec0d325e7e5afe77  .github/workflows/gb2l-inbox-tests.yml  1279
-926e44f711ed83af9787ab5453212a04531d381a2b3b4436e556ca50602ea619  tools/gb2l-email/INBOX_SETUP.md  10350
+997e83c875158f7bff012aed6a69399c4c31d1db2648b26f8e78819371a252c2  .github/workflows/gb2l-inbox-tests.yml  1930
+e9d2fb7a57263f30cff54f0a54e3ffaafdf2ab871b1e4c3bb55aed61ea18838c  tools/gb2l-email/INBOX_SETUP.md  10412
 2e500f897e7ae9723072644260cdcc602b429466c85332614ffa05612e4fc6a2  tools/gb2l-email/assistant_inbox_session.py  5274
 8e99b19b48d55f21b01b13f83d5ea7fe0fc81cb107ca08a2212576ba238e274b  tools/gb2l-email/inbox-flow.test.mjs  10631
 e5551a328b7da82a9f868d590302931e7750bf4e56df723fd50492268f4eb4d4  tools/gb2l-email/inbox-inspect.mjs  593
@@ -10,6 +10,6 @@ e5551a328b7da82a9f868d590302931e7750bf4e56df723fd50492268f4eb4d4  tools/gb2l-ema
 0c70e38facbf43c0d1e081fed5d764171127b9bdbd143d7bdb372016c46f1e9d  tools/gb2l-email/inbox-prepare-key.mjs  2203
 4297718f4f853b1a10d8359c9b64726a5d4377fabb8f8e56e57b93e0cd9fde20  tools/gb2l-email/inbox-run.mjs  6759
 c0eecf5ddfae3ab14458c12d1bb5d880ac8dad812aedc1cf758340c52846e972  tools/gb2l-email/inbox-transport.mjs  7606
-ace04d3197dfc260d4f95ec707bc805744ce92c1de8ae069f22fd67a3dcdcefb  tools/gb2l-email/receive.mjs  9302
+737d4ef47cdba0fe8b0930cea2f07e6cad2a1e0066f4285525539dc6dd4fc3a1  tools/gb2l-email/receive.mjs  9372
 3d1afba28c642cb439c80bba23ea0fda1f9601af155b7b63c42c55ac4255f1ee  tools/gb2l-email/receive.test.mjs  5887
 18c4e421b22b6db67109108ace8cf67bdfe4ccc04c8d8e96d0e6db09dfabe56a  TEST_RESULTS.txt  10546
