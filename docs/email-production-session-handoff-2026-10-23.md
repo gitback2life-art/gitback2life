@@ -301,3 +301,54 @@ Complete only when:
 8. Record commit IDs, test runs, and remaining limitations in the next handoff. Do not claim success until Baby Brother can actually read the returned synthetic email in the active conversation.
 
 **Owner's intended outcome:** “Baby Brother, check my email and read Mom's reply” should use the existing GitBack2Life email app and existing GitHub connection to deliver the selected message privately into this conversation, without exposing inbox data on public GitHub or weakening outbound approval safeguards.
+---
+
+## Session addendum — inbound inbox review and Google restricted-scope decision (2026-10-23)
+
+### Scope clarification
+
+This work concerns the **GitBack2Life email application inside this repository** (tools/gb2l-email/) and its GitHub Actions transport. It is not a request to connect ChatGPT's separate Gmail connector or use a ChatGPT inbox feature. The goal is for the existing GitBack2Life app to retrieve a small, explicitly requested set of incoming email and return it encrypted to the active assistant session through the connected GitHub repository. The existing outgoing email sender must remain separate and unchanged.
+
+### What was added for review
+
+- Review branch: [review/encrypted-inbox-roundtrip](https://github.com/gitback2life-art/gitback2life/tree/review/encrypted-inbox-roundtrip)
+- Draft pull request: [PR #35](https://github.com/gitback2life-art/gitback2life/pull/35)
+- Original reviewed commit: [cd720ac0680dc1b041dc42d21e6e803de80a8520](https://github.com/gitback2life-art/gitback2life/commit/cd720ac0680dc1b041dc42d21e6e803de80a8520)
+- Manifest-path correction: [1987cd1b2a59ff8f2d827ed126d6489d3d61b006](https://github.com/gitback2life-art/gitback2life/commit/1987cd1b2a59ff8f2d827ed126d6489d3d61b006)
+
+The inbox implementation is additive under tools/gb2l-email/, with two workflow files under .github/workflows/. It uses a bounded inbox-only query (maximum five messages), encrypted query criteria, an ephemeral return key, a signed/encrypted response, trusted-actor and designated-PR checks, a protected owner-review environment, and one-time request markers. It does not download attachments or interpret email HTML as executable content. The sender implementation and sender workflow were checked against main and have identical file hashes on the review branch: tools/gb2l-email/send.mjs SHA-256 288cbe04ba59830f608ac935c2b17336c1ba5078; .github/workflows/gb2l-approved-email.yml SHA-256 fe484e4982d4820cbd572f74f8a873943a75f1ac.
+
+### Test evidence and limits
+
+GitHub Actions run [#40044869240](https://github.com/gitback2life-art/gitback2life/actions/runs/40044869240) completed successfully on the reviewed code commit. The logged CI suite ran **24 tests: 24 passed, 0 failed, 0 skipped**; JavaScript syntax checks and the synthetic Python/Node encrypted round-trip passed. The package's TEST_RESULTS.txt records a separate historical/local 55-test run (31 sender regression, 15 staged receiver, 9 new protocol tests); that is not the same as the current CI run, and it is not a live provider integration test.
+
+After CI, the repository manifest entries were corrected from the stale REPOSITORY_FILES/ prefix to the files' actual paths. That documentation/manifest-only change is commit 1987cd1. **The CI run above predates that manifest-path correction**; no claim is made that CI reran on the correction commit.
+
+### Google authorization blocker — do not assume an exemption
+
+Google classifies https://www.googleapis.com/auth/gmail.readonly as a **restricted Gmail scope**, unlike the existing gmail.send scope. Whether a personal-use or testing exception applies must be determined for this exact OAuth app, its users, and the proposed processing architecture. Moving message content through GitHub-hosted Actions and storing credentials in GitHub environment secrets may introduce additional verification, security-assessment, data-handling, and disclosure obligations. A possible exception is not proof that this deployment is exempt.
+
+Before requesting consent for the read scope, determine and document the applicable Google verification/security-assessment requirements for this use. Do not weaken the requested scope, misrepresent the use, or assume that the existing send authorization covers reading mail. The inbound setup requests a **separate** read-only OAuth grant and uses separate inbox-specific secrets; never replace or reuse the outgoing sender's credentials for inbox access.
+
+### What remains blocked
+
+1. **No live Gmail read has occurred.** Current test evidence is mocked/synthetic.
+2. **No end-to-end GitHub write/read path has been proven** with the actual connected account posting as gitback2life-art, the protected gb2l-inbox-read environment pausing for owner review, and the encrypted reply being fetched and decrypted in the same active assistant session.
+3. The owner-only inbox public/private key pair has not been established as a production-ready secret arrangement. The private key must remain off-repository and the public key must match it.
+4. The repository connection previously reported read-only (pull=true, push=false). Do not assume it can create the required PR comment or approve a workflow; verify actual permissions rather than trying to work around them.
+5. The package's canonical Toolbox adapter mirror and source-integrity manifest synchronization must be checked before distributing the feature in the full Windows Toolbox.
+6. PR #35 remains **draft and unmerged**. The inbox workflow is not authorized for live activation.
+
+### Exact next actions
+
+- Resolve Google's restricted-scope requirements for this use before obtaining new Gmail read consent.
+- Verify actual GitHub write capability and the designated request-PR / protected-environment settings without exposing secrets.
+- Recheck manifest hashes against the files at their final repository paths and rerun CI after any source or workflow changes.
+- Complete offline and no-read/no-send checks, then demonstrate a harmless synthetic encrypted round-trip through the real GitHub transport and decrypt it in the same active session.
+- Only after those gates pass, request separate explicit owner authorization for one bounded live test against a harmless test email.
+- Keep PR #35 unmerged, inbox disabled, and the existing outgoing approval_required mode intact until the owner authorizes the relevant next step.
+
+### Handoff discipline
+
+A green mocked test run is not proof of live Gmail access. A GitHub file commit is not proof that the intended live configuration changed. Do not tell the owner to do setup steps that the assistant can complete safely through its connected repository tools; do not claim to have performed actions that require unavailable GitHub write permissions, local owner credentials, Google's consent screen, or the owner's private key. Ask the owner for an action only when it is genuinely owner-only, and state the single specific action needed.
+
