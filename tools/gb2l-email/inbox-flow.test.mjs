@@ -133,7 +133,7 @@ test('Python assistant defaults to a bounded all-senders inbox request', {skip:!
   "pub=base64.b64decode(os.environ['INBOX_TEST_PUB']).decode()",
   "s=InboxSession()",
   "print(s.prepare_request(pub),flush=True)"
- ].join('\\n');
+ ].join('\n');
  const run=spawnSync(python,['-c',script],{cwd:new URL('.',import.meta.url).pathname,env:{...process.env,INBOX_TEST_PUB:Buffer.from(server.publicKey).toString('base64')},encoding:'utf8'});
  assert.equal(run.status,0,run.stderr);
  const wire=run.stdout.trim();
