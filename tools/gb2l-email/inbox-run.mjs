@@ -72,7 +72,7 @@ export async function postInboxReturn({requestId,issueNumber,response,returnPubl
   try{r=await http(`${API}/repos/${REPO}/issues/${issueNumber}/comments`,{
     method:'POST',headers:{...GH_HEADERS(githubToken),'Content-Type':'application/json'},
     body:JSON.stringify({body}),signal:AbortSignal.timeout(20000)});}catch{throw fail('INBOX_RETURN_POST_FAILED')}
-  if(!r?.ok)throw fail('INBOX_RETURN_POST_FAILED');
+  if(!r?.ok)throw fail(Number.isInteger(r?.status)?`INBOX_RETURN_POST_HTTP_${r.status}`:'INBOX_RETURN_POST_FAILED');
   // ID is safe for audit; never log message headers/bodies/queries or response ciphertext.
   return {status:response.status==='error'?'private_error_returned':'encrypted_return_posted',request_id:requestId};
 }
