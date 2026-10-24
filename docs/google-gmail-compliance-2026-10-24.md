@@ -31,6 +31,8 @@ This note records policy requirements and implementation status. It is not a cla
 - Gmail API scopes: https://developers.google.com/workspace/gmail/api/auth/scopes
 - Restricted scope verification and security assessment: https://developers.google.com/identity/protocols/oauth2/production-readiness/restricted-scope-verification
 - Personal-use OAuth verification exception: https://support.google.com/cloud/answer/13464323?hl=en
+- App Defense Alliance — CASA Tier 2 process and notification: https://appdefensealliance.dev/casa/tier-2/tier2-overview
+- App Defense Alliance — self-initiated assessment details: https://appdefensealliance.dev/casa/casa-self-start
 
 ## Work prepared in this repository change
 
@@ -42,7 +44,7 @@ This note records policy requirements and implementation status. It is not a cla
 
 ## External steps still required before re-enabling
 
-1. **Security assessment:** Arrange the applicable CASA/restricted-scope assessment through a Google-approved assessor and obtain the Letter of Assessment. If the owner believes an exception applies, obtain Google's written determination before enabling the hosted reader; do not assume personal-use status waives this requirement.
+1. **Assessment applicability first:** Check the Google Cloud OAuth project's owner/developer email for an official CASA notification and ask Google's OAuth verification support in writing whether the personal-use exception applies to the separate server-side assessment requirement for this exact architecture. Google's restricted-scope page states that every app with restricted-data access through a third-party server must undergo an assessment, while listing personal use under verification exceptions without explicitly saying it waives the assessment. App Defense Alliance says Google/its partners initiate required Tier 2 CASA by notification and warns the old self-scanning process is deprecated. Do not buy a self-initiated Tier 3 assessment before Google confirms which assessment is needed. If Google confirms that assessment is required, follow the official notification and use the Google-approved assessor; reassessment is at least every 12 months.
 2. **OAuth configuration:** After the privacy page is published on GitHub Pages, set the OAuth client's privacy-policy URL to https://gitback2life-art.github.io/gitback2life/privacy.html. This Google Cloud Console change cannot be made through the GitHub repository.
 3. **Consent operation:** For each new request, the assistant must display the in-context disclosure and wait for an explicit affirmative response immediately before creating an encrypted V2 request. The client refuses to prepare a request without consent_confirmed=True.
 4. **Confirm the actual use case and AI data handling:** Ensure Google's approved Gmail-use-case rule accepts this exact request-driven email question-answering workflow; confirm that the selected OpenAI service and account settings satisfy Google's Limited Use restrictions. Do not infer approval from a successful technical test.
