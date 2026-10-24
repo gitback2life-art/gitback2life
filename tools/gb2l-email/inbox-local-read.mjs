@@ -9,11 +9,11 @@ import {spawnSync} from 'node:child_process';
 import {createInterface} from 'node:readline';
 import {securePrivateKeyFile} from './prepare-key.mjs';
 import {localConfigPath} from './inbox-local-setup.mjs';
-import {READ_SCOPE,assertInboxScope,readInbox} from './receive.mjs';
+import {READ_SCOPE,assertInboxScope,readInbox,encryptInboxReturn} from './receive.mjs';
 import {refreshAccessToken} from './send.mjs';
 import {verifySenderIdentity} from './identity.mjs';
 import {fingerprint,decodeInboxComment,decodeInboxResponse,unsealInboxRequest,
-  encryptInboxReturn,signInboxResponse,encodeInboxResponse,INBOX_REQUEST_PREFIX,INBOX_RESPONSE_PREFIX} from './inbox-transport.mjs';
+  signInboxResponse,encodeInboxResponse,INBOX_REQUEST_PREFIX,INBOX_RESPONSE_PREFIX} from './inbox-transport.mjs';
 
 const REPO='gitback2life-art/gitback2life';
 const OWNER='gitback2life-art';
