@@ -3,7 +3,7 @@ d1beceec2139f3c53b53c1502cb83f4e8b0cae9f8a74284babd802fe11ed180f  README_GIVE_TH
 3ce0be458721a6be4df2529070960c6d424c1151c59230dae2d819bf4087351e  .github/workflows/gb2l-inbox-tests.yml  2077
 cc4e886e9da82201a8d6ecd159c7307b66d222e927ce04dc26149de81e19b3f2  tools/gb2l-email/INBOX_SETUP.md  4394
 e01ff95949954284b287dc89dc449168407becb1aa8a125ae042389f75c87fdd  tools/gb2l-email/assistant_inbox_session.py  5386
-76d168c046f6bb6b17e22b2d1004b20ee0e662f13b7b77c565a5d2881aad60af  tools/gb2l-email/inbox-flow.test.mjs  11537
+8aa49cf99723d844583d2f4d0367ac05896219c2ad28519b4dd8d19dc19c420f  tools/gb2l-email/inbox-flow.test.mjs  11536
 e5551a328b7da82a9f868d590302931e7750bf4e56df723fd50492268f4eb4d4  tools/gb2l-email/inbox-inspect.mjs  593
 1badd3cfe9b984020fb05752d336e71ea048b91a0484cb0b0604ac269181be1f  tools/gb2l-email/inbox-owner-setup.mjs  416
 0c70e38facbf43c0d1e081fed5d764171127b9bdbd143d7bdb372016c46f1e9d  tools/gb2l-email/inbox-prepare-key.mjs  2203
