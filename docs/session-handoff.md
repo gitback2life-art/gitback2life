@@ -1376,3 +1376,12 @@ Official references: [Restricted-scope verification and assessment](https://deve
 - No live Gmail read was performed. No Google approval is claimed. CI must be inspected for this branch before merge.
 
 Official references are listed in the two new audit/inquiry documents and in docs/google-gmail-compliance-2026-10-24.md.
+
+
+## 2026-10-24 — PR #58 merged; CI and owner-side blockers reconciled
+
+- PR [#58](https://github.com/gitback2life-art/gitback2life/pull/58) was reviewed and squash-merged after CI completed successfully. Merge commit: [5f43472b1554ca37b7f63bff0ee335cd8c336165](https://github.com/gitback2life-art/gitback2life/commit/5f43472b1554ca37b7f63bff0ee335cd8c336165).
+- Final PR-head checks: [email tests #40079219147](https://github.com/gitback2life-art/gitback2life/actions/runs/40079219147) passed; [encrypted inbox tests #40079219068](https://github.com/gitback2life-art/gitback2life/actions/runs/40079219068) passed; import-review build was skipped. The workflow permission reduction and SHA256 manifest update were included in the merge.
+- Code-level consent checks reviewed: the assistant session requires `consent_confirmed=True`, records a versioned/timestamped attestation, and refuses to create a request without it; tests cover the missing-consent rejection. This verifies the attestation guard and tests, not independent proof that every live invocation displayed the full disclosure immediately before asking for consent. Preserve that interaction requirement in actual use.
+- **Still not completed or verified:** no Google-approved security assessment/Letter of Assessment or Google written determination is available in this session; the Google inquiry remains a draft and has not been sent; the OAuth consent-screen privacy-policy URL has not been inspected or changed; ChatGPT transfer compliance has not been confirmed for the actual product/account settings; GitHub environment reviewer/branch policy and actual variable values have not been independently inspected through the available account tools. Do not mark these items complete or claim Google approval.
+- Keep both `GB2L_INBOX_ENABLED` and `GB2L_INBOX_GOOGLE_COMPLIANCE_READY` unset/false, keep PR #41 closed, and do not run a live Gmail read until the external Google requirements and owner-side settings are resolved. The public privacy notice is in `privacy.html`; publishing it is not equivalent to setting the OAuth console URL or receiving approval.
