@@ -4,11 +4,11 @@ The existing outgoing sender is unchanged. Sending continues through owner-local
 
 ## Inbox receiving
 
-Inbox requests still travel through the dedicated PR conversation using the GB2L_INBOX_V1: encrypted request and GB2L_INBOX_RESULT_V1: signed encrypted response formats. The public inbox key lives at tools/gb2l-email/inbox-public-key.pem; its private key stays on the owner's Windows computer.
+Inbox requests travel through PR #41 using the GB2L_INBOX_V1 encrypted request and GB2L_INBOX_RESULT_V1 signed encrypted response formats. The public key is `tools/gb2l-email/inbox-public-key.pem`; the private key and Gmail read-only OAuth token stay on the owner's Windows computer.
 
-For Gmail reading, use the owner-local path in tools/gb2l-email/INBOX_SETUP.md. The Google OAuth refresh token and the Gmail API read run locally on the owner's computer. GitHub Actions must not read Gmail or receive the inbox refresh token. GitHub receives only the encrypted response, which the same active assistant session decrypts.
+After one-time OAuth setup, start `Read-GB2L-Inbox.ps1 -Watch` and leave it open. When the owner tells the active assistant session to read email, the assistant should create a fresh in-memory `InboxSession`, prepare an encrypted request, and post that request as a comment on PR #41 with the connected GitHub account. Default request: newest five Inbox messages from any sender; optional sender/date/limit come from the user's instruction. The local watcher processes only a valid request authored by `gitback2life-art` and posted after the watcher started, then returns signed ciphertext. The assistant must fetch the matching response and decrypt it using the same still-live `InboxSession`. Do not ask the user to rerun the reader for every request or require a sender address by default.
 
-The repository variable GB2L_INBOX_ENABLED must remain false. It keeps the former server-side inbox workflow off. The local script is manually launched by the owner and asks for an explicit YES confirmation before reading the exact sender/date/limit in the pending request.
+The Gmail API read runs locally. GitHub receives only request/response ciphertext; GitHub Actions must never read Gmail or receive its refresh token. Keep `GB2L_INBOX_ENABLED=false`. See `tools/gb2l-email/INBOX_SETUP.md` for the one-time watcher command and behavior.
 
 ## Local setup
 
