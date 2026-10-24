@@ -2,11 +2,11 @@
 
 Date: 2026-10-23. Target: public `gitback2life-art/gitback2life` current `main`, new additive source/workflow only.
 
-**Status: CODE PREPARED FOR REVIEW, NOT LIVE-READY.** Existing outgoing sender untouched. Gmail read scope not requested, owner environment not created, inbox mode not enabled, no actual Gmail message read.
+**Status: INBOX IMPLEMENTATION MERGED to `main` via PR #35 (merge commit `68216d32282f559c0e7c59f695f69adbd9fce473`), but still disabled and not live-ready.** Existing outgoing sender untouched. No inbox public key, read-only OAuth grant, or inbox secrets have been provisioned; no actual Gmail message has been read.
 
 ## Evidence
 
-- Live GitHub connector: current repo main contains existing sender, `owner-setup.mjs`, `readiness.mjs`, outbound workflow, and `public-key.pem`; original PR #16 is merged. Current connection reports `pull=true`, `push=false`.
+- Current `main` contains the existing sender and the merged inbox extension. GitHub Actions inbox workflow is inactive by default. Repository commits/PRs were made through the available GitHub tools; a live encrypted inbox request/response has not been attempted.
 - GitHub interface: the available connector supports fetching PR comments and an `add_comment_to_issue` action specifically for PR conversation comments. No write test was performed (connection reports read-only).
 - Staged starting point: previously supplied `receive.mjs`/`receive.test.mjs` from `911_GitBack2Life_Inbox_Read_Staged_20261023.zip`.
 - New receiver-side code adds encrypted search parameters, trusted owner PR actor/channel validation, separate GitHub Actions environment, signed encrypted replies, durable one-time request tags, key and OAuth owner helpers, and a persistent-session Python client. The inbox reader now rejects OAuth grants containing any Gmail permission beyond `gmail.readonly`, both during owner setup and again before each Gmail API read.
@@ -15,7 +15,7 @@ Date: 2026-10-23. Target: public `gitback2life-art/gitback2life` current `main`,
 
 ## Remaining gates
 
-- Genuine GitHub write/PR integration and environment review in owner's connected AI account
+- Live owner-comment posting/retrieval and protected `gb2l-inbox-read` environment approval still need an end-to-end synthetic test
 - Fresh inbox-only public key generated on the owner device and published, private key held locally/protected environment
 - Dedicated PR channel, repo Actions variables and environment reviewer/branch-policy setup
 - Google's restricted `gmail.readonly` scope authorization and applicability of verification/security assessment
@@ -24,4 +24,4 @@ Date: 2026-10-23. Target: public `gitback2life-art/gitback2life` current `main`,
 - Live protected GitHub Actions execution, Gmail retrieval and return, and same-active-session decryption
 - Canonical Toolbox adapter mirror and source-integrity manifest synchronization before distributing in the full Windows Toolbox
 
-No merge, Gmail authorization, secret read/write, auto mode activation, or live mail operation occurred.
+The code merge occurred; no Gmail authorization, inbox secret provisioning, inbox-mode activation, or live mail operation occurred.
