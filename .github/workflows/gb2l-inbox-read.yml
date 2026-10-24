@@ -17,6 +17,7 @@ jobs:
     # a privileged read. Never check out code from the pull-request head.
     if: >-
       ${{
+        vars.GB2L_INBOX_ENABLED == 'true' &&
         github.ref == 'refs/heads/main' &&
         github.run_attempt == 1 &&
         github.actor == 'gitback2life-art' &&
@@ -49,13 +50,13 @@ jobs:
 
       - name: Read the bounded inbox request and return ciphertext only
         env:
-          GB2L_INBOX_ENABLED: 'true'
+          GB2L_INBOX_ENABLED: ${{ vars.GB2L_INBOX_ENABLED }}
           GB2L_INBOX_ACTOR: gitback2life-art
           GB2L_INBOX_REQUEST_PR: '41'
           GITHUB_TOKEN: ${{ github.token }}
           GB2L_CONTROL_TOKEN: ${{ secrets.GB2L_CONTROL_TOKEN }}
           GB2L_INBOX_REQUEST_PRIVATE_KEY: ${{ secrets.GB2L_INBOX_REQUEST_PRIVATE_KEY }}
-          GMAIL_INBOX_CLIENT_ID: ${{ secrets.GMAIL_INBOX_CLIENT_ID }}
-          GMAIL_INBOX_CLIENT_SECRET: ${{ secrets.GMAIL_INBOX_CLIENT_SECRET }}
+          GMAIL_INBOX_CLIENT_ID: ${{ secrets.GMAIL_CLIENT_ID }}
+          GMAIL_INBOX_CLIENT_SECRET: ${{ secrets.GMAIL_CLIENT_SECRET }}
           GMAIL_INBOX_REFRESH_TOKEN: ${{ secrets.GMAIL_INBOX_REFRESH_TOKEN }}
         run: node tools/gb2l-email/inbox-run.mjs
